@@ -9,7 +9,7 @@
     <Company>Alexander Nosenko Software</Company>
     <Authors>Alexander Nosenko</Authors>
     <Copyright>Copyright 2014-2017</Copyright>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseUrl>http://www.refactorius.com</PackageLicenseUrl>
     <PackageProjectUrl>http://www.refactorius.com</PackageProjectUrl>
     <PackageIconUrl>http://www.refactorius.com/favicon.ico</PackageIconUrl>
