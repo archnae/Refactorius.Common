@@ -1,0 +1,3 @@
+namespace Refactorius.Common.Tests
+{
+}
