@@ -9,7 +9,7 @@
     <Company>Alexander Nosenko Software</Company>
     <Authors>Alexander Nosenko</Authors>
     <Copyright>Copyright 2014-2017</Copyright>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>http://www.refactorius.com</PackageLicenseUrl>
     <PackageProjectUrl>http://www.refactorius.com</PackageProjectUrl>
     <PackageIconUrl>http://www.refactorius.com/favicon.ico</PackageIconUrl>
@@ -23,6 +23,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;JETBRAINS_ANNOTATIONS;NETSTANDARD2_0;</DefineConstants>
     <DocumentationFile>bin\Debug\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;JETBRAINS_ANNOTATIONS;NETSTANDARD2_0</DefineConstants>
+    <DocumentationFile>bin\Release\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
 
