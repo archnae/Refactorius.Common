@@ -1,0 +1,39 @@
+﻿using System;
+
+namespace Refactorius
+{
+    /// <summary>Specifies how <see cref="M:StringUtils.SplitAndTrim(string,StringSplitAndTrimOptions)"/> method trims the
+    /// return value tokens and whether it includes or omits from the return value empty tokens.
+    /// <para>This enumeration has a <see cref="FlagsAttribute"/> attribute that allows a bitwise combination of its member
+    /// values.</para>
+    /// </summary>
+    /// <seealso cref="StringUtils"/>
+    [Flags]
+    public enum StringSplitAndTrimOptions
+    {
+        /// <summary>The return value includes array elements that contain an empty string. The elements are not trimmed.</summary>
+        None = 0,
+
+        /// <summary>The return value does not include array elements that contain an empty string.</summary>
+        /// <seealso cref="F:Refactorius.Commons.StringSplitOptions.RemoveEmptyEntries"/>
+        RemoveEmptyEntries = 1,
+
+        /// <summary>The elements of the return value are trimmed at the start.</summary>
+        /// <seealso cref="string.TrimStart"/>
+        TrimAtStart = 2,
+
+        /// <summary>The elements of the return value are trimmed at the end.</summary>
+        /// <seealso cref="string.TrimEnd"/>
+        TrimAtEnd = 4,
+
+        /// <summary>The elements of the return value are trimmed at both start and end.</summary>
+        /// <seealso cref="string.Trim()"/>
+        TrimBoth = TrimAtStart | TrimAtEnd,
+
+        /// <summary>The return value does not include array elements that contain an empty string. The elements of the return
+        /// value are trimmed at both start and end.</summary>
+        /// <seealso cref="F:Refactorius.Commons.StringSplitOptions.RemoveEmptyEntries"/>
+        /// <seealso cref="string.Trim()"/>
+        Default = RemoveEmptyEntries | TrimBoth
+    }
+}
