@@ -14,9 +14,10 @@
     <PackageProjectUrl>http://www.refactorius.com</PackageProjectUrl>
     <PackageIconUrl>http://www.refactorius.com/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
-    <Version>8.0.1</Version>
-    <AssemblyVersion>8.0.0.1</AssemblyVersion>
-    <FileVersion>8.0.0.1</FileVersion>
+    <VersionPrefix>8.0.1</VersionPrefix>
+	<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <!-- AssemblyVersion>8.0.1</AssemblyVersion>
+    <FileVersion>8.0.0.1</FileVersion -->
     <PackageReleaseNotes>t4</PackageReleaseNotes>
   </PropertyGroup>
 
