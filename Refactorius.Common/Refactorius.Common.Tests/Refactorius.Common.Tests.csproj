@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
 
     <StartupObject />
-
+<DebugType>Full</DebugType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
