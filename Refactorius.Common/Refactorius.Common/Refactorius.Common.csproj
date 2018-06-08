@@ -10,16 +10,20 @@
     <Authors>Alexander Nosenko</Authors>
     <Copyright>Copyright 2014-2018</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageLicenseUrl>http://www.refactorius.com</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.refactorius.com</PackageProjectUrl>
-    <PackageIconUrl>http://www.refactorius.com/favicon.ico</PackageIconUrl>
+    <PackageLicenseUrl>https://mmitintl.visualstudio.com/Refactorius.Common/license</PackageLicenseUrl>
+    <PackageProjectUrl>https://mmitintl.visualstudio.com/Refactorius.Common</PackageProjectUrl>
+    <PackageIconUrl>https://mmitintl.visualstudio.com/Refactorius.Common/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
     <VersionPrefix>8.0.1</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <!-- AssemblyVersion>8.0.1</AssemblyVersion>
     <FileVersion>8.0.0.1</FileVersion -->
-    <PackageReleaseNotes>t4</PackageReleaseNotes>
-    <DebugType>Full</DebugType>
+    <PackageReleaseNotes>The library Targets netstandard 2.0 now.</PackageReleaseNotes>
+    <AssemblyVersion>8.0.2.0</AssemblyVersion>
+    <FileVersion>8.0.2.0</FileVersion>
+    <Version>8.0.2</Version>
+    <RepositoryUrl>https://mmitintl.visualstudio.com/_git/Refactorius.Common</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
