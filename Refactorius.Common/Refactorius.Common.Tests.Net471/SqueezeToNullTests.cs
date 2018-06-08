@@ -4,6 +4,8 @@ namespace Refactorius.Common.Tests
 {
     public class SqueezeToNullTests
     {
+        private readonly TestFrameworksPresence _testFrameworksPresense = new TestFrameworksPresence();
+
         [Fact]
         public void StripsWhitespaceAndTrims()
         {

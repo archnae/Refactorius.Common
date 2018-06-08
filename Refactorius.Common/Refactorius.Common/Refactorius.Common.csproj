@@ -8,21 +8,30 @@
     <Description>The Refactorius common utility library provides some helpful utility functions and extension methods used throughout the Refactorius code.</Description>
     <Company>Alexander Nosenko Software</Company>
     <Authors>Alexander Nosenko</Authors>
-    <Copyright>Copyright 2014-2017</Copyright>
+    <Copyright>Copyright 2014-2018</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseUrl>http://www.refactorius.com</PackageLicenseUrl>
     <PackageProjectUrl>http://www.refactorius.com</PackageProjectUrl>
     <PackageIconUrl>http://www.refactorius.com/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
-    <Version>8.0.1</Version>
-    <AssemblyVersion>8.0.0.1</AssemblyVersion>
-    <FileVersion>8.0.0.1</FileVersion>
+    <VersionPrefix>8.0.1</VersionPrefix>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <!-- AssemblyVersion>8.0.1</AssemblyVersion>
+    <FileVersion>8.0.0.1</FileVersion -->
     <PackageReleaseNotes>t4</PackageReleaseNotes>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;JETBRAINS_ANNOTATIONS;NETSTANDARD2_0;</DefineConstants>
     <DocumentationFile>bin\Debug\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;JETBRAINS_ANNOTATIONS;NETSTANDARD2_0</DefineConstants>
+    <DocumentationFile>bin\Release\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
 
@@ -32,6 +41,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
     <PackageReference Include="System.Security.Permissions" Version="4.5.0" />
-    </ItemGroup>
+  </ItemGroup>
 
 </Project>

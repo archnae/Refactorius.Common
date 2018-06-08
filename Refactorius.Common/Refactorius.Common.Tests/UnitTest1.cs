@@ -1,3 +1,0 @@
-namespace Refactorius.Common.Tests
-{
-}
