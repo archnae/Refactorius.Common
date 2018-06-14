@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://mmitintl.visualstudio.com/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl>https://mmitintl.visualstudio.com/Refactorius.Common/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
-    <VersionPrefix>8.0.2</VersionPrefix>
+    <VersionPrefix>8.0.3</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <PackageReleaseNotes>The library Targets netstandard 2.0 now.</PackageReleaseNotes>
     <RepositoryUrl>https://mmitintl.visualstudio.com/_git/Refactorius.Common</RepositoryUrl>
