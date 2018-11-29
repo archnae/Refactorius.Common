@@ -135,7 +135,9 @@ namespace Refactorius.Data
             {
                 try
                 {
+#if NETSTANDARD2_0
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
                         new PermissionSet(PermissionState.Unrestricted).Assert();
                     var location = type.Assembly.Location;
                     if (string.IsNullOrEmpty(location))
@@ -146,7 +148,9 @@ namespace Refactorius.Data
                 }
                 finally
                 {
+#if NETSTANDARD2_0
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
                         PermissionSet.RevertAssert();
 
                 }

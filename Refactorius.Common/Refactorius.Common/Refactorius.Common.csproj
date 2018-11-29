@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
     <PackageId>Refactorius.Common</PackageId>
     <RootNamespace>Refactorius</RootNamespace>
     <AssemblyName>Refactorius.Common</AssemblyName>
@@ -14,22 +14,35 @@
     <PackageProjectUrl>https://mmitintl.visualstudio.com/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl>https://mmitintl.visualstudio.com/Refactorius.Common/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
-    <VersionPrefix>8.0.3</VersionPrefix>
+    <VersionPrefix>8.0.4</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <PackageReleaseNotes>The library Targets netstandard 2.0 now.</PackageReleaseNotes>
     <RepositoryUrl>https://mmitintl.visualstudio.com/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'netstandard2.0'" >
     <DefineConstants>TRACE;DEBUG;JETBRAINS_ANNOTATIONS;NETSTANDARD2_0;</DefineConstants>
     <DocumentationFile>bin\Debug\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <DebugType>Full</DebugType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' and '$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>TRACE;RELEASE;JETBRAINS_ANNOTATIONS;NETSTANDARD2_0</DefineConstants>
+    <DocumentationFile>bin\Release\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'  and '$(TargetFramework)' == 'net452'">
+    <DefineConstants>TRACE;DEBUG;NET45;</DefineConstants>
+    <DocumentationFile>bin\Debug\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'  and '$(TargetFramework)' == 'net452'">
+    <DefineConstants>TRACE;RELEASE;NET45</DefineConstants>
     <DocumentationFile>bin\Release\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
@@ -38,8 +51,8 @@
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0">
       <PrivateAssets>build</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
-    <PackageReference Include="System.Security.Permissions" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+    <PackageReference Include="System.Security.Permissions" Version="4.5.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
 
 </Project>
