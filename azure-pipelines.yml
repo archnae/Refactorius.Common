@@ -12,7 +12,7 @@ variables:
   home: Refactorius.Common
   main: $(home)/Refactorius.Common
 
-name: ${Build.BuildId}: Build.$(Date:yyyyMMdd)$(Rev:.r)
+name: ${Build.BuildId} (Build.$(Date:yyyyMMdd)$(Rev:.r))
 
 trigger: none
 
