@@ -40,7 +40,7 @@ steps:
   name: restore
   displayName: 'Restore packages'
 
-- script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix
+- script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix)
   displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
 
 - task: DotNetCoreCLI@2
