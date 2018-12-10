@@ -17,6 +17,10 @@ name: $(patch)
 
 steps:
 
+- script: echo Running in Master
+  name: show
+  displayName: 'Show yaml source'
+  
 - script: dotnet restore $(main).sln --configfile nuget.config
   name: restore
   displayName: 'Restore packages'
