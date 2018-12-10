@@ -19,7 +19,7 @@ trigger: none
 
 steps:
 
-- script: echo Running in Master
+- script: type azure-pipelines.yml
   name: show
   displayName: 'Show yaml source'
   
