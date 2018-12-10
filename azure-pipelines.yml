@@ -7,12 +7,13 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
+  patch: $[counter('versioncounter', 100)]
   BuildConfiguration: 'Debug'
-  VersionSuffix: pre$[counter('versioncounter', 100)]
+  VersionSuffix: pre$(patch)
   home: Refactorius.Common
   main: $(home)/Refactorius.Common
 
-name: $(VersionSuffix)
+name: $(patch)
 
 trigger: none
 
