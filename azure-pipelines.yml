@@ -8,7 +8,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Debug'
-  VersionSuffix: $[counter('versioncounter', 100)]
+  VersionSuffix: pre$[counter('versioncounter', 100)]
   home: Refactorius.Common
   main: $(home)/Refactorius.Common
 
