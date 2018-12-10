@@ -8,11 +8,11 @@ pool:
 
 variables:
   BuildConfiguration: 'Debug'
-  VersionSuffix: pre${Build.BuildId}
+  VersionSuffix: pre${Build.BuildNumber}
   home: Refactorius.Common
   main: $(home)/Refactorius.Common
 
-name: ${Build.BuildId} (Build.$(Date:yyyyMMdd)$(Rev:.r))
+name: 
 
 trigger: none
 
