@@ -3,9 +3,6 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-trigger:
-- never
-
 pool:
   vmImage: 'vs2017-win2016'
 
@@ -18,7 +15,27 @@ variables:
 
 name: $(patch)
 
+trigger: none
+
 steps:
+
+- script: type azure-pipelines.yml
+  name: show
+  displayName: 'Show yaml source in $(Build.SourceBranch)'
+  
+- task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
+  displayName: 'Unset versionSuffix if Master branch'
+  condition: eq(variables['Build.SourceBranch'], 'Master')
+  inputs:
+    VariableName: patch
+    Value: ''
+
+- task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
+  displayName: 'Set buildConfiguration to Release if Master branch'
+  condition: eq(variables['Build.SourceBranch'], 'Master')
+  inputs:
+    VariableName: BuildConfiguration
+    Value: 'Release'
 
 - script: dotnet restore $(main).sln --configfile nuget.config
   name: restore
@@ -26,7 +43,7 @@ steps:
 
 - script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(versionSuffix)
   name: build
-  displayName: 'Build all projects'
+  displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(versionSuffix)'
 
 - task: DotNetCoreCLI@2
   name: test
@@ -51,10 +68,11 @@ steps:
     packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
     publishVstsFeed: RefactoriusPackages
 
-- script: dotnet test $(home)/$(main).Tests.Net471/$(home).Tests.Net471.csproj --no-build --no-restore
+- script: dotnet test $(home)/$(home).Tests.Net471/$(home).Tests.Net471.csproj --no-build --no-restore
   name: test_Net471
   displayName: 'Run tests on Net471'
 
-- script: dotnet test $(home)/$(main).Tests.NetCore20/$(home).Tests.NetCore20.csproj --no-build --no-restore
+- script: dotnet test $(home)/$(home).Tests.NetCore20/$(home).Tests.NetCore20.csproj --no-build --no-restore
   name: test_NetCore20
   displayName: 'Run tests on NetCore20'
+
