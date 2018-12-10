@@ -8,11 +8,11 @@ pool:
 
 variables:
   BuildConfiguration: 'Debug'
-  VersionSuffix: pre${Build.BuildNumber}
+  VersionSuffix: 'pre$(Build.BuildNumber)'
   home: Refactorius.Common
   main: $(home)/Refactorius.Common
 
-name: 
+name: $(Build.BuildId)
 
 trigger: none
 
@@ -22,13 +22,6 @@ steps:
   name: show
   displayName: 'Show yaml source in $(Build.SourceBranch)'
 
-- task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-expand.VariableExpandTask@1
-  displayName: 'Expand VersionSuffix'
-  condition: eq(variables['Build.SourceBranch'], 'Master')
-  inputs:
-    VariableNames: VersionSuffix
-    Value: ''
-  
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
   displayName: 'Unset VersionSuffix if Master branch'
   condition: eq(variables['Build.SourceBranch'], 'Master')
@@ -43,12 +36,23 @@ steps:
     VariableName: BuildConfiguration
     Value: 'Release'
 
-- script: dotnet restore $(main).sln --configfile nuget.config
+- task: DotNetCoreCLI@2
   name: restore
   displayName: 'Restore packages'
-
-- script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix)
+  inputs:
+    command: restore
+    projects: $(main).sln
+    feedsToUse : config
+    nugetConfigPath: nuget.config
+    
+- task: DotNetCoreCLI@2
+  name: build
   displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
+  inputs:
+    command: build
+    projects: $(main).sln
+    norestore: true
+    arguments: '--configuration $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix)'
 
 - task: DotNetCoreCLI@2
   name: test
@@ -59,10 +63,15 @@ steps:
     nobuild: true
     publishTestResults: true
 
-- script: |
-    dotnet pack $(main)/Refactorius.Common.csproj --no-build --no-restore -c "$(BuildConfiguration)" -o "$(Build.ArtifactStagingDirectory)"
+- task: DotNetCoreCLI@2
   name: pack
   displayName: 'Pack library'
+  inputs:
+    command: pack
+    projects: $(main)/Refactorius.Common.csproj
+    nobuild: true
+    norestore: true
+    arguments: -c "$(BuildConfiguration)" -o "$(Build.ArtifactStagingDirectory)
 
 - task: DotNetCoreCLI@2
   name: push
@@ -72,12 +81,3 @@ steps:
     nuGetFeedType: internal
     packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
     publishVstsFeed: RefactoriusPackages
-
-- script: dotnet test $(home)/$(home).Tests.Net471/$(home).Tests.Net471.csproj --no-build --no-restore
-  name: test_Net471
-  displayName: 'Run tests on Net471'
-
-- script: dotnet test $(home)/$(home).Tests.NetCore20/$(home).Tests.NetCore20.csproj --no-build --no-restore
-  name: test_NetCore20
-  displayName: 'Run tests on NetCore20'
-
