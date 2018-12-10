@@ -7,13 +7,12 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  patch: $[counter('versioncounter', 100)]
-  buildConfiguration: 'Debug'
-  versionSuffix: pre$(patch)
+  BuildConfiguration: 'Debug'
+  VersionSuffix: $[counter('versioncounter', 100)]
   home: Refactorius.Common
   main: $(home)/Refactorius.Common
 
-name: $(patch)
+name: $(VersionSuffix)
 
 trigger: none
 
@@ -24,10 +23,10 @@ steps:
   displayName: 'Show yaml source in $(Build.SourceBranch)'
   
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
-  displayName: 'Unset versionSuffix if Master branch'
+  displayName: 'Unset VersionSuffix if Master branch'
   condition: eq(variables['Build.SourceBranch'], 'Master')
   inputs:
-    VariableName: patch
+    VariableName: VersionSuffix
     Value: ''
 
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
@@ -41,9 +40,8 @@ steps:
   name: restore
   displayName: 'Restore packages'
 
-- script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(versionSuffix)
-  name: build
-  displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(versionSuffix)'
+- script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix
+  displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
 
 - task: DotNetCoreCLI@2
   name: test
