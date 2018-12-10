@@ -7,13 +7,12 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  patch: $[counter('versioncounter', 100)]
   BuildConfiguration: 'Debug'
-  VersionSuffix: pre$(patch)
+  VersionSuffix: pre${Build.BuildId}
   home: Refactorius.Common
   main: $(home)/Refactorius.Common
 
-name: $(patch)
+name: ${Build.BuildId}: Build.$(Date:yyyyMMdd)$(Rev:.r)
 
 trigger: none
 
@@ -22,6 +21,13 @@ steps:
 - script: type azure-pipelines.yml
   name: show
   displayName: 'Show yaml source in $(Build.SourceBranch)'
+
+- task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-expand.VariableExpandTask@1
+  displayName: 'Expand VersionSuffix'
+  condition: eq(variables['Build.SourceBranch'], 'Master')
+  inputs:
+    VariableNames: VersionSuffix
+    Value: ''
   
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
   displayName: 'Unset VersionSuffix if Master branch'
