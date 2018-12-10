@@ -23,7 +23,7 @@ steps:
 
 - script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(versionSuffix)
   name: build
-  displayName: 'Build all projects'
+  displayName: 'Build all projects in $(Build.SourceBranch)'
 
 - task: DotNetCoreCLI@2
   name: test
@@ -48,10 +48,10 @@ steps:
     packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
     publishVstsFeed: RefactoriusPackages
 
-- script: dotnet test $(home)/$(main).Tests.Net471/$(home).Tests.Net471.csproj --no-build --no-restore
+- script: dotnet test $(home)/$(home).Tests.Net471/$(home).Tests.Net471.csproj --no-build --no-restore
   name: test_Net471
   displayName: 'Run tests on Net471'
 
-- script: dotnet test $(home)/$(main).Tests.NetCore20/$(home).Tests.NetCore20.csproj --no-build --no-restore
+- script: dotnet test $(home)/$(home).Tests.NetCore20/$(home).Tests.NetCore20.csproj --no-build --no-restore
   name: test_NetCore20
   displayName: 'Run tests on NetCore20'
