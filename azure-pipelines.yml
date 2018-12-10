@@ -1,0 +1,60 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- never
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+  patch: $[counter('versioncounter', 100)]
+  buildConfiguration: 'Debug'
+  versionSuffix: pre$(patch)
+  home: Refactorius.Common
+  main: $(home)/Refactorius.Common
+
+name: $(patch)
+
+steps:
+
+- script: dotnet restore $(main).sln --configfile nuget.config
+  name: restore
+  displayName: 'Restore packages'
+
+- script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(versionSuffix)
+  name: build
+  displayName: 'Build all projects'
+
+- task: DotNetCoreCLI@2
+  name: test
+  displayName: 'Run tests'
+  inputs:
+    command: test
+    projects: $(home)/**/*Test*.csproj
+    nobuild: true
+    publishTestResults: true
+
+- script: |
+    dotnet pack $(main)/Refactorius.Common.csproj --no-build --no-restore -c "$(BuildConfiguration)" -o "$(Build.ArtifactStagingDirectory)"
+  name: pack
+  displayName: 'Pack library'
+
+- task: DotNetCoreCLI@2
+  name: push
+  displayName: 'Push library'
+  inputs:
+    command: push
+    nuGetFeedType: internal
+    packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
+    publishVstsFeed: RefactoriusPackages
+
+- script: dotnet test $(home)/$(main).Tests.Net471/$(home).Tests.Net471.csproj --no-build --no-restore
+  name: test_Net471
+  displayName: 'Run tests on Net471'
+
+- script: dotnet test $(home)/$(main).Tests.NetCore20/$(home).Tests.NetCore20.csproj --no-build --no-restore
+  name: test_NetCore20
+  displayName: 'Run tests on NetCore20'
