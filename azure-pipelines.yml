@@ -21,7 +21,7 @@ steps:
 
 - script: type azure-pipelines.yml
   name: show
-  displayName: 'Show yaml source'
+  displayName: 'Show yaml source in $(Build.SourceBranch)'
   
 - script: dotnet restore $(main).sln --configfile nuget.config
   name: restore
@@ -29,7 +29,7 @@ steps:
 
 - script: dotnet build $(main).sln --no-restore -c $(BuildConfiguration) /p:VersionSuffix=$(versionSuffix)
   name: build
-  displayName: 'Build all projects in $(Build.SourceBranch)'
+  displayName: 'Build all projects'
 
 - task: DotNetCoreCLI@2
   name: test
