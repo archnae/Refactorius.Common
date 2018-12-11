@@ -5,23 +5,23 @@
     <PackageId>Refactorius.Common</PackageId>
     <RootNamespace>Refactorius</RootNamespace>
     <AssemblyName>Refactorius.Common</AssemblyName>
-    <Description>The Refactorius common utility library provides some helpful utility functions and extension methods used throughout the Refactorius code.</Description>
+    <Description>The Refactorius common utility library provides some helpful utility functions and extension methods used in the Refactorius code.</Description>
     <Company>Alexander Nosenko Software</Company>
     <Authors>Alexander Nosenko</Authors>
     <Copyright>Copyright 2014-2018</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageLicenseUrl>https://mmitintl.visualstudio.com/Refactorius.Common/license</PackageLicenseUrl>
-    <PackageProjectUrl>https://mmitintl.visualstudio.com/Refactorius.Common</PackageProjectUrl>
-    <PackageIconUrl>https://mmitintl.visualstudio.com/Refactorius.Common/favicon.ico</PackageIconUrl>
-    <PackageTags>Refactorius Utility</PackageTags>
-    <VersionPrefix>8.0.4</VersionPrefix>
+    <PackageLicenseUrl>https://opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/google/material-design-icons/master/av/ios/ic_library_books.imageset/ic_library_books.png</PackageIconUrl>
+    <PackageTags>Refactorius;utility</PackageTags>
+    <VersionPrefix>8.1.1</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-    <PackageReleaseNotes>The library Targets netstandard 2.0 now.</PackageReleaseNotes>
-    <RepositoryUrl>https://mmitintl.visualstudio.com/_git/Refactorius.Common</RepositoryUrl>
+    <PackageReleaseNotes>The library targets both net452 and netstandard 2.0 now.</PackageReleaseNotes>
+    <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'netstandard2.0'" >
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>TRACE;DEBUG;JETBRAINS_ANNOTATIONS;NETSTANDARD2_0;</DefineConstants>
     <DocumentationFile>bin\Debug\netstandard2.0\Refactorius.Common.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
