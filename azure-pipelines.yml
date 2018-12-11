@@ -20,7 +20,7 @@ steps:
 
 - script: type azure-pipelines.yml
   name: show
-  displayName: 'Show yaml source in $(Build.SourceBranch)'
+  displayName: 'Show yaml source in $(Build.SourceBranchName)'
 
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
   displayName: 'Unset VersionSuffix if Master branch'
