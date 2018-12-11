@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/google/material-design-icons/master/av/ios/ic_library_books.imageset/ic_library_books.png</PackageIconUrl>
     <PackageTags>Refactorius;utility</PackageTags>
-    <VersionPrefix>8.1.1</VersionPrefix>
+    <VersionPrefix>8.1.2</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <PackageReleaseNotes>The library targets both net452 and netstandard 2.0 now.</PackageReleaseNotes>
     <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
