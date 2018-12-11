@@ -24,14 +24,14 @@ steps:
 
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
   displayName: 'Unset VersionSuffix if Master branch'
-  condition: eq(variables['Build.SourceBranch'], 'master')
+  condition: eq(variables['Build.SourceBranchName'], 'master')
   inputs:
     VariableName: VersionSuffix
     Value: ''
 
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
   displayName: 'Set buildConfiguration to Release if Master branch'
-  condition: eq(variables['Build.SourceBranch'], 'master')
+  condition: eq(variables['Build.SourceBranchName'], 'master')
   inputs:
     VariableName: BuildConfiguration
     Value: 'Release'
