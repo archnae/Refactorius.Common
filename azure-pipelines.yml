@@ -81,3 +81,12 @@ steps:
     nuGetFeedType: internal
     packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
     publishVstsFeed: RefactoriusPackages
+
+- task: NuGetCommand@2
+  condition: eq(variables['BuildConfiguration'], 'Release')
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: 'Nuget.Refactorius'
+    versioningScheme: byBuildNumber
+   
