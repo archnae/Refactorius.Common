@@ -169,6 +169,23 @@ namespace Refactorius
                 : value.Substring(0, maxLength - DefaultEllipsisPostfix.Length) + DefaultEllipsisPostfix;
         }
 
+        [ContractAnnotation("value:null => null; value:notnull => notnull")]
+        [Pure]
+        public static string BiEllipsis(this string value, int maxLength)
+        {
+            if (maxLength <= StringUtils.DefaultEllipsisPostfix.Length + 4)
+                throw new ArgumentOutOfRangeException(
+                    nameof(maxLength),
+                    "The desired maximal length of the string with an ellipsis must be greater then the length of the ellipsis postfix");
+
+            if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
+                return value;
+            var halfLength = (maxLength - StringUtils.DefaultEllipsisPostfix.Length - 4) / 2;
+            var head = value.Substring(0, halfLength);
+            var tail = value.Substring(value.Length - halfLength);
+            return $"{head} {StringUtils.DefaultEllipsisPostfix} {tail}";
+        }
+        
         /// <summary>Converts the <see cref="string"/> to camelCase.</summary>
         /// <param name="value">A <see cref="string"/> to convert.</param>
         /// <returns>A <paramref name="value"/>, converted to camelCase (first character in lower case, the rest unchanged). The
