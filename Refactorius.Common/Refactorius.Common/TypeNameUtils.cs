@@ -33,7 +33,7 @@ namespace Refactorius
             WellKnownNamespaces.Add(wellKnownNamespace);
         }
 
-        /// <summary>Creates a readable string for a name of a specified <see cref="Type"/>.</summary>
+        /// <summary>Creates a readable string for a name of a specified <c>Type</c>.</summary>
         /// <param name="type">A type (possible generic).</param>
         /// <param name="wellKnownNamespaces">The list of well-known namespaces omitted from readable type names.</param>
         /// <returns>An informal string representation of <paramref name="type"/> name.</returns>

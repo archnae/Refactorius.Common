@@ -19,7 +19,7 @@ namespace Refactorius
         #endregion
 
         /// <summary>Gets the value of <see cref="System.ComponentModel.DescriptionAttribute"/> for the specified type member.</summary>
-        /// <param name="type">The containing <see cref="Type"/>.</param>
+        /// <param name="type">The containing <c>Type</c>.</param>
         /// <param name="name">The member name.</param>
         /// <param name="bindingAttr">The combination of <see cref="BindingFlags"/> to use for <paramref name="name"/> lookup.</param>
         /// <returns>The <see cref="String"/> value of the <see cref="System.ComponentModel.DescriptionAttribute"/> for the member
@@ -48,7 +48,7 @@ namespace Refactorius
         }
 
         /// <summary>Tests if the specified type is a <see cref="Nullable&lt;T&gt;"/>.</summary>
-        /// <param name="type">The <see cref="Type"/> to test.</param>
+        /// <param name="type">The <c>Type</c> to test.</param>
         /// <returns><see langword="true"/> if <paramref name="type"/> is a <see cref="Nullable&lt;T&gt;"/>, otherwise
         /// <see langword="false"/>.</returns>
         public static bool IsNullableType([NotNull] this Type type)
@@ -59,7 +59,7 @@ namespace Refactorius
         }
 
         /// <summary>Tests if the specified type can be assigned a <see langword="null"/> value.</summary>
-        /// <param name="type">The <see cref="Type"/> to test.</param>
+        /// <param name="type">The <c>Type</c> to test.</param>
         /// <returns><see langword="true"/> if <paramref name="type"/> is a <see cref="Nullable&lt;T&gt;"/> or a reference type,
         /// otherwise <see langword="false"/>.</returns>
         public static bool IsNullAssignableType([NotNull] this Type type)
@@ -69,9 +69,9 @@ namespace Refactorius
             return !type.IsValueType || IsNullableType(type);
         }
 
-        /// <summary>Gets the underlying <see cref="Type"/> of a value type.</summary>
-        /// <param name="type">A value <see cref="Type"/>.</param>
-        /// <returns>The underlying <see cref="Type"/> <b>T</b> if <paramref name="type"/> is a <see cref="Nullable&lt;T&gt;"/>,
+        /// <summary>Gets the underlying <c>Type</c> of a value type.</summary>
+        /// <param name="type">A value <c>Type</c>.</param>
+        /// <returns>The underlying <c>Type</c> <b>T</b> if <paramref name="type"/> is a <see cref="Nullable&lt;T&gt;"/>,
         /// the <paramref name="type"/> itself if it's a non-nullable value type or <see langword="null"/> if
         /// <paramref name="type"/> is a reference type.</returns>
         [CanBeNull]
@@ -101,7 +101,7 @@ namespace Refactorius
             return false;
         }
 
-        /// <summary>Gets the name of the underlying <see cref="Type"/> for a given type name.</summary>
+        /// <summary>Gets the name of the underlying <c>Type</c> for a given type name.</summary>
         /// <param name="typeName">The full type name.</param>
         /// <returns>The underlying <b>T</b> name if <paramref name="typeName"/> is a <b>Nullable&lt;T&gt;</b> or a <b>T?</b>,
         /// otherwise <see langword="null"/>.</returns>
@@ -129,7 +129,7 @@ namespace Refactorius
         }
 
         /// <summary>Tests if the specified type is an anonymous type.</summary>
-        /// <param name="type">The <see cref="Type"/> to test.</param>
+        /// <param name="type">The <c>Type</c> to test.</param>
         /// <returns><see langword="true"/> if <paramref name="type"/> is an anonymous type, otherwise <see langword="false"/>.</returns>
         /// <remarks>See http://stackoverflow.com/questions/1650681/determining-whether-a-type-is-an-anonymous-type .</remarks>
         public static bool IsAnonymousType([NotNull] this Type type)
@@ -144,7 +144,7 @@ namespace Refactorius
         }
 
         /// <summary>Returns nice readable type name with generic type parameters resolved.</summary>
-        /// <param name="type">The current <see cref="Type"/> instance.</param>
+        /// <param name="type">The current <c>Type</c> instance.</param>
         /// <returns>The readable name for the <paramref name="type"/> (type name only, namespace not included).</returns>
         [NotNull]
         public static string DisplayName([NotNull] this Type type)
@@ -213,13 +213,13 @@ namespace Refactorius
         #endregion
     }
 
-    /// <summary>A <see cref="T:Comparer{T}"/> for <see cref="Type"/> objects, using for comparison
+    /// <summary>A <see cref="T:Comparer{T}"/> for <c>Type</c> objects, using for comparison
     /// <see cref="M:System.Type.FullName"/> property.</summary>
     public class TypeComparer : Comparer<Type>
     {
-        /// <summary>Compares two <see cref="Type"/> objects.</summary>
-        /// <param name="x">Left side <see cref="Type"/> object.</param>
-        /// <param name="y">Right side <see cref="Type"/> object.</param>
+        /// <summary>Compares two <c>Type</c> objects.</summary>
+        /// <param name="x">Left side <c>Type</c> object.</param>
+        /// <param name="y">Right side <c>Type</c> object.</param>
         /// <returns>The comparison result, defined by comparing <paramref name="x"/> and <paramref name="y"/>'s
         /// <see cref="M:System.Type.FullName"/> properties.</returns>
         public override int Compare(Type x, Type y)

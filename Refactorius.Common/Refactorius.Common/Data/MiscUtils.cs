@@ -112,8 +112,8 @@ namespace Refactorius.Data
                 s);
         }
 
-        /// <summary>Retrieves the build version (containing the build date) of the assembly of a specified <see cref="Type"/>.</summary>
-        /// <param name="type">A <see cref="Type"/> from the main application assembly.</param>
+        /// <summary>Retrieves the build version (containing the build date) of the assembly of a specified <c>Type</c>.</summary>
+        /// <param name="type">A <c>Type</c> from the main application assembly.</param>
         /// <returns>The build <see cref="Version"/> of the <paramref name="type"/>.</returns>
         public static Version GetBuildVersion(this Type type)
         {
@@ -122,8 +122,8 @@ namespace Refactorius.Data
         }
 
         /// <summary>Retrieves the product version (containing the official revision/build numbers) of the assembly of a specified
-        /// <see cref="Type"/>.</summary>
-        /// <param name="type">A <see cref="Type"/> from the main application assembly.</param>
+        /// <c>Type</c>.</summary>
+        /// <param name="type">A <c>Type</c> from the main application assembly.</param>
         /// <returns>The product <see cref="Version"/> of the <paramref name="type"/>.</returns>
         /// <remark>the <paramref name="type"/> must belong to the main application assembly (.exe or .dll), not to a referenced
         /// library that could be embedded as resource or dynamic w/o location.</remark>

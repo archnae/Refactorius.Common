@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>The thread singleton accessor for the type <typeparamref name="T"/>.</summary>
-    /// <typeparam name="T">The interface <see cref="Type"/>, exposing the singleton.</typeparam>
+    /// <typeparam name="T">The interface <c>Type</c>, exposing the singleton.</typeparam>
     /// <remarks>
     /// <para>The most awful piece of code. Needs to be redone someday.</para>
     /// <para>The thread sigleton implements the "instance-per-thread" pattern.</para>
@@ -122,8 +122,8 @@ namespace Refactorius
 
     /// <summary>The thread singleton accessor for the interface <typeparamref name="TI"/>, implemented by the type
     /// <typeparamref name="T"/>.</summary>
-    /// <typeparam name="TI">The interface <see cref="Type"/>, exposing the singleton.</typeparam>
-    /// <typeparam name="T">The implementing <see cref="Type"/> of the singleton.</typeparam>
+    /// <typeparam name="TI">The interface <c>Type</c>, exposing the singleton.</typeparam>
+    /// <typeparam name="T">The implementing <c>Type</c> of the singleton.</typeparam>
     /// <remarks>
     /// <para>The thread sigleton implements the "instance-per-thread" pattern.</para>
     /// <para>There is only one instance of type <typeparamref name="TI"/> per thread for every given
@@ -174,7 +174,7 @@ namespace Refactorius
     }
 
     /// <summary>The thread singleton accessor for the type <typeparamref name="T"/>.</summary>
-    /// <typeparam name="T">The <see cref="Type"/> of the singleton.</typeparam>
+    /// <typeparam name="T">The <c>Type</c> of the singleton.</typeparam>
     /// <seealso cref="ThreadSingleton&lt;T&gt;"/>
     /// <remarks>The sigleton is stored in thread local storage or http context.</remarks>
     public abstract class ThreadAutoSingleton<T> : ThreadAutoSingleton<T, T>

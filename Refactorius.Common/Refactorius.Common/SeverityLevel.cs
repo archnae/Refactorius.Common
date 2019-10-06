@@ -1,6 +1,9 @@
+using JetBrains.Annotations;
+
 namespace Refactorius
 {
     /// <summary>Validation error or logging message severity level.</summary>
+    [PublicAPI]
     public enum SeverityLevel
     {
         /// <summary>No error; message completely ignored.</summary>

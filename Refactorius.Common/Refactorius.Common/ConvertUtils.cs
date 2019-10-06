@@ -9,25 +9,26 @@ using Refactorius.Data;
 namespace Refactorius
 {
     /// <summary>The collection of useful conversion utility methods.</summary>
+    [PublicAPI]
     public static class ConvertUtils
     {
-        /// <summary>Gets the default combinaton of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and
+        /// <summary>Gets the default combination of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and
         /// from <see cref="string"/>.
         /// <para>It combines <see cref="DateTimeStyles.AssumeLocal"/>, <see cref="DateTimeStyles.AllowWhiteSpaces"/> and
         /// <see cref="DateTimeStyles.NoCurrentDateDefault"/> flags.</para>
         /// </summary>
-        /// <value>The default combinaton of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and from
+        /// <value>The default combination of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and from
         /// <see cref="string"/>.</value>
         /// <seealso cref="DateTimeStyles"/>
         public static DateTimeStyles DefaultDateTimeStyleLocal =>
             DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.NoCurrentDateDefault;
 
-        /// <summary>Gets the default combinaton of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and
+        /// <summary>Gets the default combination of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and
         /// from <see cref="string"/>.
         /// <para>It combines <see cref="DateTimeStyles.AssumeLocal"/>, <see cref="DateTimeStyles.AllowWhiteSpaces"/> and
         /// <see cref="DateTimeStyles.NoCurrentDateDefault"/> flags.</para>
         /// </summary>
-        /// <value>The default combinaton of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and from
+        /// <value>The default combination of <see cref="DateTimeStyles"/>, used to convert <see cref="DateTime"/> to and from
         /// <see cref="string"/>.</value>
         /// <seealso cref="DateTimeStyles"/>
         public static DateTimeStyles DefaultDateTimeStyleUtc =>
@@ -39,12 +40,12 @@ namespace Refactorius
         /// <summary>Gets the default <see cref="DateTime"/> string format for local time values.</summary>
         public static string DefaultDateTimeFormatLocal => "yyyy'-'MM'-'dd'T'HH':'mm':'sszzz";
 
-        /// <summary>Returns an <see cref="object"/> with the specified <see cref="Type"/> whose value is equivalent to the
+        /// <summary>Returns an <see cref="object"/> with the specified <c>Type</c> whose value is equivalent to the
         /// specified object.</summary>
-        /// <typeparam name="TValue">The <see cref="Type"/> to which value is to be converted.</typeparam>
+        /// <typeparam name="TValue">The <c>Type</c> to which value is to be converted.</typeparam>
         /// <param name="value">An <see cref="object"/> to convert.</param>
         /// <returns><see langword="null"/> if <paramref name="value"/> is <see langword="null"/> and <typeparamref name="TValue"/>
-        /// is <see cref="Nullable{T}"/> or a reference type. Otherwise, an object whose <see cref="Type"/> is
+        /// is <see cref="Nullable{T}"/> or a reference type. Otherwise, an object whose <c>Type</c> is
         /// <typeparamref name="TValue"/> and whose value is equivalent to <paramref name="value"/>.</returns>
         /// <remarks>Unlike <see cref="M:System.Convert.ChangeType"/> this method always uses
         /// <see cref="CultureInfo.InvariantCulture"/>.</remarks>
@@ -91,13 +92,13 @@ namespace Refactorius
             }
         }
 
-        /// <summary>Returns an <see cref="object"/> with the specified <see cref="Type"/> whose value is equivalent to the
+        /// <summary>Returns an <see cref="object"/> with the specified <c>Type</c> whose value is equivalent to the
         /// specified object.</summary>
         /// <param name="value">An <see cref="object"/> to convert.</param>
-        /// <param name="requiredType">The <see cref="Type"/> to which value is to be converted.</param>
+        /// <param name="requiredType">The <c>Type</c> to which value is to be converted.</param>
         /// <returns><see langword="null"/> if <paramref name="value"/> is <see langword="null"/> and
         /// <paramref name="requiredType"/> is <see cref="Nullable{T}"/> or a reference type. Otherwise, an object whose
-        /// <see cref="Type"/> is <paramref name="requiredType"/> and whose value is equivalent to <paramref name="value"/>.</returns>
+        /// <c>Type</c> is <paramref name="requiredType"/> and whose value is equivalent to <paramref name="value"/>.</returns>
         /// <remarks>Unlike <see cref="M:System.Convert.ChangeType"/> this method always uses
         /// <see cref="CultureInfo.InvariantCulture"/>.</remarks>
         [CanBeNull]
@@ -128,7 +129,7 @@ namespace Refactorius
             // see http://msdn.microsoft.com/en-us/library/ms228597.aspx
             var factualType = value.GetType();
 
-            // if already right type (except maybe nullability), dont convert
+            // if already right type (except maybe nullability), do not convert
             if (requiredType.IsAssignableFrom(factualType))
                 return value;
 
@@ -168,7 +169,7 @@ namespace Refactorius
         /// <returns>The <paramref name="value"/> with invalid characters replaced.</returns>
         public static string EscapeXml(string value)
         {
-            // TODO: find a better way to ewscape XML than SecurityElement.Escape; add EscapeJson.
+            // TODO: find a better way to escape XML than SecurityElement.Escape; add EscapeJson.
             return SecurityElement.Escape(value);
         }
 
@@ -301,7 +302,7 @@ namespace Refactorius
         /// <param name="value">An <see langword="object"/> to convert.</param>
         /// <param name="strict"><see langword="true"/> indicates that lossless conversion is required, <see langword="false"/>
         /// (the default) allows to use whatever string representation is available.</param>
-        /// <returns>A canonical representation of <paramref name="value"/>, depending on its factual <see cref="Type"/>.</returns>
+        /// <returns>A canonical representation of <paramref name="value"/>, depending on its factual <c>Type</c>.</returns>
         /// <remarks>This method handles well-known value and <see cref="Nullable{T}"/> types via corresponding <b>ToString()</b>
         /// methods of <see cref="ConvertUtils"/>. Byte aray (<b>byte[]</b>) is converted to base64 string and all other types are
         /// converted via <see cref="TypeConverter"/> when possible.</remarks>
@@ -418,8 +419,7 @@ namespace Refactorius
         {
             if (string.IsNullOrWhiteSpace(value))
                 return value;
-            int i;
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i))
                 return i;
             try
             {
@@ -447,8 +447,7 @@ namespace Refactorius
                 {
                 }
 
-            double f;
-            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out f))
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var f))
                 return f;
 
             return value;
