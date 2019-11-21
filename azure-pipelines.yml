@@ -10,7 +10,6 @@ variables:
   BuildConfiguration: 'Debug'
   VersionSuffix: 'pre$(Build.BuildNumber)'
   home: Refactorius.Common
-  main: $(home)/Refactorius.Common
 
 name: $(Build.BuildId)
 
@@ -20,18 +19,18 @@ steps:
 
 - script: type azure-pipelines.yml
   name: show
-  displayName: 'Show yaml source in $(Build.SourceBranch)'
+  displayName: 'Show yaml source in $(Build.SourceBranchName)'
 
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
   displayName: 'Unset VersionSuffix if Master branch'
-  condition: eq(variables['Build.SourceBranch'], 'Master')
+  condition: eq(variables['Build.SourceBranchName'], 'master')
   inputs:
     VariableName: VersionSuffix
     Value: ''
 
 - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
   displayName: 'Set buildConfiguration to Release if Master branch'
-  condition: eq(variables['Build.SourceBranch'], 'Master')
+  condition: eq(variables['Build.SourceBranchName'], 'master')
   inputs:
     VariableName: BuildConfiguration
     Value: 'Release'
@@ -41,7 +40,7 @@ steps:
   displayName: 'Restore packages'
   inputs:
     command: restore
-    projects: $(main).sln
+    projects: $(home).sln
     feedsToUse : config
     nugetConfigPath: nuget.config
     
@@ -50,7 +49,7 @@ steps:
   displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
   inputs:
     command: build
-    projects: $(main).sln
+    projects: $(home).sln
     norestore: true
     arguments: '--configuration $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix)'
 
@@ -59,7 +58,7 @@ steps:
   displayName: 'Run tests'
   inputs:
     command: test
-    projects: $(home)/**/*Test*.csproj
+    projects: $(home)/tests/*.csproj
     nobuild: true
     publishTestResults: true
 
@@ -68,7 +67,7 @@ steps:
   displayName: 'Pack library'
   inputs:
     command: pack
-    projects: $(main)/Refactorius.Common.csproj
+    projects: $(home)/src/Refactorius.Common.csproj
     nobuild: true
     norestore: true
     arguments: -c "$(BuildConfiguration)" -o "$(Build.ArtifactStagingDirectory)
@@ -81,3 +80,12 @@ steps:
     nuGetFeedType: internal
     packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
     publishVstsFeed: RefactoriusPackages
+
+- task: NuGetCommand@2
+  condition: eq(variables['BuildConfiguration'], 'Release')
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: 'Nuget.Refactorius'
+    versioningScheme: byBuildNumber
+   

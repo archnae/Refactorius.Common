@@ -68,7 +68,7 @@ namespace Refactorius
         internal static void Unregister([NotNull] TInstance scope)
         {
             scope.MustNotBeNull(nameof(scope));
-            AssertUtils.Assert(
+            Guard.Assert(
                 scope == _stack.Value.Peek(),
                 string.Format(
                     CultureInfo.InvariantCulture,

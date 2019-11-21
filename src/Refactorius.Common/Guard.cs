@@ -15,7 +15,7 @@ namespace Refactorius
     /// </remarks>
     /// <author>Aleksandar Seovic</author>
     [PublicAPI]
-    public static class AssertUtils
+    public static class Guard
     {
         #region message constants (to be moved into resource)
 
@@ -92,7 +92,7 @@ namespace Refactorius
         public static T MustNotBeNull<T>(
             [CanBeNull] [NoEnumeration] [ValidatedNotNull]
             this T argument,
-            [NotNull] [InvokerParameterName] string name) where T: class
+            [NotNull] [InvokerParameterName] string name) where T : class
         {
             if (argument == null)
                 throw new ArgumentNullException(name, ArgumentIsNullMessage(name));
@@ -120,7 +120,7 @@ namespace Refactorius
             [CanBeNull] [NoEnumeration] [ValidatedNotNull]
             this T argument,
             [NotNull] [InvokerParameterName] string name,
-            [NotNull] string message) where T: class
+            [NotNull] string message) where T : class
         {
             if (argument == null)
                 throw new ArgumentNullException(name, message);
@@ -154,12 +154,12 @@ namespace Refactorius
         [ContractAnnotation("argument:null => null; argument:notnull => notnull")]
         public static T MustImplement<T>(
             [CanBeNull] [NoEnumeration] this object argument,
-            [NotNull] string name) where T: class
+            [NotNull] string name) where T : class
         {
             if (argument != null && !(argument is T))
                 throw new ArgumentException(ArgumentNotAnInstanceOfTypeMessage(name, typeof(T).FullName), name);
 
-            return (T) argument;
+            return (T)argument;
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Refactorius
             if (argument != null && !(argument is T))
                 throw new ArgumentException(message, argumentName);
 
-            return (T) argument;
+            return (T)argument;
         }
 
         /// <summary>
@@ -478,7 +478,7 @@ namespace Refactorius
         /// </exception>
         [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly",
             Justification = "Using default exception message.")]
-        public static T MustNotBeDefault<T>(this T argument) where T: struct
+        public static T MustNotBeDefault<T>(this T argument) where T : struct
         {
             if (argument.Equals(default(T)))
                 throw new ArgumentNullException(nameof(argument));
@@ -498,7 +498,7 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is the default(zero) value for
         ///     <typeparamref name="T" />.
         /// </exception>
-        public static T MustNotBeDefault<T>(this T argument, string name) where T: struct
+        public static T MustNotBeDefault<T>(this T argument, string name) where T : struct
         {
             if (argument.Equals(default(T)))
                 throw new ArgumentException(ArgumentHasDefaultValueMessage(name, typeof(T).FullName), name);
@@ -519,7 +519,7 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is the default(zero) value for
         ///     <typeparamref name="T" />.
         /// </exception>
-        public static T MustNotBeDefault<T>(this T argument, string name, string message) where T: struct
+        public static T MustNotBeDefault<T>(this T argument, string name, string message) where T : struct
         {
             if (argument.Equals(default(T)))
                 throw new ArgumentException(name, message);

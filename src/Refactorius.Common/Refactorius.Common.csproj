@@ -1,23 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Refactorius.Common</PackageId>
     <RootNamespace>Refactorius</RootNamespace>
     <AssemblyName>Refactorius.Common</AssemblyName>
-    <Description>The Refactorius common utility library provides some helpful utility functions and extension methods used throughout the Refactorius code.</Description>
+    <Description>The Refactorius common utility library provides some helpful utility functions and extension methods used in the Refactorius code.</Description>
     <Company>Alexander Nosenko Software</Company>
     <Authors>Alexander Nosenko</Authors>
-    <Copyright>Copyright 2014-2018</Copyright>
+    <Copyright>Copyright 2014-2019</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageLicenseUrl>https://mmitintl.visualstudio.com/Refactorius.Common/license</PackageLicenseUrl>
-    <PackageProjectUrl>https://mmitintl.visualstudio.com/Refactorius.Common</PackageProjectUrl>
-    <PackageIconUrl>https://mmitintl.visualstudio.com/Refactorius.Common/favicon.ico</PackageIconUrl>
+    <PackageLicenseUrl>https://dev.azure.com/Refactorius/Refactorius.Common/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
+    <PackageIconUrl>https://dev.azure.com/Refactorius/Refactorius.Common/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
     <VersionPrefix>10.0.1</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <PackageReleaseNotes>The library Targets netstandard 2.0 only.</PackageReleaseNotes>
-    <RepositoryUrl>https://mmitintl.visualstudio.com/_git/Refactorius.Common</RepositoryUrl>
+    <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
@@ -35,20 +35,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Guard.cs" />
-    <Compile Remove="ThreadSingleton.cs" />
+    <Compile Remove="Data\RegistryHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Guard.cs" />
-    <None Include="ThreadSingleton.cs" />
+    <None Include="Data\RegistryHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0">
       <PrivateAssets>build</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
     <PackageReference Include="System.Security.Permissions" Version="4.5.0" />
   </ItemGroup>
 

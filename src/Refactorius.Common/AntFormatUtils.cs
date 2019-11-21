@@ -233,5 +233,61 @@ namespace Refactorius
 
             return format;
         }
+        
+        /// <summary>Replaces Ant-style expressions in a specified <see cref="string"/> with the text equivalent of their values.</summary>
+        /// <param name="format">A format string, containing Ant-style expressions.</param>
+        /// <param name="namedArgs">A <b>IDictionary&lt;string, object&gt;</b> of name/value pairs.</param>
+        /// <param name="ignoreMissing"><see langword="true"/> to throw <see cref="FormatException"/> if <paramref name="format"/>
+        /// contains a substitution which is absent in <paramref name="namedArgs"/>, <see langword="false"/> to leave missing
+        /// substitutions unchanged (that allows to chain <b>AntFormat</b> calls).</param>
+        /// <param name="prefix">The Ant expression prefix, default is <b>${</b>.</param>
+        /// <param name="postfix">The Ant expression postfix, default is <b>}</b>.</param>
+        /// <returns>A copy of <paramref name="format"/> in which the Ant expressions have been replaced by values of corresponding
+        /// keys from <paramref name="namedArgs"/>.</returns>
+        /// <remarks>Replacement is done recursively, so substitution-within-substitution is supported. This method is
+        /// culture-invariant.</remarks>
+        /// <seealso cref="FormatUtils.Format(string,System.Collections.Generic.IDictionary{string,object},object[])"/>
+        /// <seealso cref="SetAntExpression(string,string,object,string,string)"/>
+        /// <exception cref="FormatException">if <paramref name="ignoreMissing"/> was set to <see langword="true"/> and a
+        /// substitution is missing in <paramref name="namedArgs"/>.</exception>
+        [StringFormatMethod("format")]
+        [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
+        public static string AntFormat(
+            [CanBeNull] this string format,
+            [NotNull] IDictionary<string, string> namedArgs,
+            bool ignoreMissing = false,
+            [NotNull] string prefix = AntFormatUtils.DefaultAntExpressionPrefix,
+            [NotNull] string postfix = AntFormatUtils.DefaultAntExpressionPostfix)
+        {
+            prefix.MustHaveText(nameof(prefix));
+            postfix.MustHaveText(nameof(postfix));
+
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (string.IsNullOrEmpty(format) || namedArgs == null || namedArgs.Count == 0 && ignoreMissing)
+                return format;
+
+            // max 16 levels of variables nesting
+            for (var i = 0; i < MAX_SUBSTITUTION_DEPTH; i++)
+            {
+                var original = format;
+                // TODO: rewrite like GetAntExpressions with StringBuilder
+                foreach (var name in AntFormatUtils.GetAntExpressions(format, prefix, postfix))
+                    if (namedArgs.ContainsKey(name))
+                        format = AntFormatUtils.SetAntExpression(format, name, namedArgs[name], prefix, postfix);
+                    else if (!ignoreMissing)
+                        throw new FormatException(
+                            string.Format(
+                                CultureInfo.CurrentUICulture,
+                                "Unknown substitution '{0}{1}{2}' in text '{3}'.",
+                                prefix.Replace("{", "\\{"),
+                                name,
+                                postfix,
+                                format.Ellipsis(256)));
+                if (ReferenceEquals(original, format) || format.IndexOf(prefix, StringComparison.Ordinal) < 0)
+                    break;
+            }
+
+            return format;
+        }
     }
 }

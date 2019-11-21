@@ -170,6 +170,31 @@ namespace Refactorius
                 : value.Substring(0, maxLength - DefaultEllipsisPostfix.Length) + DefaultEllipsisPostfix;
         }
 
+        /// <summary>Truncates a <see cref="string"/> to a specified length, adding in the middle an ellipsis.</summary>
+        /// <param name="value">A <see cref="string"/> to truncate, may be <see langword="null"/>.</param>
+        /// <param name="maxLength">The length to which the <paramref name="value"/> should be truncated.</param>
+        /// <returns>The original <paramref name="value"/> if it was <see langword="null"/>, empty or had length not greater that
+        /// <paramref name="maxLength"/>; otherwise, the string of length <paramref name="maxLength"/>, consisting of the truncated
+        /// in the middle <paramref name="value"/> with the <see cref="DefaultEllipsisPostfix"/> inserted.</returns>
+        /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
+        /// <see cref="DefaultEllipsisPostfix"/>.</exception>
+        [ContractAnnotation("value:null => null; value:notnull => notnull")]
+        [Pure]
+        public static string BiEllipsis(this string value, int maxLength)
+        {
+            if (maxLength <= StringUtils.DefaultEllipsisPostfix.Length + 4)
+                throw new ArgumentOutOfRangeException(
+                    nameof(maxLength),
+                    "The desired maximal length of the string with an ellipsis must be greater then the length of the ellipsis postfix");
+
+            if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
+                return value;
+            var halfLength = (maxLength - StringUtils.DefaultEllipsisPostfix.Length - 4) / 2;
+            var head = value.Substring(0, halfLength);
+            var tail = value.Substring(value.Length - halfLength);
+            return $"{head} {StringUtils.DefaultEllipsisPostfix} {tail}";
+        }
+        
         /// <summary>Converts the <see cref="string"/> to camelCase.</summary>
         /// <param name="value">A <see cref="string"/> to convert.</param>
         /// <returns>A <paramref name="value"/>, converted to camelCase (first character in lower case, the rest unchanged). The
