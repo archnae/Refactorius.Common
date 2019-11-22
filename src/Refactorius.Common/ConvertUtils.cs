@@ -106,6 +106,9 @@ namespace Refactorius
         {
             requiredType.MustNotBeNull(nameof(requiredType));
 
+            if (value is DBNull)
+                value = null;
+ 
             if (requiredType == typeof(object))
                 return value;
 
@@ -172,6 +175,23 @@ namespace Refactorius
             // TODO: find a better way to escape XML than SecurityElement.Escape; add EscapeJson.
             return SecurityElement.Escape(value);
         }
+
+        /// <summary>
+        /// Rounds a <c>DateTime</c> value to the specified precision in ticks.
+        /// </summary>
+        /// <param name="date">The value to round,</param>
+        /// <param name="ticks">The precision in ticks.</param>
+        /// <returns>The rounded value of  the <paramref name="date"/>.</returns>
+        public static DateTime Trim(this DateTime date, long ticks) =>
+            new DateTime(date.Ticks - (date.Ticks % ticks), date.Kind);
+
+        /// <summary>
+        /// Rounds a <c>DateTime</c> value to seconds.
+        /// </summary>
+        /// <param name="date">The value to round,</param>
+        /// <returns>Thevalue of  the <paramref name="date"/> rounded to seconds.</returns>
+        public static DateTime TrimToSeconds(this DateTime date) =>
+            new DateTime(date.Ticks - (date.Ticks % TimeSpan.TicksPerSecond), date.Kind);
 
         #region nested classes
 

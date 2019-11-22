@@ -647,6 +647,21 @@ namespace Refactorius
 
         #endregion
 
+        /// <summary>
+        /// Verifies that parameter is an anonymous object.
+        /// </summary>
+        /// <param name="anon">A parameter to test.</param>
+        /// <param name="name">A parameter name.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="anon"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">if <paramref name="anon"/> is not an anonymous object.</exception>
+        public static void MustBeAnonymousObject(this object anon, string name)
+        {
+            anon.MustNotBeNull(name);
+            var type = anon.GetType();
+            if (!type.IsAnonymousType())
+                throw new ArgumentException("Argument must be of an anonymous type.", name);
+        }
+
         #endregion
 
         #region private message formatters
