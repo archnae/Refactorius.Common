@@ -14,8 +14,8 @@ namespace Refactorius.Data
         [NotNull] private static readonly Dictionary<string, object> _enumerationMap =
             new Dictionary<string, object>(128);
 
-        /// <summary>Ensures that a <see cref="Type"/> is an enumeration.</summary>
-        /// <param name="type">A <see cref="Type"/> to check.</param>
+        /// <summary>Ensures that a <c>Type</c> is an enumeration.</summary>
+        /// <param name="type">A <c>Type</c> to check.</param>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
         public static void EnsureEnumeration([NotNull] [ValidatedNotNull] Type type)
@@ -67,7 +67,7 @@ namespace Refactorius.Data
 
         /// <summary>Gets the value of <see cref="System.ComponentModel.DescriptionAttribute"/> for the specified enumeration
         /// member.</summary>
-        /// <param name="type">The enumeration <see cref="Type"/>.</param>
+        /// <param name="type">The enumeration <c>Type</c>.</param>
         /// <param name="name">The member name.</param>
         /// <returns>The <see cref="String"/> value of the <see cref="System.ComponentModel.DescriptionAttribute"/> for the member
         /// <paramref name="name"/> of type <paramref name="type"/>.</returns>
@@ -94,7 +94,7 @@ namespace Refactorius.Data
 
         /// <summary>Gets the value of <see cref="System.ComponentModel.DescriptionAttribute"/> for the specified enumeration
         /// member.</summary>
-        /// <typeparam name="T">The enumeration <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">The enumeration <c>Type</c>.</typeparam>
         /// <param name="name">The member name.</param>
         /// <returns>The <see cref="String"/> value of the <see cref="System.ComponentModel.DescriptionAttribute"/> for the
         /// specified member name.</returns>
@@ -109,7 +109,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified string representation of an enumeration member to its value.</summary>
-        /// <param name="type">The enumeration <see cref="Type"/>.</param>
+        /// <param name="type">The enumeration <c>Type</c>.</param>
         /// <param name="description">The <see cref="System.ComponentModel.DescriptionAttribute"/> or member name to convert.</param>
         /// <param name="value">On success, the enumeration value, corresponding to the <paramref name="description"/>; on failure,
         /// <see langword="null"/>.</param>
@@ -166,7 +166,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified string representation of an enumeration member to its value.</summary>
-        /// <typeparam name="T">The enumeration <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">The enumeration <c>Type</c>.</typeparam>
         /// <param name="description">The <see cref="System.ComponentModel.DescriptionAttribute"/> or member name to convert.</param>
         /// <param name="value">On success, the enumeration value, corresponding to the <paramref name="description"/>; on failure,
         /// the default enumeration value (integer 0).</param>
@@ -185,7 +185,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified string representation of an enumeration member to its value.</summary>
-        /// <param name="type">The enumeration <see cref="Type"/>.</param>
+        /// <param name="type">The enumeration <c>Type</c>.</param>
         /// <param name="description">The <see cref="System.ComponentModel.DescriptionAttribute"/> or member name to convert.</param>
         /// <returns>The enumeration value, corresponding to the <paramref name="description"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
@@ -212,7 +212,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified string representation of an enumeration member to its value.</summary>
-        /// <typeparam name="T">The enumeration <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">The enumeration <c>Type</c>.</typeparam>
         /// <param name="description">The <see cref="System.ComponentModel.DescriptionAttribute"/> or member name to convert.</param>
         /// <returns>The enumeration value, corresponding to the <paramref name="description"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="T"/> is not an enumeration.</exception>
@@ -248,7 +248,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified XML string representation of an enumeration member to its value.</summary>
-        /// <param name="type">The enumeration <see cref="Type"/>.</param>
+        /// <param name="type">The enumeration <c>Type</c>.</param>
         /// <param name="description">The <see cref="XmlEnumAttribute"/> or member name to convert.</param>
         /// <param name="value">On success, the enumeration value, corresponding to the <paramref name="description"/>; on failure,
         /// the default enumeration value (integer 0).</param>
@@ -272,7 +272,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified XML string representation of an enumeration member to its value.</summary>
-        /// <typeparam name="T">The enumeration <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">The enumeration <c>Type</c>.</typeparam>
         /// <param name="description">The <see cref="XmlEnumAttribute"/> or member name to convert.</param>
         /// <param name="value">On success, the enumeration value, corresponding to the <paramref name="description"/>; on failure,
         /// the default enumeration value (integer 0).</param>
@@ -291,7 +291,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified XML string representation of an enumeration member to its value.</summary>
-        /// <param name="type">The enumeration <see cref="Type"/>.</param>
+        /// <param name="type">The enumeration <c>Type</c>.</param>
         /// <param name="description">The <see cref="XmlEnumAttribute"/> or member name to convert.</param>
         /// <returns>The enumeration value, corresponding to the <paramref name="description"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
@@ -313,7 +313,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Converts the specified XML string representation of an enumeration member to its value.</summary>
-        /// <typeparam name="T">The enumeration <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">The enumeration <c>Type</c>.</typeparam>
         /// <param name="description">The <see cref="XmlEnumAttribute"/> or member name to convert.</param>
         /// <returns>The enumeration value, corresponding to the <paramref name="description"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="T"/> is not an enumeration.</exception>
@@ -326,7 +326,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Reparses an enumeration value into a value of another enumeration with the same set of member names.</summary>
-        /// <param name="type">The target enumeraten <see cref="Type"/>.</param>
+        /// <param name="type">The target enumeraten <c>Type</c>.</param>
         /// <param name="value">The original (source) enumeration value.</param>
         /// <returns>The value of type <paramref name="type"/> having the same (combination of) field name(s) as
         /// <paramref name="value"/>, even if integer values of source and target enumeration members differ.</returns>
@@ -363,7 +363,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Reparses an enumeration value into a value of another enumeration with the same set of member names.</summary>
-        /// <typeparam name="T">The target enumeraten <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">The target enumeraten <c>Type</c>.</typeparam>
         /// <param name="value">The original (source) enumeration value.</param>
         /// <returns>The value of type <typeparamref name="T"/> having the same (combination of) field name(s) as
         /// <paramref name="value"/>, even if integer values of source and target enumeration members differ.</returns>

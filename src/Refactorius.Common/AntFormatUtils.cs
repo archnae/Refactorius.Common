@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>The collection of Ant-formatting string utility methods.</summary>
+    [PublicAPI]
     public static class AntFormatUtils
     {
         private const int MAX_SUBSTITUTION_DEPTH = 16;
@@ -83,7 +84,7 @@ namespace Refactorius
             return expressions;
         }
 
-        /// <summary>Replaces arbiitrary substitution pre- and postfixes with Ant-style delimiters.</summary>
+        /// <summary>Replaces arbitrary substitution pre- and postfixes with Ant-style delimiters.</summary>
         /// <param name="text">The text to inspect.</param>
         /// <param name="prefix">An arbitrary prefix to replace.</param>
         /// <param name="postfix">An arbitrary postfix to replace.</param>

@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace Refactorius.Collections
 {
     /// <summary>Concurrent thread-safe wrapper around <see cref="List{T}"/></summary>
-    /// <typeparam name="T">The <see cref="Type"/> of list items.</typeparam>
+    /// <typeparam name="T">The <c>Type</c> of list items.</typeparam>
     public class ConcurrentList<T> : IList<T>, IDisposable
     {
         #region private fields
