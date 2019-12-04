@@ -46,7 +46,7 @@ steps:
     
 - task: DotNetCoreCLI@2
   name: build
-  displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
+  displayName: 'Build all projects with version suffix $(VersionSuffix)'
   inputs:
     command: build
     projects: $(home).sln
@@ -86,6 +86,6 @@ steps:
   inputs:
     command: push
     nuGetFeedType: external
-    publishFeedCredentials: 'Nuget.Refactorius'
+    externalFeedCredentials: 'Nuget.Refactorius'
     versioningScheme: byBuildNumber
    

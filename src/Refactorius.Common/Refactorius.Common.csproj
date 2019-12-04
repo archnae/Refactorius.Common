@@ -10,7 +10,7 @@
     <Authors>Alexander Nosenko</Authors>
     <Copyright>Copyright 2014-2019</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageLicenseUrl>https://dev.azure.com/Refactorius/Refactorius.Common/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl>https://dev.azure.com/Refactorius/Refactorius.Common/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
@@ -19,6 +19,7 @@
     <PackageReleaseNotes>The library Targets netstandard 2.0 only.</PackageReleaseNotes>
     <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -39,6 +40,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="Data\RegistryHelper.cs" />
   </ItemGroup>
 
