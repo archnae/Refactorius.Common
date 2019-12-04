@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>The collection of useful dictionary-related extension methods.</summary>
+    [PublicAPI]
     public static class DictionaryExtensions
     {
         /// <summary>Adds a new entry to a dictionary, returning the dictionary for call chaining.</summary>
@@ -119,7 +120,7 @@ namespace Refactorius
             if (value is TResult)
                 return (TResult) value;
 
-            // use custom tostring convertor (mostly to handle UTC date format)
+            // use custom to string convertor (mostly to handle UTC date format)
             value = typeof(TResult) == typeof(string)
                 ? ConvertUtils.ToString(value)
                 : ConvertUtils.ChangeType(value, typeof(TResult));

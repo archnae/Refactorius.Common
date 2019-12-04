@@ -6,12 +6,13 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>Handy extension methods for <see cref="IEnumerable{T}"/>.</summary>
+    [PublicAPI]
     public static class EnumerableExtensions
     {
         /// <summary>Clones a sequence of <see cref="ICloneable"/> elements.</summary>
-        /// <typeparam name="T">The <see cref="Type"/> of sequence elements.</typeparam>
+        /// <typeparam name="T">The <c>Type</c> of sequence elements.</typeparam>
         /// <param name="source">The sequence to clone.</param>
-        /// <returns>The sequence of the cloned elemnts of <paramref name="source"/>.</returns>
+        /// <returns>The sequence of the cloned elements of <paramref name="source"/>.</returns>
         [CanBeNull]
         [LinqTunnel]
         [ContractAnnotation("null => null; notnull => notnull")]
@@ -22,7 +23,7 @@ namespace Refactorius
         }
 
         /// <summary>Filters out default (usually <see langword="null"/>) values from a sequence.</summary>
-        /// <typeparam name="T">An item <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">An item <c>Type</c>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/> sequence.</param>
         /// <returns>The sequence of items of the <paramref name="source"/> without empty (<see langword="null"/>) elements.</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> is <see langword="null"/>.</exception>
@@ -49,7 +50,7 @@ namespace Refactorius
         }
 
         /// <summary>Executes a specified action on every item.</summary>
-        /// <typeparam name="T">An item <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">An item <c>Type</c>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/> source.</param>
         /// <param name="action">An action to execute on every item.</param>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> or <paramref name="action"/> is
@@ -66,7 +67,7 @@ namespace Refactorius
         }
 
         /// <summary>Executes a specified action on every item, providing the item index.</summary>
-        /// <typeparam name="T">An item <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">An item <c>Type</c>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/> source.</param>
         /// <param name="action">An action to execute on every item.</param>
         /// <returns>The original <see cref="IEnumerable{T}"/> source. <b>Warning:</b> using the original <paramref name="source"/>
@@ -90,7 +91,7 @@ namespace Refactorius
         }
 
         /// <summary>Executes a specified action on every item of a sequence while it is enumerated.</summary>
-        /// <typeparam name="T">An item <see cref="Type"/>.</typeparam>
+        /// <typeparam name="T">An item <c>Type</c>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/> source.</param>
         /// <param name="action">An action to execute on every item.</param>
         /// <returns>The sequence of the original items of the <paramref name="source"/>. <b>Warning:</b> no
@@ -115,8 +116,8 @@ namespace Refactorius
                 });
         }
 
-        /// <summary>Executes a specified action on every itemof a sequence while it is enumerated, providing the item index.</summary>
-        /// <typeparam name="T">An item <see cref="Type"/>.</typeparam>
+        /// <summary>Executes a specified action on every item of a sequence while it is enumerated, providing the item index.</summary>
+        /// <typeparam name="T">An item <c>Type</c>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/> source.</param>
         /// <param name="action">An action to execute on every item.</param>
         /// <returns>The sequence of the original items of the <paramref name="source"/>. <b>Warning:</b> no
@@ -143,7 +144,7 @@ namespace Refactorius
 #if FOR_LATER_TryForEach /// <summary>
 /// Executes a specified action on every item.
 /// </summary>
-/// <typeparam name="T">An item <see cref="Type"/>.</typeparam>
+/// <typeparam name="T">An item <c>Type</c>.</typeparam>
 /// <param name="source">An <see cref="IEnumerable{T}"/> source.</param>
 /// <param name="action">An action to execute on every item.</param>
 /// <param name="errorAction">An action to execute on exception.</param>
@@ -174,8 +175,8 @@ namespace Refactorius
         /// <summary>
         /// Executes a specified action on every item, logging and then ignoring exceptions.
         /// </summary>
-        /// <typeparam name="TSource">An source item <see cref="Type"/>.</typeparam>
-        /// <typeparam name="TResult">A result item <see cref="Type"/>.</typeparam>
+        /// <typeparam name="TSource">An source item <c>Type</c>.</typeparam>
+        /// <typeparam name="TResult">A result item <c>Type</c>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/> source.</param>
         /// <param name="selector">A transform function to apply to each item.</param>
         /// <param name="errorAction">An action to execute on exception.</param>
@@ -236,7 +237,7 @@ namespace Refactorius
             return source.Select(item => new KeyValuePair<TKey, TValue>(keySelector(item), valueSelector(item)));
         }
 
-        /// <summary>Groups the adjacent elements of a sequence of chunks (subsequences) of a specified size.</summary>
+        /// <summary>Groups the adjacent elements of a sequence of chunks (sub-sequences) of a specified size.</summary>
         /// <typeparam name="TElement">The type of the elements of <paramref name="source"/>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/>whose elements to group. </param>
         /// <param name="chunkSize">The size of the chunk.</param>
@@ -271,8 +272,8 @@ namespace Refactorius
         #region general purpose
 
         /// <summary>Maps an array into another array of the same size using a specified selector function.</summary>
-        /// <typeparam name="TSource">The <see cref="Type"/> of the input array elements.</typeparam>
-        /// <typeparam name="TResult">The <see cref="Type"/> of the output array elements.</typeparam>
+        /// <typeparam name="TSource">The <c>Type</c> of the input array elements.</typeparam>
+        /// <typeparam name="TResult">The <c>Type</c> of the output array elements.</typeparam>
         /// <param name="source">The input array.</param>
         /// <param name="selector">The selector function.</param>
         /// <returns>The output array.</returns>
@@ -292,10 +293,10 @@ namespace Refactorius
         }
 
         /// <summary>Wraps a <see cref="IEnumerator{T}"/> into <see cref="IEnumerable{T}"/>.</summary>
-        /// <typeparam name="T">The <see cref="Type"/> of sequence elements.</typeparam>
+        /// <typeparam name="T">The <c>Type</c> of sequence elements.</typeparam>
         /// <param name="enumerator">An enumerator to wrap.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> wrapping the <paramref name="enumerator"/>. It automatically disposes the
-        /// <paramref name="enumerator"/> when the sequence is exausted.
+        /// <paramref name="enumerator"/> when the sequence is exhausted.
         /// <para><b>NB:</b> if the client abandons the enumeration before reaching the end, the <paramref name="enumerator"/> will
         /// <b>not</b> be disposed.</para>
         /// </returns>
@@ -312,10 +313,10 @@ namespace Refactorius
         }
 
         /// <summary>Converts a <c>IEnumerator{T[]}</c> into flattened <see cref="IEnumerable{T}"/>.</summary>
-        /// <typeparam name="T">The <see cref="Type"/> of sequence elements.</typeparam>
+        /// <typeparam name="T">The <c>Type</c> of sequence elements.</typeparam>
         /// <param name="enumerator">An enumerator to wrap.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> wrapping and flattening the <paramref name="enumerator"/>. It automatically
-        /// disposes the <paramref name="enumerator"/> when the sequence is exausted.
+        /// disposes the <paramref name="enumerator"/> when the sequence is exhausted.
         /// <para><b>NB:</b> if the client abandons the enumeration before reaching the end, the <paramref name="enumerator"/> will
         /// <b>not</b> be disposed.</para>
         /// </returns>

@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>Strongly-typed extension methods to get custom attributes.</summary>
+    [PublicAPI]
     public static class ReflectionExtensions
     {
         /// <summary>Returns an array of custom attributes applied to this member and identified by <see cref="T:System.Type"/>.</summary>
@@ -61,7 +62,7 @@ namespace Refactorius
                 return attr;
 
             var type = mi as Type;
-            var name = type != null ? type.FullName : mi.DeclaringType.FullName + "." + mi.Name;
+            var name = type != null ? type.FullName : mi.DeclaringType?.FullName + "." + mi.Name;
             message = message ?? "Attribute '{0}' not found";
             throw new FrameworkInitializationException(message.SafeFormat(name));
         }

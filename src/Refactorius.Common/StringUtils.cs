@@ -14,6 +14,7 @@ namespace Refactorius
 {
     /// <summary>The collection of useful string utility methods.</summary>
     /// <remarks>Ripped off from <b>Spring.Net</b> framework <b>Spring.Util.StringUtils</b>.</remarks>
+    [PublicAPI]
     public static class StringUtils
     {
         /// <summary>Gets an an empty array of <see cref="string"/>.</summary>
@@ -169,6 +170,14 @@ namespace Refactorius
                 : value.Substring(0, maxLength - DefaultEllipsisPostfix.Length) + DefaultEllipsisPostfix;
         }
 
+        /// <summary>Truncates a <see cref="string"/> to a specified length, adding in the middle an ellipsis.</summary>
+        /// <param name="value">A <see cref="string"/> to truncate, may be <see langword="null"/>.</param>
+        /// <param name="maxLength">The length to which the <paramref name="value"/> should be truncated.</param>
+        /// <returns>The original <paramref name="value"/> if it was <see langword="null"/>, empty or had length not greater that
+        /// <paramref name="maxLength"/>; otherwise, the string of length <paramref name="maxLength"/>, consisting of the truncated
+        /// in the middle <paramref name="value"/> with the <see cref="DefaultEllipsisPostfix"/> inserted.</returns>
+        /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
+        /// <see cref="DefaultEllipsisPostfix"/>.</exception>
         [ContractAnnotation("value:null => null; value:notnull => notnull")]
         [Pure]
         public static string BiEllipsis(this string value, int maxLength)
@@ -286,7 +295,7 @@ namespace Refactorius
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] SplitAndTrim([CanBeNull] this string value, [NotNull] string separators)
         {
-            // TODO: SplitAndTrim re-squeeze is unefficient, handle default case better
+            // TODO: SplitAndTrim re-squeeze is not efficient, handle default case better
             return SplitAndTrim(value, separators, StringSplitAndTrimOptions.Default);
         }
 
@@ -322,6 +331,7 @@ namespace Refactorius
 
             var result = value.Split(separators.ToCharArray());
             for (var i = 0; i < result.Length; i++)
+            {
                 if (result[i] != null)
                 {
                     if ((options & StringSplitAndTrimOptions.TrimAtStart) != 0)
@@ -329,9 +339,10 @@ namespace Refactorius
                     if ((options & StringSplitAndTrimOptions.TrimAtEnd) != 0)
                         result[i] = result[i].TrimEnd();
                 }
+            }
 
             // get rid of empty items created by extra separators
-            // TODO: SplitAndTrim re-squeeze is unefficient, handle empty entries better
+            // TODO: SplitAndTrim re-squeeze is not efficient, handle empty entries better
             if ((options & StringSplitAndTrimOptions.RemoveEmptyEntries) != 0)
                 result = string.Join(separators.Substring(0, 1), result)
                     .Split(separators.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);

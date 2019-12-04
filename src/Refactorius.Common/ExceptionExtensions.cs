@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>A static class containing some convenient extension methods for the <see cref="Exception"/> class.</summary>
+    [PublicAPI]
     public static class ExceptionExtensions
     {
         /// <summary>The backdoor way to imitate a critical exception with a <see cref="NotImplementedException"/> and this
@@ -19,24 +20,25 @@ namespace Refactorius
 
         [NotNull] private static readonly object _lock = new object();
 
-        [NotNull] private static Type[] _criticalExceptionTypes =
+        [NotNull] private static readonly HashSet<Type> _criticalExceptionTypes = new HashSet<Type>
         {
             typeof(OutOfMemoryException),
-#if NETFULL
+            typeof(InvalidProgramException),
             typeof(AppDomainUnloadedException),
-            typeof(CannotUnloadAppDomainException),
-#endif
-            typeof(InvalidProgramException)
+            typeof(CannotUnloadAppDomainException)
         };
 
-        [NotNull] private static readonly HashSet<Type> _outerExceptionTypes = new HashSet<Type>();
+        [NotNull] private static readonly HashSet<Type> _outerExceptionTypes = new HashSet<Type>
+        {
+            typeof(TargetInvocationException)
+        };
 
         /// <summary>Registers a new outer exception type.</summary>
-        /// <param name="exceptionType">The type of a skippable outer exception.</param>
+        /// <param name="exceptionType">The <c>Type</c> of an outer exception that should be skipped through.</param>
         /// <remarks>Outer exceptions can be skipped over in the log trace and in the rethrow.
         /// <para>We keep them in a hash because we need only to test for exact type equality.</para>
         /// </remarks>
-        public static void RegisterOuterExceptionType(Type exceptionType)
+        public static void RegisterOuterExceptionType([NotNull]Type exceptionType)
         {
             exceptionType.MustNotBeNull(nameof(exceptionType));
             if (!typeof(Exception).IsAssignableFrom(exceptionType))
@@ -50,10 +52,9 @@ namespace Refactorius
         }
 
         /// <summary>Registers new critical exception type.</summary>
-        /// <param name="exceptionType">Critical exception type.</param>
-        /// <remarks>Critical exceptions are never logged and/or swallowed by the framework and so bubble up to the topmost level
+        /// <param name="exceptionType">The <c>Type</c> of a critical exception.</param>
+        /// <remarks>Critical exceptions are never swallowed by the framework and so bubble up to the topmost level
         /// unhindered.
-        /// <para>We keep them in array because we need to scan it to test for inheritance.</para>
         /// </remarks>
         public static void RegisterCriticalException([NotNull] Type exceptionType)
         {
@@ -63,27 +64,21 @@ namespace Refactorius
 
             lock (_lock)
             {
-                if (Array.IndexOf(_criticalExceptionTypes, exceptionType) < 0)
-                    if (Array.IndexOf(_criticalExceptionTypes, exceptionType) < 0)
-                    {
-                        var tmp = _criticalExceptionTypes;
-                        _criticalExceptionTypes = new Type[_criticalExceptionTypes.Length + 1];
-                        Array.Copy(tmp, _criticalExceptionTypes, tmp.Length);
-                        _criticalExceptionTypes[_criticalExceptionTypes.Length - 1] = exceptionType;
-                    }
+                if (!_criticalExceptionTypes.Contains(exceptionType))
+                    _criticalExceptionTypes.Add(exceptionType);
             }
         }
 
-        /// <summary>Tests if an <see cref="Type"/> is a critical exception. Critical exceptions are non-recoverable and must be
+        /// <summary>Tests if an <c>Type</c> is a critical exception. Critical exceptions are non-recoverable and must be
         /// re-thrown immediately.</summary>
-        /// <param name="exceptionType">An <see cref="Type"/> to test.</param>
+        /// <param name="exceptionType">An <c>Type</c> to test.</param>
         /// <returns><see langword="true"/> if <paramref name="exceptionType"/> is registered as a non-recoverable
         /// <see cref="Exception"/>; <see langword="false"/> if <paramref name="exceptionType"/> is any other exception or
         /// <see langword="null"/>.</returns>
         internal static bool IsCriticalException([NotNull] this Type exceptionType)
         {
             exceptionType.MustInherit<Exception>(nameof(exceptionType));
-            return Array.Find(_criticalExceptionTypes, exceptionType.IsInstanceOfType) != null;
+            return _criticalExceptionTypes.Any(exceptionType.IsInstanceOfType);
         }
 
         /// <summary>Tests if an <see cref="Exception"/> is a critical exception. Critical exceptions are non-recoverable and must
@@ -123,25 +118,6 @@ namespace Refactorius
             return ex is OperationCanceledException || ex is ThreadAbortException || ex.IsCritical();
         }
 
-        /// <summary>Tests if an <see cref="Exception"/> is a critical exception or a
-        /// <see cref="System.Threading.ThreadAbortException"/>. Critical exceptions are non-recoverable and must be re-thrown
-        /// immediately. <see cref="System.Threading.ThreadAbortException"/> may be handled in the <b>catch</b> clause, but it will
-        /// be re-thrown anyway.</summary>
-        /// <param name="ex">An <see cref="Exception"/> to test.</param>
-        /// <returns><see langword="true"/> if <paramref name="ex"/> is one of <see cref="OutOfMemoryException"/>,
-        /// <see cref="AppDomainUnloadedException"/>, <see cref="CannotUnloadAppDomainException"/>
-        /// <see cref="InvalidProgramException"/> or <see cref="System.Threading.ThreadAbortException"/>; <see langword="false"/>
-        /// if <paramref name="ex"/> is any other exception or <see langword="null"/>.</returns>
-        [ContractAnnotation("ex:null => false")]
-        [Obsolete("Deprecated, use ShoudRethrow")]
-        public static bool IsCriticalOrThreadAbort(this Exception ex)
-        {
-            if (ex == null)
-                return false;
-
-            return ex.ShouldRethrow();
-        }
-
         /// <summary>Recursively concatenates the message of the specified <see cref="Exception"/> and all its
         /// <see cref="Exception.InnerException"/> descendants.</summary>
         /// <param name="ex">An instance of the <see cref="Exception"/> or <see langword="null"/>.</param>
@@ -156,11 +132,11 @@ namespace Refactorius
 
             var messages = new List<string> {ex.Message};
             for (var inner = ex.InnerException; inner != null; inner = inner.InnerException)
-                if (!(messages[messages.Count - 1] ?? string.Empty).EndsWith(inner.Message,
-                    StringComparison.OrdinalIgnoreCase))
+                if (!(messages[messages.Count - 1] ?? string.Empty)
+                    .EndsWith(inner.Message, StringComparison.OrdinalIgnoreCase))
                     messages.Add(inner.Message);
 
-            return string.Join("\n", messages);
+            return string.Join(Environment.NewLine, messages);
         }
 
         /// <summary>Extracts the single inner <see cref="Exception"/> from a <see cref="AggregateException"/>.</summary>
@@ -170,36 +146,9 @@ namespace Refactorius
         public static Exception ExtractInnerException([NotNull] this AggregateException ex)
         {
             ex = ex.Flatten();
-            var inner = ex.InnerExceptions?.FirstOrDefault();
-            return inner ?? ex;
-        }
-
-        /// <summary>Extracts the single inner <see cref="Exception"/> from a <see cref="TargetInvocationException"/>.</summary>
-        /// <param name="ex">An <see cref="TargetInvocationException"/> instance containing (hopefully) an inner exception.</param>
-        /// <returns>The inner exception of <paramref name="ex"/> if there is one, otherwise the <paramref name="ex"/> itself.</returns>
-        [NotNull]
-        public static Exception ExtractInnerException([NotNull] this TargetInvocationException ex)
-        {
-            return ex.InnerException ?? ex;
-        }
-
-        /// <summary>Extracts the single inner <see cref="Exception"/> from a <see cref="AggregateException"/> or
-        /// <see cref="TargetInvocationException"/>.</summary>
-        /// <param name="ex">An <see cref="TargetInvocationException"/> instance containing (hopefully) an inner exception.</param>
-        /// <returns>The inner exception of <paramref name="ex"/> if there is one, otherwise the <paramref name="ex"/> itself.</returns>
-        /// <remarks>Used to minimize boilerplate code in catch clauses.</remarks>
-        [NotNull]
-        public static Exception ExtractInnerException([NotNull] this Exception ex)
-        {
-            var aggregated = ex as AggregateException;
-            if (aggregated != null)
-                return aggregated.ExtractInnerException();
-
-            var targetInvocation = ex as TargetInvocationException;
-            if (targetInvocation != null)
-                return targetInvocation.ExtractInnerException();
-
-            return ex;
+            return ex.InnerExceptions.Count == 1 
+                ? ex.InnerExceptions[0].ExtractInnerException() 
+                : ex;
         }
 
         /// <summary>Extracts the single inner <see cref="Exception"/> from a possibly skippable outer exception.</summary>
@@ -207,16 +156,14 @@ namespace Refactorius
         /// <returns>The inner exception of <paramref name="ex"/> if there is one, otherwise the <paramref name="ex"/> itself.</returns>
         /// <remarks>Used to minimize boilerplate code in catch clauses. See also <see cref="M:ExtractInnerException"/>.</remarks>
         [NotNull]
-        public static Exception ExtractInnerExceptionEx([NotNull] this Exception ex)
+        public static Exception ExtractInnerException([NotNull] this Exception ex)
         {
             while (true)
             {
                 var inner = ex;
                 if (ex is AggregateException)
                     inner = ((AggregateException)inner).ExtractInnerException();
-                else if (ex is TargetInvocationException)
-                    inner = ((TargetInvocationException)inner).ExtractInnerException();
-                else if (_outerExceptionTypes.Contains(ex.GetType()))
+                else if (_outerExceptionTypes.Contains(ex.GetType())) // NB: exact type match
                     inner = ex.InnerException ?? ex;
                 if (inner == ex)
                     return inner;
@@ -226,8 +173,8 @@ namespace Refactorius
 
         #region ErrorCode support
 
-        /// <summary>Gets out of <see cref="P:Exception.Data"/> the named item with a specified <see cref="Type"/>.</summary>
-        /// <typeparam name="T">The <see cref="Type"/> of item to get.</typeparam>
+        /// <summary>Gets out of <see cref="P:Exception.Data"/> the named item with a specified <c>Type</c>.</summary>
+        /// <typeparam name="T">The <c>Type</c> of item to get.</typeparam>
         /// <param name="ex">The <see cref="Exception"/> containing the data.</param>
         /// <param name="name">The item name.</param>
         /// <returns></returns>

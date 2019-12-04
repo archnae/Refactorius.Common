@@ -5,16 +5,18 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>Handy extension methods for <see cref="ICollection{T}"/>.</summary>
+    [PublicAPI]
     public static class CollectionExtensions
     {
-        /// <summary>Fluently adds a new item to a collectiong.</summary>
-        /// <typeparam name="TElement"><see cref="Type"/> of the collection items.</typeparam>
+        /// <summary>Fluently adds a new item to a collection.</summary>
+        /// <typeparam name="TElement"><c>Type</c> of the collection items.</typeparam>
         /// <param name="collection">A collection.</param>
         /// <param name="item">An item to add.</param>
         /// <returns>The <paramref name="collection"/> itself (for call chaining).</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="collection"/> is <see langword="null"/>.</exception>
         [NotNull]
-        public static ICollection<TElement> AddOne<TElement>([NotNull] this ICollection<TElement> collection,
+        public static ICollection<TElement> AddOne<TElement>(
+            [NotNull] this ICollection<TElement> collection,
             TElement item)
         {
             collection.MustNotBeNull(nameof(collection));
@@ -24,7 +26,7 @@ namespace Refactorius
         }
 
         /// <summary>Fluently adds new items to a collection.</summary>
-        /// <typeparam name="TElement"><see cref="Type"/> of the collection items.</typeparam>
+        /// <typeparam name="TElement"><c>Type</c> of the collection items.</typeparam>
         /// <param name="collection">A collection.</param>
         /// <param name="items">The items to add.</param>
         /// <returns>The <paramref name="collection"/> itself (for call chaining).</returns>

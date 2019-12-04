@@ -10,7 +10,6 @@ variables:
   BuildConfiguration: 'Debug'
   VersionSuffix: 'pre$(Build.BuildNumber)'
   home: Refactorius.Common
-  main: $(home)/Refactorius.Common
 
 name: $(Build.BuildId)
 
@@ -41,16 +40,16 @@ steps:
   displayName: 'Restore packages'
   inputs:
     command: restore
-    projects: $(main).sln
+    projects: $(home).sln
     feedsToUse : config
     nugetConfigPath: nuget.config
     
 - task: DotNetCoreCLI@2
   name: build
-  displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
+  displayName: 'Build all projects with version suffix $(VersionSuffix)'
   inputs:
     command: build
-    projects: $(main).sln
+    projects: $(home).sln
     norestore: true
     arguments: '--configuration $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix)'
 
@@ -59,7 +58,7 @@ steps:
   displayName: 'Run tests'
   inputs:
     command: test
-    projects: $(home)/**/*Test*.csproj
+    projects: $(home)/tests/*.csproj
     nobuild: true
     publishTestResults: true
 
@@ -68,7 +67,7 @@ steps:
   displayName: 'Pack library'
   inputs:
     command: pack
-    projects: $(main)/Refactorius.Common.csproj
+    projects: $(home)/src/Refactorius.Common.csproj
     nobuild: true
     norestore: true
     arguments: -c "$(BuildConfiguration)" -o "$(Build.ArtifactStagingDirectory)
@@ -87,6 +86,6 @@ steps:
   inputs:
     command: push
     nuGetFeedType: external
-    publishFeedCredentials: 'Nuget.Refactorius'
+    externalFeedCredentials: 'Nuget.Refactorius'
     versioningScheme: byBuildNumber
    
