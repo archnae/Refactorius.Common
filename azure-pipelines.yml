@@ -74,7 +74,7 @@ steps:
 
 - task: DotNetCoreCLI@2
   name: push
-  displayName: 'Push library'
+  displayName: 'Push library to Reactorius artefacts'
   inputs:
     command: push
     nuGetFeedType: internal
@@ -82,10 +82,12 @@ steps:
     publishVstsFeed: RefactoriusPackages
 
 - task: NuGetCommand@2
+  displayName: 'Push library to NuGet.org'
   condition: eq(variables['BuildConfiguration'], 'Release')
   inputs:
     command: push
     nuGetFeedType: external
-    externalFeedCredentials: 'Nuget.Refactorius'
+    packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
+    publishFeedCredentials: 'NuGet.Refactorius'
     versioningScheme: byBuildNumber
    
