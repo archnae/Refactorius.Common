@@ -82,9 +82,9 @@ steps:
     publishVstsFeed: RefactoriusPackages
 
 - task: NuGetCommand@2
-   displayName: 'Push library to NuGet.org'
-   condition: eq(variables['BuildConfiguration'], 'Release')
-   inputs:
+  displayName: 'Push library to NuGet.org'
+  condition: eq(variables['BuildConfiguration'], 'Release')
+  inputs:
     command: push
     nuGetFeedType: external
     packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
