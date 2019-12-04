@@ -88,7 +88,6 @@ steps:
     command: push
     nuGetFeedType: external
     packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
-    publishFeedCredentials: 'NuGet.2020'
-    externalFeedCredentials: 'Nuget.2020'
+    publishFeedCredentials: 'NuGet.Refactorius'
     versioningScheme: byBuildNumber
    
