@@ -46,7 +46,7 @@ steps:
     
 - task: DotNetCoreCLI@2
   name: build
-  displayName: 'Build all projects with version suffix $(VersionSuffix)'
+  displayName: 'Build all projects as $(BuildConfiguration) with version suffix pre$(Build.BuildNumber)'
   inputs:
     command: build
     projects: $(home).sln
@@ -58,7 +58,7 @@ steps:
   displayName: 'Run tests'
   inputs:
     command: test
-    projects: $(home)/tests/*.csproj
+    projects: tests/**/*.csproj
     nobuild: true
     publishTestResults: true
 
@@ -67,27 +67,15 @@ steps:
   displayName: 'Pack library'
   inputs:
     command: pack
-    projects: $(home)/src/Refactorius.Common.csproj
+    projects: src/$(home)/$(home).csproj
     nobuild: true
     norestore: true
     arguments: -c "$(BuildConfiguration)" -o "$(Build.ArtifactStagingDirectory)
 
-- task: DotNetCoreCLI@2
-  name: push
-  displayName: 'Push library to Reactorius artefacts'
+- task: PublishBuildArtifacts@1
+  displayName: Publish artifacts
+  condition: succeededOrFailed()
   inputs:
-    command: push
-    nuGetFeedType: internal
-    packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
-    publishVstsFeed: RefactoriusPackages
-
-- task: NuGetCommand@2
-  displayName: 'Push library to NuGet.org'
-  condition: eq(variables['BuildConfiguration'], 'Release')
-  inputs:
-    command: push
-    nuGetFeedType: external
-    packagesToPush: $(build.artifactStagingDirectory)/*.nupkg
-    publishFeedCredentials: 'NuGet.Refactorius'
-    versioningScheme: byBuildNumber
-   
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
