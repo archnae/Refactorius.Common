@@ -213,15 +213,15 @@ namespace Refactorius
         #endregion
     }
 
-    /// <summary>A <see cref="T:Comparer{T}"/> for <c>Type</c> objects, using for comparison
-    /// <see cref="M:System.Type.FullName"/> property.</summary>
+    /// <summary>A <see cref="Comparer{T}"/> for <c>Type</c> objects, using for comparison
+    /// <see cref="System.Type.FullName"/> property.</summary>
     public class TypeComparer : Comparer<Type>
     {
         /// <summary>Compares two <c>Type</c> objects.</summary>
         /// <param name="x">Left side <c>Type</c> object.</param>
         /// <param name="y">Right side <c>Type</c> object.</param>
         /// <returns>The comparison result, defined by comparing <paramref name="x"/> and <paramref name="y"/>'s
-        /// <see cref="M:System.Type.FullName"/> properties.</returns>
+        /// <see cref="System.Type.FullName"/> properties.</returns>
         public override int Compare(Type x, Type y)
         {
             if (x == y)

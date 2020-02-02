@@ -15,7 +15,7 @@ namespace Refactorius
         /// message.</summary>
         public const string NotImplementedCriticalMessage = "::CRITICAL";
 
-        /// <summary>The key on the <see cref="P:Exception.Data"/> where the ErrorCode is stored.</summary>
+        /// <summary>The key on the <see cref="Exception.Data"/> where the ErrorCode is stored.</summary>
         public const string ErrorCodeDataKey = "errorCode";
 
         [NotNull] private static readonly object _lock = new object();
@@ -42,7 +42,7 @@ namespace Refactorius
         {
             exceptionType.MustNotBeNull(nameof(exceptionType));
             if (!typeof(Exception).IsAssignableFrom(exceptionType))
-                throw new ArgumentException("exceptionType", exceptionType.FullName + " is not an Exception.");
+                throw new ArgumentException(exceptionType.FullName + " is not an Exception.", nameof(exceptionType));
 
             lock (_lock)
             {
@@ -60,7 +60,7 @@ namespace Refactorius
         {
             exceptionType.MustNotBeNull(nameof(exceptionType));
             if (!typeof(Exception).IsAssignableFrom(exceptionType))
-                throw new ArgumentException("exceptionType", exceptionType.FullName + " is not an Exception.");
+                throw new ArgumentException(exceptionType.FullName + " is not an Exception.", nameof(exceptionType));
 
             lock (_lock)
             {
@@ -145,6 +145,8 @@ namespace Refactorius
         [NotNull]
         public static Exception ExtractInnerException([NotNull] this AggregateException ex)
         {
+            ex.MustNotBeNull(nameof(ex));
+
             ex = ex.Flatten();
             return ex.InnerExceptions.Count == 1 
                 ? ex.InnerExceptions[0].ExtractInnerException() 
@@ -154,10 +156,12 @@ namespace Refactorius
         /// <summary>Extracts the single inner <see cref="Exception"/> from a possibly skippable outer exception.</summary>
         /// <param name="ex">An outer exception containing (hopefully) an inner exception.</param>
         /// <returns>The inner exception of <paramref name="ex"/> if there is one, otherwise the <paramref name="ex"/> itself.</returns>
-        /// <remarks>Used to minimize boilerplate code in catch clauses. See also <see cref="M:ExtractInnerException"/>.</remarks>
+        /// <remarks>Used to minimize boilerplate code in catch clauses.</remarks>
         [NotNull]
         public static Exception ExtractInnerException([NotNull] this Exception ex)
         {
+            ex.MustNotBeNull(nameof(ex));
+
             while (true)
             {
                 var inner = ex;
@@ -173,7 +177,7 @@ namespace Refactorius
 
         #region ErrorCode support
 
-        /// <summary>Gets out of <see cref="P:Exception.Data"/> the named item with a specified <c>Type</c>.</summary>
+        /// <summary>Gets out of <see cref="Exception.Data"/> the named item with a specified <c>Type</c>.</summary>
         /// <typeparam name="T">The <c>Type</c> of item to get.</typeparam>
         /// <param name="ex">The <see cref="Exception"/> containing the data.</param>
         /// <param name="name">The item name.</param>
@@ -183,10 +187,10 @@ namespace Refactorius
             ex.MustNotBeNull(nameof(ex));
             if (ex.Data.Contains(name))
                 return (T)ex.Data[name];
-            return default(T);
+            return default;
         }
 
-        /// <summary>Adds to the <see cref="P:Exception.Data"/> a name-value pair.</summary>
+        /// <summary>Adds to the <see cref="Exception.Data"/> a name-value pair.</summary>
         /// <param name="ex">The <see cref="Exception"/> containing the data.</param>
         /// <param name="name">The item name.</param>
         /// <param name="value">The item value.</param>
@@ -202,7 +206,7 @@ namespace Refactorius
         /// <summary>Gets the <b>ErrorCode</b> stored in the <see cref="Exception"/> instance.</summary>
         /// <param name="ex">The <see cref="Exception"/> containing the data.</param>
         /// <returns>The <b>ErrorCode</b> stored in the <paramref name="ex"/>.
-        /// <para>NB: it is <b>NOT</b> the <see cref="P:Exception.HResult"/>!</para>
+        /// <para>NB: it is <b>NOT</b> the <see cref="Exception.HResult"/>!</para>
         /// </returns>
         /// <remarks>While I'm not a big fun of numeric error codes it seems to be the only way to reliably pass exception identity
         /// across language/system borders, esp. using REST api.</remarks>

@@ -423,7 +423,7 @@ namespace Refactorius
             argument.MustNotBeEmpty(name);
 
             if (string.IsNullOrWhiteSpace(argument))
-                throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture,
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture,
                     ArgumentContainsOnlyWhitespaces1, name));
 
             return argument;
@@ -609,7 +609,7 @@ namespace Refactorius
             range.MustNotBeNull(nameof(argument));
 
             if (!range.Contains(argument))
-                throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture, ArgumentOutsideRange1, name),
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, ArgumentOutsideRange1, name),
                     name);
 
             return argument;
@@ -669,17 +669,17 @@ namespace Refactorius
         // ReSharper disable InconsistentNaming
         private static string ArgumentIsNullMessage(string name)
         {
-            return string.Format(CultureInfo.CurrentUICulture, ArgumentIsNull1, name);
+            return string.Format(CultureInfo.InvariantCulture, ArgumentIsNull1, name);
         }
 
         private static string ArgumentIsEmptyMessage(string name)
         {
-            return string.Format(CultureInfo.CurrentUICulture, ArgumentIsAnEmptyString1, name);
+            return string.Format(CultureInfo.InvariantCulture, ArgumentIsAnEmptyString1, name);
         }
 
         private static string ArgumentIsEmptyCollectionMessage(string name)
         {
-            return string.Format(CultureInfo.CurrentUICulture, ArgumentIsEmptyCollection1, name);
+            return string.Format(CultureInfo.InvariantCulture, ArgumentIsEmptyCollection1, name);
         }
 
 #if NEVER
@@ -691,17 +691,17 @@ namespace Refactorius
 
         private static string ArgumentNotAnInstanceOfTypeMessage(string name, string typeName)
         {
-            return string.Format(CultureInfo.CurrentUICulture, ArgumentNotAnInstanceOfType2, name, typeName);
+            return string.Format(CultureInfo.InvariantCulture, ArgumentNotAnInstanceOfType2, name, typeName);
         }
 
         private static string ArgumentHasDefaultValueMessage(string name, string typeName)
         {
-            return string.Format(CultureInfo.CurrentUICulture, ArgumentHasDefaultValue2, name, typeName);
+            return string.Format(CultureInfo.InvariantCulture, ArgumentHasDefaultValue2, name, typeName);
         }
 
         private static string ArgumentDoesNotInheritTypeMessage(string name, string typeName)
         {
-            return string.Format(CultureInfo.CurrentUICulture, ArgumentDoesNotInheritType2, name, typeName);
+            return string.Format(CultureInfo.InvariantCulture, ArgumentDoesNotInheritType2, name, typeName);
         }
         // ReSharper enable InconsistentNaming
 

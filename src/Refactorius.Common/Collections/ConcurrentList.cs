@@ -248,13 +248,12 @@ namespace Refactorius.Collections
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
+        /// <inheritdoc />
+        protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-                GC.SuppressFinalize(this);
-
             _lock.Dispose();
         }
 

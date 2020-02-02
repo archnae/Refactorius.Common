@@ -26,6 +26,9 @@ namespace Refactorius.Data
             [NotNull] Func<TElement, TKey> keySelector,
             IEqualityComparer<TKey> comparer = null)
         {
+            source.MustNotBeNull(nameof(source));
+            keySelector.MustNotBeNull(nameof(keySelector));
+
             comparer = comparer ?? EqualityComparer<TKey>.Default;
             List<TElement> elements = null;
             var key = default(TKey);
@@ -70,7 +73,7 @@ namespace Refactorius.Data
         /// <summary>A helper class implementing <see cref="IGrouping{TKey, TElement}"/>.</summary>
         /// <typeparam name="TKey">The type of the keys.</typeparam>
         /// <typeparam name="TElement">The type of the elements.</typeparam>
-        public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+        public sealed class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
         {
             /// <summary>Initializes a new instance of the <see cref="Grouping{TKey,TElement}"/> class.</summary>
             /// <param name="key">A key value.</param>

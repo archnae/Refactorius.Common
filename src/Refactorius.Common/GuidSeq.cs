@@ -8,7 +8,7 @@ namespace Refactorius
     /// <summary>The replacement for GuidComb that is more like what MS SQL Server does.</summary>
     /// <remarks>Cheers to
     /// https://blogs.msdn.microsoft.com/dbrowne/2012/07/03/how-to-generate-sequential-guids-for-sql-server-in-net/ .</remarks>
-    public class GuidSeq
+    public static class GuidSeq
     {
 #if NETFULL
         [DllImport("rpcrt4.dll", SetLastError = true)]

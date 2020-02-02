@@ -85,8 +85,8 @@ namespace Refactorius
 
             foreach (var s in wellKnownNamespaces)
             {
-                var prefix = s.EndsWith(".") ? s : s + ".";
-                if (typeName.StartsWith(prefix))
+                var prefix = s.EndsWith(".", StringComparison.Ordinal) ? s : s + ".";
+                if (typeName.StartsWith(prefix, StringComparison.Ordinal))
                     typeName = typeName.Replace(prefix, string.Empty);
 
                 typeName = typeName.Replace("," + prefix, ",");

@@ -47,7 +47,7 @@ namespace Refactorius
         /// <returns><see langword="null"/> if <paramref name="value"/> is <see langword="null"/> and <typeparamref name="TValue"/>
         /// is <see cref="Nullable{T}"/> or a reference type. Otherwise, an object whose <c>Type</c> is
         /// <typeparamref name="TValue"/> and whose value is equivalent to <paramref name="value"/>.</returns>
-        /// <remarks>Unlike <see cref="M:System.Convert.ChangeType"/> this method always uses
+        /// <remarks>Unlike <see cref="System.Convert.ChangeType(object, Type)"/> this method always uses
         /// <see cref="CultureInfo.InvariantCulture"/>.</remarks>
         [CanBeNull]
         public static TValue ConvertTo<TValue>([CanBeNull] object value)
@@ -82,13 +82,13 @@ namespace Refactorius
             {
                 if (name.IsEmpty())
                     throw;
-                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(name, ex.Message));
+                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(CultureInfo.InvariantCulture, name, ex.Message));
             }
             catch (FormatException ex)
             {
                 if (name.IsEmpty())
                     throw;
-                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(name, ex.Message));
+                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(CultureInfo.InvariantCulture, name, ex.Message));
             }
         }
 
@@ -99,7 +99,7 @@ namespace Refactorius
         /// <returns><see langword="null"/> if <paramref name="value"/> is <see langword="null"/> and
         /// <paramref name="requiredType"/> is <see cref="Nullable{T}"/> or a reference type. Otherwise, an object whose
         /// <c>Type</c> is <paramref name="requiredType"/> and whose value is equivalent to <paramref name="value"/>.</returns>
-        /// <remarks>Unlike <see cref="M:System.Convert.ChangeType"/> this method always uses
+        /// <remarks>Unlike <see cref="System.Convert.ChangeType(object, Type)"/> this method always uses
         /// <see cref="CultureInfo.InvariantCulture"/>.</remarks>
         [CanBeNull]
         public static object ChangeType([CanBeNull] object value, [NotNull] Type requiredType)
@@ -121,7 +121,7 @@ namespace Refactorius
                 if (underlyingRequiredType != null || !requiredType.IsValueType)
                     return null;
                 throw new InvalidCastException("Can not convert null or empty string to an {0} instance."
-                    .SafeFormat(TypeNameUtils.GetReadableTypeName(requiredType)));
+                    .SafeFormat(CultureInfo.InvariantCulture, TypeNameUtils.GetReadableTypeName(requiredType)));
             }
 
             //if (stringValue != null && underlyingRequiredType == null && requiredType.IsValueType)
@@ -330,8 +330,7 @@ namespace Refactorius
         {
             if (value == null)
                 return null;
-            var s = value as string;
-            if (s != null)
+            if (value is string s && s != null)
                 return s;
 
             var type = value.GetType();
@@ -365,7 +364,7 @@ namespace Refactorius
             if (strict)
                 throw new InvalidCastException(
                     "Cannot convert an instance of {0} to a string."
-                        .SafeFormat(TypeNameUtils.GetReadableTypeName(type)));
+                        .SafeFormat(CultureInfo.InvariantCulture, TypeNameUtils.GetReadableTypeName(type)));
 
             return value.ToString().TrimToNull();
         }
@@ -587,7 +586,7 @@ namespace Refactorius
                 return null;
 
             if (string.IsNullOrWhiteSpace(value))
-                return new byte[0];
+                return Array.Empty<byte>();
 
             return Convert.FromBase64String(value);
         }
@@ -615,7 +614,7 @@ namespace Refactorius
 
                 if (requiredType == underlyingRequiredType && string.IsNullOrWhiteSpace(value))
                     throw new InvalidCastException("Can not convert null or empty string to a value type {0}."
-                        .SafeFormat(TypeNameUtils.GetReadableTypeName(requiredType)));
+                        .SafeFormat(CultureInfo.InvariantCulture, TypeNameUtils.GetReadableTypeName(requiredType)));
 
                 // we know that underlyingType is not a string
                 if (underlyingRequiredType == typeof(bool))
@@ -644,7 +643,7 @@ namespace Refactorius
                 return converter.ConvertFromInvariantString(value);
             throw new InvalidCastException(
                 "Cannot convert a string starting with '{0}' to {1}."
-                    .SafeFormat(value.Ellipsis(32), requiredType.FullName));
+                    .SafeFormat(CultureInfo.InvariantCulture, value.Ellipsis(32), requiredType.FullName));
         }
 
         #endregion

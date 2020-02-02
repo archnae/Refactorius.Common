@@ -21,12 +21,31 @@ namespace Refactorius.Data
         }
 
         /// <inheritdoc/>
-        /// <summary>Initializes a new instance of the <see cref="T:Refactorius.Data.FrameworkTestException"/> class with a
+        /// <summary>Initializes a new instance of the <see cref="Refactorius.Data.FrameworkTestException"/> class with a
+        /// specified error message.</summary>
+        /// <param name="message">The message.</param>
+        public FrameworkTestException(string message)
+            : this(message, null, false)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="FrameworkTestException"/> class. with a specified error message
+        /// and a reference to the inner exception that is the cause of this exception.</summary>
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a <see langword="null"/>
+        /// reference if no inner exception is specified.</param>
+        public FrameworkTestException(string message, Exception innerException)
+            : base(message, innerException, false)
+        {
+        }
+
+        /// <inheritdoc/>
+        /// <summary>Initializes a new instance of the <see cref="Refactorius.Data.FrameworkTestException"/> class with a
         /// specified error message.</summary>
         /// <param name="message">The message.</param>
         /// <param name="ignoreDefaultMessage">A value specifying whether the default error message should NOT be appended to the
         /// <paramref name="message"/>.</param>
-        public FrameworkTestException(string message, bool ignoreDefaultMessage = false)
+        public FrameworkTestException(string message, bool ignoreDefaultMessage)
             : this(message, null, ignoreDefaultMessage)
         {
         }
@@ -38,7 +57,7 @@ namespace Refactorius.Data
         /// reference if no inner exception is specified.</param>
         /// <param name="ignoreDefaultMessage">A value specifying whether the default error message should NOT be appended to the
         /// <paramref name="message"/>.</param>
-        public FrameworkTestException(string message, Exception innerException, bool ignoreDefaultMessage = false)
+        public FrameworkTestException(string message, Exception innerException, bool ignoreDefaultMessage)
             : base(message ?? (ignoreDefaultMessage ? string.Empty : "\n" + DEFAULT_MESSAGE), innerException)
         {
         }

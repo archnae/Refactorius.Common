@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
@@ -45,7 +46,7 @@ namespace Refactorius
 
         /// <inheritdoc/>
         protected FrameworkException([NotNull] string message, [NotNull] params object[] args)
-            : base(message.SafeFormat(args))
+            : base(message.SafeFormat(CultureInfo.InvariantCulture, args))
         {
         }
 

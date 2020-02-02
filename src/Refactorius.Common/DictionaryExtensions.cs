@@ -84,7 +84,7 @@ namespace Refactorius
         {
             dict.MustNotBeNull(nameof(dict));
 
-            return dict.ContainsKey(key) ? dict[key] : default(TElement);
+            return dict.ContainsKey(key) ? dict[key] : default;
         }
 
         /// <summary>Returns a dictionary value of a specified type by key or a default value of this type.</summary>
@@ -205,6 +205,7 @@ namespace Refactorius
             bool force = false)
         {
             dict.MustNotBeNull(nameof(dict));
+            keys.MustNotBeNull(nameof(keys));
 
             foreach (var key in keys)
                 if (dict.ContainsKey(key))
@@ -227,6 +228,7 @@ namespace Refactorius
             bool force = false)
         {
             dict.MustNotBeNull(nameof(dict));
+            keys.MustNotBeNull(nameof(keys));
 
             foreach (var key in keys)
                 if (dict.ContainsKey(key))
