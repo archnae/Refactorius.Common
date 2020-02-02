@@ -221,7 +221,7 @@ namespace Refactorius
                     else if (!ignoreMissing)
                         throw new FormatException(
                             string.Format(
-                                CultureInfo.CurrentUICulture,
+                                CultureInfo.InvariantCulture,
                                 "Unknown substitution '{0}{1}{2}' in text '{3}'.",
                                 prefix.Replace("{", "\\{"),
                                 name,
@@ -277,7 +277,7 @@ namespace Refactorius
                     else if (!ignoreMissing)
                         throw new FormatException(
                             string.Format(
-                                CultureInfo.CurrentUICulture,
+                                CultureInfo.InvariantCulture,
                                 "Unknown substitution '{0}{1}{2}' in text '{3}'.",
                                 prefix.Replace("{", "\\{"),
                                 name,

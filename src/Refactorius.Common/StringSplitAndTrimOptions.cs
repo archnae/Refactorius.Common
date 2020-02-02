@@ -2,7 +2,7 @@
 
 namespace Refactorius
 {
-    /// <summary>Specifies how <see cref="M:StringUtils.SplitAndTrim(string,StringSplitAndTrimOptions)"/> method trims the
+    /// <summary>Specifies how <see cref="StringUtils.SplitAndTrim(string,string,StringSplitAndTrimOptions)"/> method trims the
     /// return value tokens and whether it includes or omits from the return value empty tokens.
     /// <para>This enumeration has a <see cref="FlagsAttribute"/> attribute that allows a bitwise combination of its member
     /// values.</para>
@@ -15,7 +15,6 @@ namespace Refactorius
         None = 0,
 
         /// <summary>The return value does not include array elements that contain an empty string.</summary>
-        /// <seealso cref="F:Refactorius.Commons.StringSplitOptions.RemoveEmptyEntries"/>
         RemoveEmptyEntries = 1,
 
         /// <summary>The elements of the return value are trimmed at the start.</summary>
@@ -32,7 +31,6 @@ namespace Refactorius
 
         /// <summary>The return value does not include array elements that contain an empty string. The elements of the return
         /// value are trimmed at both start and end.</summary>
-        /// <seealso cref="F:Refactorius.Commons.StringSplitOptions.RemoveEmptyEntries"/>
         /// <seealso cref="string.Trim()"/>
         Default = RemoveEmptyEntries | TrimBoth
     }

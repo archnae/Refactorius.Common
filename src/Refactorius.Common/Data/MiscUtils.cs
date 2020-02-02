@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -31,8 +33,7 @@ namespace Refactorius.Data
 
             for (var i = 0; i < 9; i++)
             {
-                int digit;
-                if (!int.TryParse(bsn.Substring(i, 1), out digit))
+                if (!int.TryParse(bsn.Substring(i, 1), out int digit))
                     return false;
                 sum += digit * (9 - i) * (i == 8 ? -1 : 1);
             }
@@ -68,6 +69,8 @@ namespace Refactorius.Data
         /// <remarks>See http://blog.mbcharbonneau.com/2007/03/13/auto-incrementing-build-numbers-in-visual-studio/ for details.</remarks>
         public static DateTime? VersionToDate([NotNull] this Version version)
         {
+            version.MustNotBeNull(nameof(version));
+
             var dt = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
             try
             {
@@ -101,10 +104,11 @@ namespace Refactorius.Data
         {
             var dt = version.VersionToDate();
             var s = dt.HasValue
-                ? " on " + dt.Value.ToString("yyyy-MM-dd HH:mm")
+                ? " on " + dt.Value.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
                 : string.Empty;
 
             return "version {0}.{1} build {2}.{3}{4}".SafeFormat(
+                CultureInfo.InvariantCulture,
                 version.Major,
                 version.Minor,
                 version.Build,
@@ -135,9 +139,7 @@ namespace Refactorius.Data
             {
                 try
                 {
-#if NETSTANDARD2_0
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-#endif
                         new PermissionSet(PermissionState.Unrestricted).Assert();
                     var location = type.Assembly.Location;
                     if (string.IsNullOrEmpty(location))
@@ -148,14 +150,11 @@ namespace Refactorius.Data
                 }
                 finally
                 {
-#if NETSTANDARD2_0
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-#endif
                         PermissionSet.RevertAssert();
-
                 }
             }
-            catch (Exception)
+            catch (FileNotFoundException)
             {
                 return type.GetBuildVersion();
             }

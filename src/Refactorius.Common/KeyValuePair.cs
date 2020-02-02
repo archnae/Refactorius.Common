@@ -15,10 +15,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
-// ReSharper disable once CheckNamespace
-namespace System.Collections.Generic
+namespace Refactorius
 {
     /// <summary>
     /// Provides streamlined creation of value pairs by avoiding 
@@ -42,7 +42,7 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        /// Swaps the <see cref="P:KeyValuePair{,}.Key"/> and <see cref="P:KeyValuePair{,}.Value"/>.
+        /// Swaps the <see cref="KeyValuePair{TKey,TValue}.Key"/> and <see cref="KeyValuePair{TKey,TValue}.Value"/>.
         /// </summary>
         /// <typeparam name="TKey">The key type.</typeparam>
         /// <typeparam name="TValue">The value type.</typeparam>

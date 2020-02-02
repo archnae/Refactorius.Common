@@ -21,7 +21,7 @@ namespace Refactorius
         /// <value>An zero-length array of <see cref="string"/>.</value>
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays",
             Justification = "Creates a new instance on every access.")]
-        public static string[] EmptyStrings => new string[] { };
+        public static string[] EmptyStrings => Array.Empty<string>();
 
         /// <summary>Sanitizes a <see cref="string"/> into a valid <see cref="System.IO.Path"/> by replacing all invalid characters
         /// in it with spaces.</summary>
@@ -52,7 +52,7 @@ namespace Refactorius
         }
 
         /// <summary>Indicates whether the specified <see cref="string"/> object is <see langword="null"/> or an
-        /// <see cref="F:string.Empty"/> string.</summary>
+        /// <see cref="string.Empty"/> string.</summary>
         /// <param name="value">A <see cref="string"/> reference.</param>
         /// <returns><see langword="true"/> if the value parameter is <see langword="null"/>  or an empty string (""); otherwise,
         /// <see langword="false"/>.</returns>
@@ -69,7 +69,7 @@ namespace Refactorius
         /// </summary>
         /// <param name="target">A <see cref="string"/> to test, may be <see langword="null"/>.</param>
         /// <returns><see langword="true"/> if the <paramref name="target"/> is <see langword="null"/>, equal to
-        /// <see cref="F:System.String.Empty"/> or is composed entirely of whitespace characters.</returns>
+        /// <see cref="string.Empty"/> or is composed entirely of whitespace characters.</returns>
         /// <seealso cref="StringUtils.HasText"/>
         /// <remarks>It is the inverse function to the <see cref="StringUtils.HasText"/>.
         /// <para>This method is included to simplify porting of code from the <b>Spring.Net</b> framework.</para>
@@ -317,7 +317,7 @@ namespace Refactorius
             StringSplitAndTrimOptions options)
         {
             if (string.IsNullOrEmpty(value))
-                return new string[0];
+                return Array.Empty<string>();
 
             if (string.IsNullOrEmpty(separators))
                 return new[] {value};
