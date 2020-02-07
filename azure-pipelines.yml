@@ -33,7 +33,7 @@ steps:
   condition: eq(variables['Build.SourceBranchName'], 'master')
   inputs:
     VariableName: BuildConfiguration
-    Value: 'Release'
+    Value: Release
 
 - task: DotNetCoreCLI@2
   name: restore
@@ -43,10 +43,11 @@ steps:
     projects: $(home).sln
     feedsToUse : config
     nugetConfigPath: nuget.config
+    verbosityRestore: Normal
     
 - task: DotNetCoreCLI@2
   name: build
-  displayName: 'Build all projects as $(BuildConfiguration) with version suffix pre$(Build.BuildNumber)'
+  displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
   inputs:
     command: build
     projects: $(home).sln
@@ -70,12 +71,12 @@ steps:
     projects: src/$(home)/$(home).csproj
     nobuild: true
     norestore: true
-    arguments: -c "$(BuildConfiguration)" -o "$(Build.ArtifactStagingDirectory)
+    arguments: '-c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: Publish artifacts
   condition: succeededOrFailed()
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    PathtoPublish: $(Build.ArtifactStagingDirectory)
+    ArtifactName: drop
+    publishLocation: Container

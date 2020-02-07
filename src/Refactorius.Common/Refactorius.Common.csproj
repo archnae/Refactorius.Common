@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl>https://dev.azure.com/Refactorius/Refactorius.Common/favicon.ico</PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
-    <VersionPrefix>10.1.1</VersionPrefix>
+    <VersionPrefix>10.1.2</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <PackageReleaseNotes>The library targets netstandard 2.0 only.</PackageReleaseNotes>
     <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
