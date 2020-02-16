@@ -1,82 +1,21 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
-pool:
-  vmImage: 'vs2017-win2016'
+# File: azure-pipelines.yml
+name: $(Build.BuildId)
 
 variables:
-  BuildConfiguration: 'Debug'
-  VersionSuffix: 'pre$(Build.BuildNumber)'
-  home: Refactorius.Common
+  - template: buildVars.yml@templates
+  - name: mainProject
+    value: Refactorius.Common
 
-name: $(Build.BuildId)
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: Refactorius.Common/Templates
 
 trigger: none
 
-steps:
-
-- script: type azure-pipelines.yml
-  name: show
-  displayName: 'Show yaml source in $(Build.SourceBranchName)'
-
-- task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
-  displayName: 'Unset VersionSuffix if Master branch'
-  condition: eq(variables['Build.SourceBranchName'], 'master')
-  inputs:
-    VariableName: VersionSuffix
-    Value: ''
-
-- task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@1
-  displayName: 'Set buildConfiguration to Release if Master branch'
-  condition: eq(variables['Build.SourceBranchName'], 'master')
-  inputs:
-    VariableName: BuildConfiguration
-    Value: Release
-
-- task: DotNetCoreCLI@2
-  name: restore
-  displayName: 'Restore packages'
-  inputs:
-    command: restore
-    projects: $(home).sln
-    feedsToUse : config
-    nugetConfigPath: nuget.config
-    verbosityRestore: Normal
-    
-- task: DotNetCoreCLI@2
-  name: build
-  displayName: 'Build all projects as $(BuildConfiguration) with version suffix $(VersionSuffix)'
-  inputs:
-    command: build
-    projects: $(home).sln
-    norestore: true
-    arguments: '--configuration $(BuildConfiguration) /p:VersionSuffix=$(VersionSuffix)'
-
-- task: DotNetCoreCLI@2
-  name: test
-  displayName: 'Run tests'
-  inputs:
-    command: test
-    projects: tests/**/*.csproj
-    nobuild: true
-    publishTestResults: true
-
-- task: DotNetCoreCLI@2
-  name: pack
-  displayName: 'Pack library'
-  inputs:
-    command: pack
-    projects: src/$(home)/$(home).csproj
-    nobuild: true
-    norestore: true
-    arguments: '-c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
-
-- task: PublishBuildArtifacts@1
-  displayName: Publish artifacts
-  condition: succeededOrFailed()
-  inputs:
-    PathtoPublish: $(Build.ArtifactStagingDirectory)
-    ArtifactName: drop
-    publishLocation: Container
+stages:
+  - template: buildStage-lib20-v1.yml@templates
+  - template: publishLocalStage-pkg-v1.yml@templates
+  - template: continueIfMasterStage-v1.yml@templates
+  - template: publishNugetStage-pkg-v1.yml@templates
