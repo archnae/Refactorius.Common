@@ -18,13 +18,21 @@ namespace Refactorius
         /// current context.</summary>
         protected AbstractContext()
         {
-            Register((TInstance) this);
+            Register((TInstance)this);
         }
 
         /// <summary>Gets the current context stack.</summary>
         /// <value>The current context stack.</value>
         [NotNull]
-        public static Stack<TInstance> CurrentStack => _stack.Value;
+        public static Stack<TInstance> CurrentStack
+        {
+            get
+            {
+                if (_stack.Value == null)
+                    _stack.Value = new Stack<TInstance>();
+                return _stack.Value;
+            }
+        }
 
         /// <summary>Gets the latest registered scope.</summary>
         /// <value>The current (latest registered) scope.</value>
@@ -41,14 +49,14 @@ namespace Refactorius
                             _stack.GetType().FullName));
 
                 // ReSharper disable once AssignNullToNotNullAttribute
-                return _stack.Value.Peek();
+                return CurrentStack.Peek();
             }
         }
 
         /// <summary>Gets a value indicating whether the active request or thread has initialized scope.</summary>
         /// <value><see langword="true"/> if the active http request or thread has initialized scope; otherwise,
         /// <see langword="false"/>.</value>
-        public static bool HasCurrent => _stack.Value.Count > 0;
+        public static bool HasCurrent => CurrentStack.Count > 0;
 
         /// <summary>Gets or sets a value indicating whether the current <see cref="AbstractContext{TInstance}"/> was disposed.</summary>
         /// <value><see langword="true"/> if already disposed, otherwise <see langword="false"/>.</value>
@@ -60,7 +68,7 @@ namespace Refactorius
         {
             scope.MustNotBeNull(nameof(scope));
 
-            _stack.Value.Push(scope);
+            CurrentStack.Push(scope);
         }
 
         /// <summary>Unregisters the scope.</summary>
@@ -69,13 +77,13 @@ namespace Refactorius
         {
             scope.MustNotBeNull(nameof(scope));
             Guard.Assert(
-                scope == _stack.Value.Peek(),
+                scope == CurrentStack.Peek(),
                 string.Format(
                     CultureInfo.InvariantCulture,
                     "Cannot unregister the current instance of '{0}' - the instance is not on the top or the context stack is empty.",
                     scope.GetType().FullName));
 
-            _stack.Value.Pop();
+            CurrentStack.Pop();
         }
 
         #region logging
@@ -99,7 +107,7 @@ namespace Refactorius
         {
             if (disposing && !IsDisposed)
             {
-                Unregister((TInstance) this);
+                Unregister((TInstance)this);
                 IsDisposed = true;
                 ////if (Log.IsVerboseEnabled())
                 ////    Log.VerboseFormat("closing context {0}", this);
