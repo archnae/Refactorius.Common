@@ -170,6 +170,27 @@ namespace Refactorius
                 : value.Substring(0, maxLength - DefaultEllipsisPostfix.Length) + DefaultEllipsisPostfix;
         }
 
+        /// <summary>Truncates a <see cref="string"/> to a specified length, adding at the beginning an ellipsis.</summary>
+        /// <param name="value">A <see cref="string"/> to truncate, may be <see langword="null"/>.</param>
+        /// <param name="maxLength">The length to which the <paramref name="value"/> should be truncated.</param>
+        /// <returns>The original <paramref name="value"/> if it was <see langword="null"/>, empty or had length not greater that
+        /// <paramref name="maxLength"/>; otherwise, the string of length <paramref name="maxLength"/>,
+        /// consisting of the <see cref="DefaultEllipsisPostfix"/> and the truncated at the beginning <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
+        /// <see cref="DefaultEllipsisPostfix"/>.</exception>
+        [ContractAnnotation("value:null => null; value:notnull => notnull")]
+        [Pure]
+        public static string ReverseEllipsis(this string value, int maxLength)
+        {
+            if (maxLength <= DefaultEllipsisPostfix.Length)
+                throw new ArgumentOutOfRangeException(
+                    nameof(maxLength),
+                    "The desired maximal length of the string with an ellipsis must be greater then the length of the ellipsis prefix");
+            return string.IsNullOrEmpty(value) || value.Length <= maxLength
+                ? value
+                : DefaultEllipsisPostfix + value.Substring(Math.Max(0, value.Length + DefaultEllipsisPostfix.Length - maxLength));
+        }
+
         /// <summary>Truncates a <see cref="string"/> to a specified length, adding in the middle an ellipsis.</summary>
         /// <param name="value">A <see cref="string"/> to truncate, may be <see langword="null"/>.</param>
         /// <param name="maxLength">The length to which the <paramref name="value"/> should be truncated.</param>
