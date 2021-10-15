@@ -8,7 +8,7 @@
     <Description>The Refactorius common utility library provides some helpful utility functions and extension methods used in the Refactorius code.</Description>
     <Company>Alexander Nosenko Software</Company>
     <Authors>Alexander Nosenko</Authors>
-    <Copyright>Copyright 2014-2020</Copyright>
+    <Copyright>Copyright (c) 2014-2021 Alexander Nosenko</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
