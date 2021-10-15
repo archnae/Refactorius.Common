@@ -14,15 +14,13 @@
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
     <PackageTags>Refactorius Utility</PackageTags>
-    <!--<VersionPrefix>10.2.0</VersionPrefix>
-    <VersionSuffix>$(VersionSuffix)</VersionSuffix>-->
     <PackageReleaseNotes>The library targets netstandard 2.0 only.</PackageReleaseNotes>
     <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>toolbox.png</PackageIcon>
-    <AssemblyVersion>10.2.0.0</AssemblyVersion>
-    <FileVersion>10.2.0.0</FileVersion>
+    <!-- <AssemblyVersion>10.2.0.0</AssemblyVersion> -->
+    <!-- <FileVersion>10.2.0.0</FileVersion> -->
     <Version>10.2.0</Version>
   </PropertyGroup>
 

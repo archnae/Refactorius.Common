@@ -15,4 +15,4 @@ resources:
 trigger: none
 
 stages:
-  - template: allBuildStages-lib20-v1.yml@templates
+  - template: /v1/stages/buildLibAndPublish.yml@templates
