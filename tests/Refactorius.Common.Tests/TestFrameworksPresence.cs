@@ -8,19 +8,21 @@ namespace Refactorius.Common.Tests
         [SkippableFact]
         public void SkipIfFullFramework()
         {
-            Skip.If(System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"));
+            Skip.If(frameworkDescription.StartsWith(".NET Framework") || frameworkDescription.StartsWith(".NET 5"));
 
-            if (!System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith(".NET Core"))
+            if (!frameworkDescription.StartsWith(".NET Core"))
                 throw new Exception();
         }
 
         [SkippableFact]
         public void SkipIfDotNetCore()
         {
-            Skip.If(System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith(".NET Core"));
+            Skip.If(frameworkDescription.StartsWith(".NET Core") || frameworkDescription.StartsWith(".NET 5"));
 
-            if (!System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"))
+            if (!frameworkDescription.StartsWith(".NET Framework"))
                 throw new Exception();
         }
+
+        private static string frameworkDescription = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
     }
 }
