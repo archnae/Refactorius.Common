@@ -9,11 +9,10 @@ namespace Refactorius.Data
     /// <summary>Convert a base data type to another base data type.</summary>
     public static class DbTypeConvert
     {
-        [NotNull] private static readonly DbTypeMapEntry[] _knownDbTypes = InitializeMap();
+        private static readonly DbTypeMapEntry[] _knownDbTypes = InitializeMap();
 
         #region private methods
 
-        [NotNull]
         private static DbTypeMapEntry[] InitializeMap()
         {
             // TODO: add new NH2.1 / SQL2008 datatypes
@@ -40,11 +39,11 @@ namespace Refactorius.Data
 
         private struct DbTypeMapEntry
         {
-            [NotNull] public readonly Type Type;
+            public readonly Type Type;
             public readonly DbType DbType;
             public readonly SqlDbType SqlDbType;
 
-            public DbTypeMapEntry([NotNull] Type type, DbType dbType, SqlDbType sqlDbType)
+            public DbTypeMapEntry(Type type, DbType dbType, SqlDbType sqlDbType)
             {
                 Type = type;
                 DbType = dbType;
@@ -63,7 +62,6 @@ namespace Refactorius.Data
         /// <summary>Convert db type to .Net data type.</summary>
         /// <param name="dbType">A source <see cref="DbType"/>.</param>
         /// <returns>The target .Net type.</returns>
-        [NotNull]
         public static Type ToNetType(DbType dbType)
         {
             if (!Enum.IsDefined(typeof(DbType), dbType))
@@ -75,7 +73,6 @@ namespace Refactorius.Data
         /// <summary>Convert TSQL type to .Net data type.</summary>
         /// <param name="sqlDbType">A source <see cref="SqlDbType"/>.</param>
         /// <returns>The target .Net type.</returns>
-        [NotNull]
         public static Type ToNetType(SqlDbType sqlDbType)
         {
             if (!Enum.IsDefined(typeof(SqlDbType), sqlDbType))
@@ -87,7 +84,7 @@ namespace Refactorius.Data
         /// <summary>Convert .Net type to Db type.</summary>
         /// <param name="type">A source .Net type.</param>
         /// <returns>The target <see cref="DbType"/>.</returns>
-        public static DbType ToDbType([NotNull] Type type)
+        public static DbType ToDbType(Type type)
         {
             return Find(type).DbType;
         }
@@ -103,7 +100,7 @@ namespace Refactorius.Data
         /// <summary>Convert .Net type to TSQL data type.</summary>
         /// <param name="type">A source .Net type.</param>
         /// <returns>The target <see cref="SqlDbType"/>.</returns>
-        public static SqlDbType ToSqlDbType([NotNull] Type type)
+        public static SqlDbType ToSqlDbType(Type type)
         {
             return Find(type).SqlDbType;
         }

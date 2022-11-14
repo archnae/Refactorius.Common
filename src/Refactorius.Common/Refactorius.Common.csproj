@@ -8,7 +8,7 @@
     <Description>The Refactorius common utility library provides some helpful utility functions and extension methods used in the Refactorius code.</Description>
     <Company>Alexander Nosenko Software</Company>
     <Authors>Alexander Nosenko</Authors>
-    <Copyright>Copyright (c) 2014-2021 Alexander Nosenko</Copyright>
+    <Copyright>Copyright (c) 2014-2022 Alexander Nosenko</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
@@ -17,11 +17,16 @@
     <PackageReleaseNotes>The library targets netstandard 2.0 only.</PackageReleaseNotes>
     <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile></PackageLicenseFile>
     <PackageIcon>toolbox.png</PackageIcon>
     <!-- <AssemblyVersion>10.2.0.0</AssemblyVersion> -->
     <!-- <FileVersion>10.2.0.0</FileVersion> -->
-    <Version>10.2.0</Version>
+    <Version>11.0.1</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>True</IncludeSymbols>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -42,10 +47,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="..\..\toolbox.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -54,10 +55,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2021.1.0">
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1">
       <PrivateAssets>build</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Security.Permissions" Version="4.7.0" />
+    <PackageReference Include="System.Security.Permissions" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

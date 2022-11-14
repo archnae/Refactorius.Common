@@ -33,25 +33,25 @@ namespace Refactorius
         }
 
         /// <inheritdoc/>
-        protected FrameworkException([NotNull] string message)
+        protected FrameworkException(string message)
             : base(message)
         {
         }
 
         /// <inheritdoc/>
-        protected FrameworkException([NotNull] string message, [CanBeNull] Exception innerException)
+        protected FrameworkException(string message, Exception? innerException)
             : base(message, innerException)
         {
         }
 
         /// <inheritdoc/>
-        protected FrameworkException([NotNull] string message, [NotNull] params object[] args)
+        protected FrameworkException(string message, params object[] args)
             : base(message.SafeFormat(CultureInfo.InvariantCulture, args))
         {
         }
 
         /// <inheritdoc/>
-        protected FrameworkException([NotNull] SerializationInfo info, StreamingContext context)
+        protected FrameworkException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

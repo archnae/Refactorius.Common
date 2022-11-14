@@ -18,9 +18,9 @@ namespace Refactorius
         /// <summary>The key on the <see cref="Exception.Data"/> where the ErrorCode is stored.</summary>
         public const string ErrorCodeDataKey = "errorCode";
 
-        [NotNull] private static readonly object _lock = new object();
+        private static readonly object _lock = new object();
 
-        [NotNull] private static readonly HashSet<Type> _criticalExceptionTypes = new HashSet<Type>
+        private static readonly HashSet<Type> _criticalExceptionTypes = new HashSet<Type>
         {
             typeof(OutOfMemoryException),
             typeof(InvalidProgramException),
@@ -28,7 +28,7 @@ namespace Refactorius
             typeof(CannotUnloadAppDomainException)
         };
 
-        [NotNull] private static readonly HashSet<Type> _outerExceptionTypes = new HashSet<Type>
+        private static readonly HashSet<Type> _outerExceptionTypes = new HashSet<Type>
         {
             typeof(TargetInvocationException)
         };
@@ -38,7 +38,7 @@ namespace Refactorius
         /// <remarks>Outer exceptions can be skipped over in the log trace and in the rethrow.
         /// <para>We keep them in a hash because we need only to test for exact type equality.</para>
         /// </remarks>
-        public static void RegisterOuterExceptionType([NotNull]Type exceptionType)
+        public static void RegisterOuterExceptionType(Type exceptionType)
         {
             exceptionType.MustNotBeNull(nameof(exceptionType));
             if (!typeof(Exception).IsAssignableFrom(exceptionType))
@@ -56,7 +56,7 @@ namespace Refactorius
         /// <remarks>Critical exceptions are never swallowed by the framework and so bubble up to the topmost level
         /// unhindered.
         /// </remarks>
-        public static void RegisterCriticalException([NotNull] Type exceptionType)
+        public static void RegisterCriticalException(Type exceptionType)
         {
             exceptionType.MustNotBeNull(nameof(exceptionType));
             if (!typeof(Exception).IsAssignableFrom(exceptionType))
@@ -75,7 +75,7 @@ namespace Refactorius
         /// <returns><see langword="true"/> if <paramref name="exceptionType"/> is registered as a non-recoverable
         /// <see cref="Exception"/>; <see langword="false"/> if <paramref name="exceptionType"/> is any other exception or
         /// <see langword="null"/>.</returns>
-        internal static bool IsCriticalException([NotNull] this Type exceptionType)
+        internal static bool IsCriticalException(this Type exceptionType)
         {
             exceptionType.MustInherit<Exception>(nameof(exceptionType));
             return _criticalExceptionTypes.Any(exceptionType.IsInstanceOfType);
@@ -91,7 +91,7 @@ namespace Refactorius
         /// <remarks><see cref="NotImplementedException"/> with message "::CRITICAL" is a backdoor way to imitate a critical
         /// exception.</remarks>
         [ContractAnnotation("ex:null => false")]
-        public static bool IsCritical([CanBeNull] this Exception ex)
+        public static bool IsCritical(this Exception? ex)
         {
             if (ex == null)
                 return false;
@@ -111,7 +111,7 @@ namespace Refactorius
         /// <see cref="InvalidProgramException"/> or <see cref="System.Threading.ThreadAbortException"/>; <see langword="false"/>
         /// if <paramref name="ex"/> is any other exception or <see langword="null"/>.</returns>
         [ContractAnnotation("ex:null => false")]
-        public static bool ShouldRethrow([NotNull] this Exception ex)
+        public static bool ShouldRethrow(this Exception ex)
         {
             ex.MustNotBeNull(nameof(ex));
 
@@ -125,7 +125,7 @@ namespace Refactorius
         /// <see cref="Exception.InnerException"/> descendants, separated by a newline. If <paramref name="ex"/> is
         /// <see langword="null"/>, <see langword="null"/> is returned.</returns>
         [ContractAnnotation("ex:null => null")]
-        public static string ConcatMessages([CanBeNull] this Exception ex)
+        public static string ConcatMessages(this Exception? ex)
         {
             if (ex == null)
                 return null;
@@ -142,8 +142,7 @@ namespace Refactorius
         /// <summary>Extracts the single inner <see cref="Exception"/> from a <see cref="AggregateException"/>.</summary>
         /// <param name="ex">An <see cref="AggregateException"/> instance containing (hopefully) a single inner exception.</param>
         /// <returns>The inner exception of <paramref name="ex"/> if it's the only one, otherwise the <paramref name="ex"/> itself.</returns>
-        [NotNull]
-        public static Exception ExtractInnerException([NotNull] this AggregateException ex)
+        public static Exception ExtractInnerException(this AggregateException ex)
         {
             ex.MustNotBeNull(nameof(ex));
 
@@ -157,8 +156,7 @@ namespace Refactorius
         /// <param name="ex">An outer exception containing (hopefully) an inner exception.</param>
         /// <returns>The inner exception of <paramref name="ex"/> if there is one, otherwise the <paramref name="ex"/> itself.</returns>
         /// <remarks>Used to minimize boilerplate code in catch clauses.</remarks>
-        [NotNull]
-        public static Exception ExtractInnerException([NotNull] this Exception ex)
+        public static Exception ExtractInnerException(this Exception ex)
         {
             ex.MustNotBeNull(nameof(ex));
 
@@ -182,7 +180,7 @@ namespace Refactorius
         /// <param name="ex">The <see cref="Exception"/> containing the data.</param>
         /// <param name="name">The item name.</param>
         /// <returns></returns>
-        public static T GetData<T>([NotNull] this Exception ex, [NotNull] string name)
+        public static T GetData<T>(this Exception ex, string name)
         {
             ex.MustNotBeNull(nameof(ex));
             if (ex.Data.Contains(name))
@@ -195,8 +193,7 @@ namespace Refactorius
         /// <param name="name">The item name.</param>
         /// <param name="value">The item value.</param>
         /// <returns>The original <paramref name="ex"/> for call chaining.</returns>
-        [NotNull]
-        public static Exception SetData([NotNull] this Exception ex, [NotNull] string name, [NotNull] object value)
+        public static Exception SetData(this Exception ex, string name, object value)
         {
             ex.MustNotBeNull(nameof(ex));
             ex.Data[name] = value;
@@ -210,7 +207,7 @@ namespace Refactorius
         /// </returns>
         /// <remarks>While I'm not a big fun of numeric error codes it seems to be the only way to reliably pass exception identity
         /// across language/system borders, esp. using REST api.</remarks>
-        public static int GetErrorCode([NotNull] this Exception ex)
+        public static int GetErrorCode(this Exception ex)
         {
             return ex.GetData<int>(ErrorCodeDataKey);
         }
@@ -221,8 +218,7 @@ namespace Refactorius
         /// <returns>The original <paramref name="ex"/> for call chaining.</returns>
         /// <remarks>While I'm not a big fun of numeric error codes it seems to be the only way to reliably pass exception identity
         /// across language/system borders, esp. using REST api.</remarks>
-        [NotNull]
-        public static Exception SetErrorCode([NotNull] this Exception ex, int errorCode)
+        public static Exception SetErrorCode(this Exception ex, int errorCode)
         {
             return ex.SetData(ErrorCodeDataKey, errorCode);
         }

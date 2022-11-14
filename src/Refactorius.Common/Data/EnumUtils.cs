@@ -11,14 +11,14 @@ namespace Refactorius.Data
     /// <summary>The collection of useful enumeration-related utility methods.</summary>
     public static class EnumUtils
     {
-        [NotNull] private static readonly Dictionary<string, object> _enumerationMap =
+        private static readonly Dictionary<string, object> _enumerationMap =
             new Dictionary<string, object>(128);
 
         /// <summary>Ensures that a <c>Type</c> is an enumeration.</summary>
         /// <param name="type">A <c>Type</c> to check.</param>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
-        public static void EnsureEnumeration([NotNull] [ValidatedNotNull] Type type)
+        public static void EnsureEnumeration([ValidatedNotNull] Type type)
         {
             // can't use generic type constraints on value types, so check at runtime
             type.MustNotBeNull(nameof(type));
@@ -47,8 +47,7 @@ namespace Refactorius.Data
         /// <returns>The <see cref="String"/> value of the <see cref="System.ComponentModel.DescriptionAttribute"/> for the
         /// specified value.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-        [CanBeNull]
-        public static string GetDescription([NotNull] Enum value)
+        public static string? GetDescription(Enum value)
         {
             value.MustNotBeNull(nameof(value));
 
@@ -73,8 +72,7 @@ namespace Refactorius.Data
         /// <paramref name="name"/> of type <paramref name="type"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
-        [CanBeNull]
-        public static string GetDescription([NotNull] Type type, [NotNull] string name)
+        public static string? GetDescription(Type type, string name)
         {
             EnsureEnumeration(type);
             try
@@ -99,11 +97,10 @@ namespace Refactorius.Data
         /// <returns>The <see cref="String"/> value of the <see cref="System.ComponentModel.DescriptionAttribute"/> for the
         /// specified member name.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="T"/> is not an enumeration.</exception>
-        [CanBeNull]
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "method",
             Justification =
                 "Static method uses a generic parameter instead of a System.Type parameter for type safety and code readability.")]
-        public static string GetDescription<T>([NotNull] string name) where T : struct
+        public static string? GetDescription<T>(string name) where T : struct
         {
             return GetDescription(typeof(T), name);
         }
@@ -117,7 +114,7 @@ namespace Refactorius.Data
         /// <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
-        public static bool TryGetValue([NotNull] Type type, [NotNull] string description, out Enum value)
+        public static bool TryGetValue(Type type, string description, out Enum value)
         {
             EnsureEnumeration(type);
 
@@ -173,7 +170,7 @@ namespace Refactorius.Data
         /// <returns><see langword="true"/>, if <paramref name="description"/> was succesfully converted; otherwise,
         /// <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException">if <typeparamref name="T"/> is <see langword="null"/>.</exception>
-        public static bool TryGetValue<T>([NotNull] string description, out T value) where T : struct
+        public static bool TryGetValue<T>(string description, out T value) where T : struct
         {
             Enum intValue;
             var result = TryGetValue(typeof(T), description, out intValue);
@@ -193,8 +190,7 @@ namespace Refactorius.Data
         /// <exception cref="FormatException"><paramref name="description"/> is null, empty or contains only whitespaces;
         /// Enumeration <paramref name="type"/> doesn't contain a member with a name or description equal to
         /// <paramref name="description"/>.</exception>
-        [NotNull]
-        public static Enum GetValue([NotNull] Type type, [NotNull] string description)
+        public static Enum GetValue(Type type, string description)
         {
             type.MustNotBeNull(nameof(type));
             description.MustNotBeEmpty(nameof(description));
@@ -222,7 +218,7 @@ namespace Refactorius.Data
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "method",
             Justification =
                 "Static method uses a generic parameter instead of a System.Type parameter for type safety and code readability.")]
-        public static T GetValue<T>([NotNull] string description) where T : struct
+        public static T GetValue<T>(string description) where T : struct
         {
             return (T) (object) GetValue(typeof(T), description);
         }
@@ -231,7 +227,7 @@ namespace Refactorius.Data
         /// .</summary>
         /// <param name="value">The enumeration value.</param>
         /// <returns>A <see cref="String"/> specified by <see cref="XmlEnumAttribute"/> for this value.</returns>
-        public static string ToXmlString([NotNull] Enum value)
+        public static string ToXmlString(Enum value)
         {
             value.MustNotBeNull(nameof(value));
 
@@ -256,7 +252,7 @@ namespace Refactorius.Data
         /// <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
-        public static bool TryGetValueFromXmlString([NotNull] Type type, [NotNull] string description, out Enum value)
+        public static bool TryGetValueFromXmlString(Type type, string description, out Enum value)
         {
             EnsureEnumeration(type);
 
@@ -279,7 +275,7 @@ namespace Refactorius.Data
         /// <returns><see langword="true"/>, if <paramref name="description"/> was succesfully converted; otherwise,
         /// <see langword="false"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="T"/> is not an enumeration.</exception>
-        public static bool TryGetValueFromXmlString<T>([NotNull] string description, out T value) where T : struct
+        public static bool TryGetValueFromXmlString<T>(string description, out T value) where T : struct
         {
             Enum enumValue;
             var result = TryGetValueFromXmlString(typeof(T), description, out enumValue);
@@ -296,7 +292,7 @@ namespace Refactorius.Data
         /// <returns>The enumeration value, corresponding to the <paramref name="description"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
-        public static Enum GetValueFromXmlString([NotNull] Type type, [NotNull] string description)
+        public static Enum GetValueFromXmlString(Type type, string description)
         {
             type.MustNotBeNull(nameof(type));
 
@@ -320,7 +316,7 @@ namespace Refactorius.Data
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "method",
             Justification =
                 "Static method uses a generic parameter instead of a System.Type parameter for type safety and code readability.")]
-        public static T GetValueFromXmlString<T>([NotNull] string description) where T : struct
+        public static T GetValueFromXmlString<T>(string description) where T : struct
         {
             return (T) (object) GetValueFromXmlString(typeof(T), description);
         }
@@ -334,8 +330,7 @@ namespace Refactorius.Data
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
         /// <exception cref="FormatException"><paramref name="value"/> is specified as a numeric literal or cannot be interpreted
         /// as a (combination of) field name(s) of <paramref name="type"/>.</exception>
-        [NotNull]
-        public static Enum Reparse([NotNull] Type type, [NotNull] Enum value)
+        public static Enum Reparse(Type type, Enum value)
         {
             EnsureEnumeration(type);
             value.MustNotBeNull(nameof(value));
@@ -374,7 +369,7 @@ namespace Refactorius.Data
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "method",
             Justification =
                 "Static method uses a generic parameter instead of a System.Type parameter for type safety and code readability.")]
-        public static T Reparse<T>([NotNull] Enum value) where T : struct
+        public static T Reparse<T>(Enum value) where T : struct
         {
             value.MustNotBeNull(nameof(value));
 

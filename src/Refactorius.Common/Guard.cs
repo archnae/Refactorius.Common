@@ -86,13 +86,12 @@ namespace Refactorius
         /// <param name="name">The argument name.</param>
         /// <returns>The original <paramref name="argument" />.</returns>
         /// <exception cref="System.ArgumentNullException">If the supplied <paramref name="argument" /> is <see langword="null" />.</exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T MustNotBeNull<T>(
             [CanBeNull] [NoEnumeration] [ValidatedNotNull]
             this T argument,
-            [NotNull] [InvokerParameterName] string name) where T : class
+            [InvokerParameterName] string name) where T : class
         {
             if (argument == null)
                 throw new ArgumentNullException(name, ArgumentIsNullMessage(name));
@@ -113,14 +112,13 @@ namespace Refactorius
         /// </param>
         /// <returns>The original <paramref name="argument" />.</returns>
         /// <exception cref="System.ArgumentNullException">If the supplied <paramref name="argument" /> is <see langword="null" />.</exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T MustNotBeNull<T>(
             [CanBeNull] [NoEnumeration] [ValidatedNotNull]
             this T argument,
-            [NotNull] [InvokerParameterName] string name,
-            [NotNull] string message) where T : class
+            [InvokerParameterName] string name,
+            string message) where T : class
         {
             if (argument == null)
                 throw new ArgumentNullException(name, message);
@@ -154,7 +152,7 @@ namespace Refactorius
         [ContractAnnotation("argument:null => null; argument:notnull => notnull")]
         public static T MustImplement<T>(
             [CanBeNull] [NoEnumeration] this object argument,
-            [NotNull] string name) where T : class
+            string name) where T : class
         {
             if (argument != null && !(argument is T))
                 throw new ArgumentException(ArgumentNotAnInstanceOfTypeMessage(name, typeof(T).FullName), name);
@@ -192,7 +190,7 @@ namespace Refactorius
         public static object MustImplement(
             [CanBeNull] [NoEnumeration] this object argument,
             Type requiredType,
-            [NotNull] string name)
+            string name)
         {
             if (requiredType == null)
                 throw new ArgumentNullException(nameof(requiredType));
@@ -222,8 +220,8 @@ namespace Refactorius
         [ContractAnnotation("argument:null => null; argument:notnull => notnull")]
         public static T MustImplement<T>(
             [CanBeNull] [NoEnumeration] this object argument,
-            [NotNull] string argumentName,
-            [NotNull] string message)
+            string argumentName,
+            string message)
         {
             if (argument != null && !(argument is T))
                 throw new ArgumentException(message, argumentName);
@@ -251,9 +249,9 @@ namespace Refactorius
         [ContractAnnotation("argument:null => null; argument:notnull => notnull; requiredType:null => halt")]
         public static object MustImplement(
             [CanBeNull] [NoEnumeration] this object argument,
-            [NotNull] Type requiredType,
-            [NotNull] string argumentName,
-            [NotNull] string message)
+            Type requiredType,
+            string argumentName,
+            string message)
         {
             if (requiredType == null)
                 throw new ArgumentNullException(nameof(requiredType));
@@ -286,9 +284,8 @@ namespace Refactorius
             Target = "Refactorius.Commons.Collections",
             Justification =
                 "Argument type validating assertion method should be able to accept parameter of any type.")]
-        [NotNull]
         [ContractAnnotation("type:null => halt")]
-        public static Type MustInherit<T>(this Type type, [NotNull] string argumentName, string message = null)
+        public static Type MustInherit<T>(this Type type, string argumentName, string message = null)
         {
             type.MustNotBeNull(nameof(type));
 
@@ -322,7 +319,7 @@ namespace Refactorius
         public static Type MustInherit(
             [CanBeNull] this Type argument,
             Type requiredType,
-            [NotNull] string argumentName,
+            string argumentName,
             string message = null)
         {
             requiredType.MustNotBeNull(nameof(requiredType));
@@ -351,10 +348,9 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is an empty (zero-length)
         ///     string.
         /// </exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string MustNotBeEmpty(this string argument, [NotNull] [InvokerParameterName] string name)
+        public static string MustNotBeEmpty(this string argument, [InvokerParameterName] string name)
         {
             if (argument == null)
                 throw new ArgumentNullException(name);
@@ -380,13 +376,12 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is an empty (zero-length)
         ///     string.
         /// </exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string MustNotBeEmpty(
             this string argument,
-            [NotNull] [InvokerParameterName] string name,
-            [NotNull] string message)
+            [InvokerParameterName] string name,
+            string message)
         {
             if (argument == null)
                 throw new ArgumentNullException(name, message);
@@ -415,10 +410,9 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> contains only whitespace
         ///     character(s).
         /// </exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string MustHaveText(this string argument, [NotNull] [InvokerParameterName] string name)
+        public static string MustHaveText(this string argument, [InvokerParameterName] string name)
         {
             argument.MustNotBeEmpty(name);
 
@@ -445,13 +439,12 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> contains only whitespace
         ///     character(s).
         /// </exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string MustHaveText(
             this string argument,
-            [NotNull] [InvokerParameterName] string name,
-            [NotNull] string message)
+            [InvokerParameterName] string name,
+            string message)
         {
             argument.MustNotBeEmpty(name, message);
 
@@ -543,9 +536,8 @@ namespace Refactorius
         /// <returns>The original <paramref name="argument" />.</returns>
         /// <exception cref="System.ArgumentNullException">If the supplied <paramref name="argument" /> is <see langword="null" />.</exception>
         /// <exception cref="System.ArgumentException">If the supplied <paramref name="argument" /> contains no elements.</exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
-        public static ICollection<T> MustHaveElements<T>(this ICollection<T> argument, [NotNull] string name)
+        public static ICollection<T> MustHaveElements<T>(this ICollection<T> argument, string name)
         {
             if (argument == null)
                 throw new ArgumentNullException(name, ArgumentIsNullMessage(name));
@@ -569,12 +561,11 @@ namespace Refactorius
         /// <returns>The original <paramref name="argument" />.</returns>
         /// <exception cref="System.ArgumentNullException">If the supplied <paramref name="argument" /> is <see langword="null" />.</exception>
         /// <exception cref="System.ArgumentException">If the supplied <paramref name="argument" /> contains no elements.</exception>
-        [NotNull]
         [ContractAnnotation("argument:null => halt")]
         public static ICollection<T> MustHaveElements<T>(
             this ICollection<T> argument,
-            [NotNull] string name,
-            [NotNull] string message)
+            string name,
+            string message)
         {
             if (argument == null)
                 throw new ArgumentNullException(name, message);
@@ -604,7 +595,7 @@ namespace Refactorius
         /// </exception>
         [NotNull]
         [ContractAnnotation("range:null => halt")]
-        public static T MustBeInRange<T>([NotNull] this T argument, Range<T> range, [NotNull] string name)
+        public static T MustBeInRange<T>([NotNull] this T argument, Range<T> range, string name)
         {
             range.MustNotBeNull(nameof(argument));
 
@@ -634,8 +625,8 @@ namespace Refactorius
         public static T MustBeInRange<T>(
             [NotNull] this T argument,
             Range<T> range,
-            [NotNull] string name,
-            [NotNull] string message)
+            string name,
+            string message)
         {
             range.MustNotBeNull(nameof(argument));
 

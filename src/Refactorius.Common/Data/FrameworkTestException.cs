@@ -63,7 +63,7 @@ namespace Refactorius.Data
         }
 
         /// <inheritdoc/>
-        protected FrameworkTestException([NotNull] SerializationInfo info, StreamingContext context)
+        protected FrameworkTestException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

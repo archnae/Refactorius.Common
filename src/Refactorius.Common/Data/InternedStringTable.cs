@@ -54,8 +54,7 @@ namespace Refactorius.Data
         /// <summary>Retrieves the interned value of the specified string, if possible.</summary>
         /// <param name="value">A string to intern.</param>
         /// <returns>the interned value of the specified string, if possible, or <paramref name="value"/> itself if not.</returns>
-        [NotNull]
-        public static string Intern([NotNull] string value)
+        public static string Intern(string value)
         {
             if (string.IsNullOrEmpty(value))
                 return value;
@@ -118,7 +117,7 @@ namespace Refactorius.Data
         private const int DEFAULT_ADD_LIMIT = 16 * 1024;
         private const int DEFAULT_MAX_LENGTH = 32 * 1024;
 
-        [NotNull] private static readonly ConcurrentDictionary<string, string> _strings =
+        private static readonly ConcurrentDictionary<string, string> _strings =
             new ConcurrentDictionary<string, string>(DEFAULT_CONCURRENCY, DEFAULT_SIZE, StringComparer.Ordinal);
 
         private static int _internedLimit = DEFAULT_INTERNED_LIMIT;

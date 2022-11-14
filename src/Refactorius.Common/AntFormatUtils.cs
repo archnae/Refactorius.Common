@@ -25,19 +25,17 @@ namespace Refactorius
         public const string DefaultAntExpressionPostfix = "}";
 
         /// <summary>Returns a list of Ant-style expressions from the specified text.</summary>
-        /// <param name="text">The text to inspect.</param>
+        /// <param name="text">The text to inspect or <see langword="null"/>.</param>
         /// <param name="prefix">The Ant expression prefix, default is <b>${</b>.</param>
         /// <param name="postfix">The Ant expression postfix, default is <b>}</b>.</param>
         /// <returns>A list of expressions that exist in the specified text.</returns>
         /// <exception cref="System.FormatException">If some expression in the supplied <paramref name="text"/> is empty (as in
         /// <c>"${}"</c>).</exception>
         /// <seealso cref="SetAntExpression"/>
-        [ItemNotNull]
-        [NotNull]
         public static IList<string> GetAntExpressions(
-            [CanBeNull] string text,
-            [NotNull] string prefix = DefaultAntExpressionPrefix,
-            [NotNull] string postfix = DefaultAntExpressionPostfix)
+            string? text,
+            string prefix = DefaultAntExpressionPrefix,
+            string postfix = DefaultAntExpressionPostfix)
         {
             prefix.MustHaveText(nameof(prefix));
             postfix.MustHaveText(nameof(postfix));
@@ -46,7 +44,7 @@ namespace Refactorius
             if (string.IsNullOrEmpty(text))
                 return expressions;
 
-            var start = text.IndexOf(prefix, StringComparison.Ordinal);
+            var start = text!.IndexOf(prefix, StringComparison.Ordinal);
             while (start >= 0)
             {
                 var end = text.IndexOf(
@@ -66,7 +64,7 @@ namespace Refactorius
                 var exp = text.Substring(
                     start + prefix.Length,
                     end - start - prefix.Length);
-                if (exp.IsEmpty())
+                if (string.IsNullOrWhiteSpace(exp))
                     throw new FormatException(
                         string.Format(
                             CultureInfo.InvariantCulture,
@@ -85,7 +83,7 @@ namespace Refactorius
         }
 
         /// <summary>Replaces arbitrary substitution pre- and postfixes with Ant-style delimiters.</summary>
-        /// <param name="text">The text to inspect.</param>
+        /// <param name="text">The text to inspect or <see langword="null"/>.</param>
         /// <param name="prefix">An arbitrary prefix to replace.</param>
         /// <param name="postfix">An arbitrary postfix to replace.</param>
         /// <returns>The <paramref name="text"/> with <paramref name="prefix"/> replaced with
@@ -93,19 +91,18 @@ namespace Refactorius
         /// <exception cref="System.FormatException">If some expression in the supplied <paramref name="text"/> is empty (as in
         /// <c>"%%"</c>).</exception>
         /// <seealso cref="GetAntExpressions"/>
-        [ContractAnnotation("text:null=>null;text:notnull=>notnull")]
-        public static string MakeAntedString([CanBeNull] string text, [NotNull] string prefix, [NotNull] string postfix)
+        public static string MakeAntedString(string? text, string prefix, string postfix)
         {
             prefix.MustHaveText(nameof(prefix));
             postfix.MustHaveText(nameof(postfix));
 
             if (string.IsNullOrEmpty(text))
-                return text;
+                return string.Empty;
 
             // TODO: handle the case of an empty postfix (collect name until non-alphanum char) 
             var sb = new StringBuilder();
             var anchor = 0;
-            var start = text.IndexOf(prefix, StringComparison.Ordinal);
+            var start = text!.IndexOf(prefix, StringComparison.Ordinal);
             while (start >= 0)
             {
                 if (start > anchor)
@@ -123,7 +120,7 @@ namespace Refactorius
                 {
                     anchor = end + postfix.Length;
                     var exp = text.Substring(start + prefix.Length, end - start - prefix.Length);
-                    if (exp.IsEmpty())
+                    if (string.IsNullOrWhiteSpace(exp))
                         throw new FormatException(
                             string.Format(
                                 CultureInfo.InvariantCulture,
@@ -144,8 +141,8 @@ namespace Refactorius
             return sb.ToString();
         }
 
-        /// <summary>Replaces Ant-style expression placeholder with expression value.</summary>
-        /// <param name="text">The string to set the value in, may be <see langword="null"/>.</param>
+        /// <summary>Replaces Ant-style expression placeholder with expression value, null-propagating.</summary>
+        /// <param name="text">The string to set the value in or <see langword="null"/>.</param>
         /// <param name="name">The name of the expression to set.</param>
         /// <param name="value">The expression value.</param>
         /// <param name="prefix">The Ant expression prefix, default is <b>${</b>.</param>
@@ -155,12 +152,12 @@ namespace Refactorius
         /// result.</returns>
         /// <seealso cref="GetAntExpressions"/>
         [ContractAnnotation("text:null=>null;text:notnull=>notnull")]
-        public static string SetAntExpression(
-            [CanBeNull] string text,
-            [NotNull] string name,
-            [CanBeNull] object value,
-            [NotNull] string prefix = DefaultAntExpressionPrefix,
-            [NotNull] string postfix = DefaultAntExpressionPostfix)
+        public static string? SetAntExpression(
+            string? text,
+            string name,
+            object? value,
+            string prefix = DefaultAntExpressionPrefix,
+            string postfix = DefaultAntExpressionPostfix)
         {
             name.MustHaveText(nameof(name));
             prefix.MustHaveText(nameof(prefix));
@@ -169,17 +166,16 @@ namespace Refactorius
             if (string.IsNullOrEmpty(text))
                 return text;
 
-            if (value == null)
-                value = string.Empty;
+            value ??= string.Empty;
 
-            return text.Replace(
+            return text!.Replace(
                 string.Concat(prefix, name, postfix),
                 ConvertUtils.ToString(value));
         }
 
 
         /// <summary>Replaces Ant-style expressions in a specified <see cref="string"/> with the text equivalent of their values.</summary>
-        /// <param name="format">A format string, containing Ant-style expressions.</param>
+        /// <param name="format">A format string, containing Ant-style expressions, or <see langword="null"/>.</param>
         /// <param name="namedArgs">A <b>IDictionary&lt;string, object&gt;</b> of name/value pairs.</param>
         /// <param name="ignoreMissing"><see langword="true"/> to throw <see cref="FormatException"/> if <paramref name="format"/>
         /// contains a substitution which is absent in <paramref name="namedArgs"/>, <see langword="false"/> to leave missing
@@ -197,27 +193,31 @@ namespace Refactorius
         [StringFormatMethod("format")]
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
         public static string AntFormat(
-            [CanBeNull] this string format,
-            [NotNull] IDictionary<string, object> namedArgs,
+            this string? format,
+            IDictionary<string, object>? namedArgs,
             bool ignoreMissing = false,
-            [NotNull] string prefix = DefaultAntExpressionPrefix,
-            [NotNull] string postfix = DefaultAntExpressionPostfix)
+            string prefix = DefaultAntExpressionPrefix,
+            string postfix = DefaultAntExpressionPostfix)
         {
             prefix.MustHaveText(nameof(prefix));
             postfix.MustHaveText(nameof(postfix));
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (string.IsNullOrEmpty(format) || namedArgs == null || namedArgs.Count == 0 && ignoreMissing)
-                return format;
+            if (string.IsNullOrEmpty(format))
+                return string.Empty;
+
+            var current = format!;
+            if (namedArgs == null || namedArgs.Count == 0 && ignoreMissing)
+                return current;
 
             // max 16 levels of variables nesting
             for (var i = 0; i < MAX_SUBSTITUTION_DEPTH; i++)
             {
-                var original = format;
+                var original = current;
                 // TODO: rewrite like GetAntExpressions with StringBuilder
-                foreach (var name in GetAntExpressions(format, prefix, postfix))
+                foreach (var name in GetAntExpressions(current, prefix, postfix))
                     if (namedArgs.ContainsKey(name))
-                        format = SetAntExpression(format, name, namedArgs[name], prefix, postfix);
+                        current = SetAntExpression(current, name, namedArgs[name], prefix, postfix)!;
                     else if (!ignoreMissing)
                         throw new FormatException(
                             string.Format(
@@ -226,16 +226,16 @@ namespace Refactorius
                                 prefix.Replace("{", "\\{"),
                                 name,
                                 postfix,
-                                format.Ellipsis(256)));
-                if (ReferenceEquals(original, format) || format.IndexOf(prefix, StringComparison.Ordinal) < 0)
+                                current.Ellipsis(256)));
+                if (ReferenceEquals(original, current) || current.IndexOf(prefix, StringComparison.Ordinal) < 0)
                     break;
             }
 
-            return format;
+            return current;
         }
-        
+
         /// <summary>Replaces Ant-style expressions in a specified <see cref="string"/> with the text equivalent of their values.</summary>
-        /// <param name="format">A format string, containing Ant-style expressions.</param>
+        /// <param name="format">A format string, containing Ant-style expressions, or <see langword="null"/>.</param>
         /// <param name="namedArgs">A <b>IDictionary&lt;string, object&gt;</b> of name/value pairs.</param>
         /// <param name="ignoreMissing"><see langword="true"/> to throw <see cref="FormatException"/> if <paramref name="format"/>
         /// contains a substitution which is absent in <paramref name="namedArgs"/>, <see langword="false"/> to leave missing
@@ -253,27 +253,30 @@ namespace Refactorius
         [StringFormatMethod("format")]
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
         public static string AntFormat(
-            [CanBeNull] this string format,
-            [NotNull] IDictionary<string, string> namedArgs,
+            this string? format,
+            IDictionary<string, string>? namedArgs,
             bool ignoreMissing = false,
-            [NotNull] string prefix = AntFormatUtils.DefaultAntExpressionPrefix,
-            [NotNull] string postfix = AntFormatUtils.DefaultAntExpressionPostfix)
+            string prefix = DefaultAntExpressionPrefix,
+            string postfix = DefaultAntExpressionPostfix)
         {
             prefix.MustHaveText(nameof(prefix));
             postfix.MustHaveText(nameof(postfix));
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (string.IsNullOrEmpty(format) || namedArgs == null || namedArgs.Count == 0 && ignoreMissing)
-                return format;
+            if (string.IsNullOrEmpty(format))
+                return string.Empty;
+            var current = format!;
+            if (namedArgs == null || namedArgs.Count == 0 && ignoreMissing)
+                return current;
 
             // max 16 levels of variables nesting
             for (var i = 0; i < MAX_SUBSTITUTION_DEPTH; i++)
             {
-                var original = format;
+                var original = current;
                 // TODO: rewrite like GetAntExpressions with StringBuilder
                 foreach (var name in AntFormatUtils.GetAntExpressions(format, prefix, postfix))
                     if (namedArgs.ContainsKey(name))
-                        format = AntFormatUtils.SetAntExpression(format, name, namedArgs[name], prefix, postfix);
+                        current = SetAntExpression(current, name, namedArgs[name], prefix, postfix)!;
                     else if (!ignoreMissing)
                         throw new FormatException(
                             string.Format(
@@ -282,12 +285,12 @@ namespace Refactorius
                                 prefix.Replace("{", "\\{"),
                                 name,
                                 postfix,
-                                format.Ellipsis(256)));
-                if (ReferenceEquals(original, format) || format.IndexOf(prefix, StringComparison.Ordinal) < 0)
+                                current.Ellipsis(256)));
+                if (ReferenceEquals(original, current) || current.IndexOf(prefix, StringComparison.Ordinal) < 0)
                     break;
             }
 
-            return format;
+            return current;
         }
     }
 }

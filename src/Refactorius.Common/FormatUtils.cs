@@ -24,7 +24,7 @@ namespace Refactorius
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [Obsolete("Deprecated, use FormatWith instead")]
-        public static string Format([NotNull] string format, [NotNull] params object[] args)
+        public static string Format(string format, params object[] args)
         {
             return string.IsNullOrEmpty(format) || args.Length == 0
                 ? format
@@ -43,14 +43,13 @@ namespace Refactorius
         /// <seealso cref="string.Format(string,object[])"/>
         [SuppressMessage("Microsoft.Naming", "CA1719:ParameterNamesShouldNotMatchMemberNames",
             MessageId = "0#", Justification = "Imitates String.Format().")]
-        [CanBeNull]
         [StringFormatMethod("format")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [Obsolete("Deprecated, use FormatWith instead")]
-        public static string Format(
-            [NotNull] string format,
-            [NotNull] IDictionary<string, object> namedArgs,
-            [NotNull] params object[] args)
+        public static string? Format(
+            string format,
+            IDictionary<string, object> namedArgs,
+            params object[] args)
         {
             // TODO: provide an overload with a IFormatProvider parameter
             // TODO: it is a very stupid implementation
@@ -68,7 +67,7 @@ namespace Refactorius
         [StringFormatMethod("format")]
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string FormatWith([NotNull] this string format, [NotNull] params object[] args)
+        public static string FormatWith(this string format, params object[] args)
         {
             return format.FormatWith(CultureInfo.InvariantCulture, args);
         }
@@ -82,13 +81,12 @@ namespace Refactorius
         /// equivalent of the corresponding instances of <b>object</b> in <paramref name="args"/>.</returns>
         /// <remarks>This method differs from <see cref="string.Format(string,object[])"/> in that it is culture-invariant.</remarks>
         /// <seealso cref="string.Format(string,object[])"/>
-        [CanBeNull]
         [StringFormatMethod("format")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string FormatWith(
-            [NotNull] this string format,
-            [NotNull] IDictionary<string, object> namedArgs,
-            [NotNull] params object[] args)
+        public static string? FormatWith(
+            this string format,
+            IDictionary<string, object> namedArgs,
+            params object[] args)
         {
             return format.AntFormat(namedArgs).FormatWith(CultureInfo.InvariantCulture, args);
         }
@@ -104,8 +102,8 @@ namespace Refactorius
         [StringFormatMethod("format")]
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string FormatWith([NotNull] this string format, [NotNull] IFormatProvider provider,
-            [NotNull] params object[] args)
+        public static string FormatWith(this string format, IFormatProvider provider,
+            params object[] args)
         {
             if (string.IsNullOrEmpty(format) || args.Length == 0)
                 return format;
@@ -128,8 +126,8 @@ namespace Refactorius
         [StringFormatMethod("format")]
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string SafeFormat([NotNull] IFormatProvider provider, [NotNull] string format,
-            [NotNull] params object[] args)
+        public static string SafeFormat(IFormatProvider provider, string format,
+            params object[] args)
         {
             return format.SafeFormat(provider, args);
         }
@@ -146,7 +144,7 @@ namespace Refactorius
         /// <seealso cref="String.Format(string,object[])"/>
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string SafeFormat([NotNull] this string format, [NotNull] params object[] args)
+        public static string SafeFormat(this string format, params object[] args)
         {
             return format.SafeFormat(CultureInfo.InvariantCulture, args);
         }
@@ -164,8 +162,8 @@ namespace Refactorius
         /// <seealso cref="String.Format(string,object[])"/>
         [StringFormatMethod("format")]
         [ContractAnnotation("format:null=>null;format:notnull=>notnull")]
-        public static string SafeFormat([NotNull] this string format, [NotNull] IFormatProvider provider,
-            [NotNull] params object[] args)
+        public static string SafeFormat(this string format, IFormatProvider provider,
+            params object?[] args)
         {
             if (string.IsNullOrEmpty(format) || args.Length == 0)
                 return format;
@@ -197,8 +195,8 @@ namespace Refactorius
         /// <seealso cref="String.Format(string,object[])"/>
         [StringFormatMethod("format")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string SafeFormat([NotNull] this string format, [NotNull] IDictionary<string, object> namedArgs,
-            [NotNull] params object[] args)
+        public static string SafeFormat(this string format, IDictionary<string, object> namedArgs,
+            params object[] args)
         {
             if (string.IsNullOrEmpty(format) || args.Length == 0)
                 return format;

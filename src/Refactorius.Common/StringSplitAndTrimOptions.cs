@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 
 namespace Refactorius
 {
@@ -8,6 +9,7 @@ namespace Refactorius
     /// values.</para>
     /// </summary>
     /// <seealso cref="StringUtils"/>
+    [PublicAPI]
     [Flags]
     public enum StringSplitAndTrimOptions
     {
@@ -24,6 +26,11 @@ namespace Refactorius
         /// <summary>The elements of the return value are trimmed at the end.</summary>
         /// <seealso cref="string.TrimEnd"/>
         TrimAtEnd = 4,
+
+        /// <summary>The elements of the return value are trimmed and
+        /// all sequences of one or more whitespaces replaced with a single space.</summary>
+        /// <seealso cref="Squeeze"/>
+        Squeeze = 8,
 
         /// <summary>The elements of the return value are trimmed at both start and end.</summary>
         /// <seealso cref="string.Trim()"/>

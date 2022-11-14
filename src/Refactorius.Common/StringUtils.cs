@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+//using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,8 +19,8 @@ namespace Refactorius
     {
         /// <summary>Gets an an empty array of <see cref="string"/>.</summary>
         /// <value>An zero-length array of <see cref="string"/>.</value>
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays",
-            Justification = "Creates a new instance on every access.")]
+        //[SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays",
+        //    Justification = "Creates a new instance on every access.")]
         public static string[] EmptyStrings => Array.Empty<string>();
 
         /// <summary>Sanitizes a <see cref="string"/> into a valid <see cref="System.IO.Path"/> by replacing all invalid characters
@@ -29,13 +29,10 @@ namespace Refactorius
         /// <returns>A sanitized path.</returns>
         /// <seealso cref="Sanitize"/>
         /// <seealso cref="System.IO.Path.GetInvalidPathChars"/>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
+        /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
         [Pure]
-        public static string SanitizePath(string value)
-        {
-            var sanitized = Sanitize(value, Path.GetInvalidPathChars(), '_');
-            return sanitized?.Trim();
-        }
+        public static string SanitizePath(string value) =>
+            value.Sanitize(Path.GetInvalidPathChars(), '_').Trim();
 
         /// <summary>Sanitizes a <see cref="string"/> into a valid <see cref="System.IO.File"/> name by replacing all invalid
         /// characters in it with spaces.</summary>
@@ -43,12 +40,11 @@ namespace Refactorius
         /// <returns>A sanitized file name.</returns>
         /// <seealso cref="Sanitize"/>
         /// <seealso cref="System.IO.Path.GetInvalidFileNameChars"/>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
+        /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
         [Pure]
         public static string SanitizeFileName(string value)
         {
-            var sanitized = Sanitize(value, Path.GetInvalidFileNameChars(), '_');
-            return sanitized?.Trim();
+            return value.Sanitize(Path.GetInvalidFileNameChars(), '_').Trim();
         }
 
         /// <summary>Indicates whether the specified <see cref="string"/> object is <see langword="null"/> or an
@@ -56,10 +52,9 @@ namespace Refactorius
         /// <param name="value">A <see cref="string"/> reference.</param>
         /// <returns><see langword="true"/> if the value parameter is <see langword="null"/>  or an empty string (""); otherwise,
         /// <see langword="false"/>.</returns>
-        [ContractAnnotation("value:null => true")]
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrEmpty(this string value)
+        [Obsolete("Use string.IsNullOrEmpty()."), ContractAnnotation("value:null => true"), Pure,
+         MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNullOrEmpty(this string? value)
         {
             return string.IsNullOrEmpty(value);
         }
@@ -83,10 +78,9 @@ namespace Refactorius
         /// StringUtils.IsEmpty(" 12345 ") = false
         /// </code>
         /// </example>
-        [ContractAnnotation("target:null => true")]
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsEmpty(this string target)
+        [Obsolete("Use string.IsNullOrWhiteSpace()."), ContractAnnotation("target:null => true"), Pure,
+         MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsEmpty(this string? target)
         {
             return string.IsNullOrWhiteSpace(target);
         }
@@ -107,10 +101,9 @@ namespace Refactorius
         /// StringUtils.HasLength("Hello") == true
         /// </code>
         /// </example>
-        [ContractAnnotation("target:null => false")]
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool HasLength(this string target)
+        [Obsolete("Use !string.IsNullOrEmpty()."), ContractAnnotation("target:null => false"), Pure,
+         MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool HasLength(this string? target)
         {
             return !string.IsNullOrEmpty(target);
         }
@@ -132,16 +125,15 @@ namespace Refactorius
         /// StringUtils.HasText(" 12345 ") = true
         /// </code>
         /// </example>
-        [ContractAnnotation("target:null => false")]
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Use !string.IsNullOrWhiteText()."), ContractAnnotation("target:null => false"), Pure,
+         MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasText(this string target)
         {
             return !string.IsNullOrWhiteSpace(target);
         }
 
         /// <summary>Truncates a <see cref="string"/> to a specified length, adding at the end an ellipsis.</summary>
-        /// <param name="value">A <see cref="string"/> to truncate, may be <see langword="null"/>.</param>
+        /// <param name="value">A <see cref="string"/> to truncate or <see langword="null"/>.</param>
         /// <param name="maxLength">The length to which the <paramref name="value"/> should be truncated.</param>
         /// <returns>The original <paramref name="value"/> if it was <see langword="null"/>, empty or had length not greater that
         /// <paramref name="maxLength"/>; otherwise, the string of length <paramref name="maxLength"/>, consisting of the truncated
@@ -151,15 +143,16 @@ namespace Refactorius
         /// <example>
         /// <code lang="C#">
         /// StringUtils.Ellipsis(null, 10) == null;
-        /// StringUtils.Ellipsis("abcdef", 10) == "abcdef";
-        /// StringUtils.Ellipsis("abcdef", 6) == "abcdef";
-        /// StringUtils.Ellipsis("abcdef", 5) == "a ...";
+        /// StringUtils.Ellipsis("something", 12) == "something";
+        /// StringUtils.Ellipsis("something", 9) == "something";
+        /// StringUtils.Ellipsis("something", 5) == "s ...";
         /// </code>
         /// </example>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
-        [Pure]
-        public static string Ellipsis(this string value, int maxLength)
+        /// <remarks>Changed in v11 to non null-propagating.</remarks>
+        [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+        public static string Ellipsis(this string? value, int maxLength)
         {
+            value = value?.Trim() ?? string.Empty; 
             if (maxLength <= DefaultEllipsisPostfix.Length)
                 throw new ArgumentOutOfRangeException(
                     nameof(maxLength),
@@ -171,17 +164,18 @@ namespace Refactorius
         }
 
         /// <summary>Truncates a <see cref="string"/> to a specified length, adding at the beginning an ellipsis.</summary>
-        /// <param name="value">A <see cref="string"/> to truncate, may be <see langword="null"/>.</param>
+        /// <param name="value">A <see cref="string"/> to truncate or <see langword="null"/>.</param>
         /// <param name="maxLength">The length to which the <paramref name="value"/> should be truncated.</param>
         /// <returns>The original <paramref name="value"/> if it was <see langword="null"/>, empty or had length not greater that
         /// <paramref name="maxLength"/>; otherwise, the string of length <paramref name="maxLength"/>,
         /// consisting of the <see cref="DefaultEllipsisPostfix"/> and the truncated at the beginning <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
         /// <see cref="DefaultEllipsisPostfix"/>.</exception>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
-        [Pure]
-        public static string ReverseEllipsis(this string value, int maxLength)
+        /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
+        [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+        public static string ReverseEllipsis(this string? value, int maxLength)
         {
+            value = value?.Trim() ?? string.Empty;
             if (maxLength <= DefaultEllipsisPostfix.Length)
                 throw new ArgumentOutOfRangeException(
                     nameof(maxLength),
@@ -192,17 +186,18 @@ namespace Refactorius
         }
 
         /// <summary>Truncates a <see cref="string"/> to a specified length, adding in the middle an ellipsis.</summary>
-        /// <param name="value">A <see cref="string"/> to truncate, may be <see langword="null"/>.</param>
+        /// <param name="value">A <see cref="string"/> to truncate or <see langword="null"/>.</param>
         /// <param name="maxLength">The length to which the <paramref name="value"/> should be truncated.</param>
         /// <returns>The original <paramref name="value"/> if it was <see langword="null"/>, empty or had length not greater that
         /// <paramref name="maxLength"/>; otherwise, the string of length <paramref name="maxLength"/>, consisting of the truncated
         /// in the middle <paramref name="value"/> with the <see cref="DefaultEllipsisPostfix"/> inserted.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
         /// <see cref="DefaultEllipsisPostfix"/>.</exception>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
-        [Pure]
-        public static string BiEllipsis(this string value, int maxLength)
+        /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
+        [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+        public static string BiEllipsis(this string? value, int maxLength)
         {
+            value = value?.Trim() ?? string.Empty;
             if (maxLength <= StringUtils.DefaultEllipsisPostfix.Length + 4)
                 throw new ArgumentOutOfRangeException(
                     nameof(maxLength),
@@ -216,67 +211,63 @@ namespace Refactorius
             return $"{head} {StringUtils.DefaultEllipsisPostfix} {tail}";
         }
         
-        /// <summary>Converts the <see cref="string"/> to camelCase.</summary>
+        /// <summary>Converts the <see cref="string"/> to camelCase, null-propagating.</summary>
         /// <param name="value">A <see cref="string"/> to convert.</param>
         /// <returns>A <paramref name="value"/>, converted to camelCase (first character in lower case, the rest unchanged). The
         /// value is trimmed before conversion. <see langword="null"/> value is returned unchanged.</returns>
         /// <remarks>The conversion to lower case uses the current culture.</remarks>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
-        [Pure]
-        public static string ToCamelCase(this string value)
+        [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+        public static string? ToCamelCase(this string? value)
         {
-            // TODO: provide an overload with a IFormatProvider parameter
             if (string.IsNullOrEmpty(value))
                 return value;
 
-            value = value.Trim();
+            value = value!.Trim();
             return value.Length > 0
                 ? value.Substring(0, 1).ToLower(CultureInfo.CurrentCulture) + value.Substring(1)
                 : value;
         }
 
-        /// <summary>Capitalizes a <see cref="string"/>.</summary>
+        /// <summary>Capitalizes a <see cref="string"/>, null-propagating.</summary>
         /// <param name="value">The original <see cref="string"/> value.</param>
-        /// <returns>A <paramref name="value"/>, converted to Capitalcase (first character in upper case, the rest unchanged). The
+        /// <returns>A <paramref name="value"/>, converted to Capital (first character in upper case, the rest unchanged). The
         /// value is trimmed before conversion. <see langword="null"/> value is returned unchanged.</returns>
         /// <remarks>The conversion to upper case uses the current culture.</remarks>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
-        [Pure]
-        public static string ToCapitalCase(this string value)
+        [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+        public static string? ToCapitalCase(this string? value)
         {
-            // TODO: provide an overload with a IFormatProvider parameter
             if (string.IsNullOrEmpty(value))
                 return value;
 
-            value = value.Trim();
+            value = value!.Trim();
             return value.Length > 0
                 ? value.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture) + value.Substring(1)
                 : value;
         }
 
-        /// <summary>Replaces in <see cref="string"/> Windows- and Unix-style newlines with single space.</summary>
+        /// <summary>Replaces in <see cref="string"/> Windows- and Unix-style newlines with single space, null-propagating.</summary>
         /// <param name="value">The original <see cref="string"/>.</param>
         /// <returns>The <paramref name="value"/> with newlines replaced. If <paramref name="value"/> is <see langword="null"/> or
         /// <see cref="string.Empty"/>, the result is <see cref="string.Empty"/>.</returns>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
-        [Pure]
-        public static string CompactNewLines(this string value)
+        [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+        public static string? CompactNewLines(this string? value)
         {
             return string.IsNullOrEmpty(value)
                 ? value
-                : value.Replace("\r\n", " ").Replace("\n", " ");
+                : value!.Replace("\r\n", " ").Replace("\n", " ");
         }
 
         /// <summary>Sanitizes a <see cref="string"/> by replacing all invalid characters in it with the specified character.</summary>
         /// <param name="value">A string to sanitize.</param>
         /// <param name="invalidCharacters">An array of invalid characters.</param>
         /// <param name="replacementCharacter">A replacement character.</param>
-        /// <returns>A trimmed <paramref name="value"/> with all occurences of any of <paramref name="invalidCharacters"/> replaced
+        /// <returns>A trimmed <paramref name="value"/> with all occurrences of any of <paramref name="invalidCharacters"/> replaced
         /// by the <paramref name="replacementCharacter"/>.</returns>
-        [ContractAnnotation("value:null => null; value:notnull => notnull")]
+        /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
         [Pure]
-        public static string Sanitize(this string value, [NotNull] char[] invalidCharacters, char replacementCharacter)
+        public static string Sanitize(this string value, char[] invalidCharacters, char replacementCharacter)
         {
+            value.MustNotBeNull(nameof(value));
             invalidCharacters.MustNotBeNull(nameof(invalidCharacters));
 
             if (replacementCharacter == 0)
@@ -302,26 +293,23 @@ namespace Refactorius
             return new string(result);
         }
 
-        /// <summary>Tokenizes the given <see cref="string"/> into a <see cref="string"/> array, trimming the resulting tokens and
+        /// <summary>Tokenize the given <see cref="string"/> into a <see cref="string"/> array, trimming the resulting tokens and
         /// removing the empty ones.</summary>
-        /// <param name="value">The <see cref="string"/> to tokenize.</param>
+        /// <param name="value">The <see cref="string"/> to tokenize or <see langword="null"/>.</param>
         /// <param name="separators">The <see cref="string"/> of separator characters.</param>
         /// <returns>An array of the tokens.</returns>
         /// <remarks>If <paramref name="value"/> is <see langword="null"/>, returns an empty <see cref="string"/> array. If
         /// <paramref name="separators"/> is <see langword="null"/> or empty, returns a <see cref="string"/> array with one
         /// element: <paramref name="value"/> itself. Tokens are trimmed; empty tokens are removed from the result.</remarks>
-        [ItemNotNull]
-        [NotNull]
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string[] SplitAndTrim([CanBeNull] this string value, [NotNull] string separators)
+        [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] SplitAndTrim(this string? value, string separators)
         {
             // TODO: SplitAndTrim re-squeeze is not efficient, handle default case better
             return SplitAndTrim(value, separators, StringSplitAndTrimOptions.Default);
         }
 
         /// <summary>Tokenize the given <see cref="string"/> into a <see cref="string"/> array according to the specified options.</summary>
-        /// <param name="value">The <see cref="string"/> to tokenize.</param>
+        /// <param name="value">The <see cref="string"/> to tokenize or <see langword="null"/>.</param>
         /// <param name="separators">The delimiter characters, assembled as a <see cref="string"/>.</param>
         /// <param name="options">A combination of <see cref="StringSplitAndTrimOptions"/> flags, specifying how the result value
         /// elements are trimmed and whether empty elements are returned.</param>
@@ -329,17 +317,16 @@ namespace Refactorius
         /// <remarks>If <paramref name="value"/> is <see langword="null"/>, returns an empty <see cref="string"/> array. If
         /// <paramref name="separators"/> is <see langword="null"/> or empty, returns a <see cref="string"/> array with one
         /// element: <paramref name="value"/> itself.</remarks>
-        [ItemNotNull]
-        [NotNull]
         [Pure]
         public static string[] SplitAndTrim(
-            [CanBeNull] this string value,
-            [NotNull] string separators,
+            this string? value,
+            string separators,
             StringSplitAndTrimOptions options)
         {
+            value ??= string.Empty;
             if (string.IsNullOrEmpty(value))
                 return Array.Empty<string>();
-
+            
             if (string.IsNullOrEmpty(separators))
                 return new[] {value};
 
@@ -353,7 +340,9 @@ namespace Refactorius
             var result = value.Split(separators.ToCharArray());
             for (var i = 0; i < result.Length; i++)
             {
-                if (result[i] != null)
+                if ((options & StringSplitAndTrimOptions.Squeeze) != 0)
+                    result[i] = result[i].Squeeze() ?? string.Empty;
+                else
                 {
                     if ((options & StringSplitAndTrimOptions.TrimAtStart) != 0)
                         result[i] = result[i].TrimStart();
@@ -371,41 +360,36 @@ namespace Refactorius
         }
 
         /// <summary>Trims the argument and replaces all sequences of one or more whitespaces with a single space.</summary>
-        /// <param name="value">A string to squeeze.</param>
+        /// <param name="value">A string to squeeze or <see langword="null"/>.</param>
         /// <returns>A squeezed <paramref name="value"/>.</returns>
-        [CanBeNull]
-        [ContractAnnotation("value:null => null")]
-        [Pure]
-        public static string Squeeze(this string value)
+        [ContractAnnotation("value:null => null"), Pure]
+        public static string? Squeeze(this string? value)
         {
-            return string.IsNullOrEmpty(value) ? value : SqueezeRegex.Replace(value.Trim(), " ");
+            return string.IsNullOrEmpty(value) ? value : SqueezeRegex.Replace(value!.Trim(), " ");
         }
 
         /// <summary>Trims the argument and replaces result with <see langword="null"/> if it's empty.</summary>
-        /// <param name="value">A string to trim.</param>
+        /// <param name="value">A string to trim or <see langword="null"/>.</param>
         /// <returns>A trimmed <paramref name="value"/> if it is not empty, <see langword="null"/> if it is.</returns>
-        [CanBeNull]
         [ContractAnnotation("value:null => null")]
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimToNull(this string value)
+        public static string? TrimToNull(this string? value)
         {
-            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            return string.IsNullOrWhiteSpace(value) ? null : value!.Trim();
         }
 
         /// <summary>Trims the argument, replaces all sequences of one or more whitespaces with a single space and replaces result
         /// with <see langword="null"/> if it's empty.</summary>
-        /// <param name="value">A string to squeeze.</param>
+        /// <param name="value">A string to squeeze or <see langword="null"/>.</param>
         /// <returns>A squeezed <paramref name="value"/> if it is not empty, <see langword="null"/> if it is.</returns>
-        [CanBeNull]
-        [ContractAnnotation("value:null => null")]
-        [Pure]
-        public static string SqueezeToNull(this string value)
+        [ContractAnnotation("value:null => null"), Pure]
+        public static string? SqueezeToNull(this string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
-            value = SqueezeRegex.Replace(value.Trim(), " ");
+            value = SqueezeRegex.Replace(value!.Trim(), " ");
 
             return string.IsNullOrWhiteSpace(value) ? null : value;
         }
@@ -420,8 +404,7 @@ namespace Refactorius
         /// interspersed with the <paramref name="separator"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static string Join([NotNull] [InstantHandle] this IEnumerable<string> value,
+        public static string Join([InstantHandle] this IEnumerable<string?> value,
             string separator,
             bool squeeze = false)
         {
@@ -430,7 +413,7 @@ namespace Refactorius
             return string.Join(
                 separator,
                 value.WhereNotEmpty()
-                    .Select(squeeze ? SqueezeToNull : (Func<string, string>) TrimToNull)
+                    .Select(squeeze ? SqueezeToNull : (Func<string?, string?>) TrimToNull)
                     .WhereNotEmpty());
         }
 
@@ -446,9 +429,8 @@ namespace Refactorius
         /// <returns>A <see cref="string"/> consisting of all squeezed or trimmed nonempty elements of <paramref name="value"/>
         /// interspersed with the <paramref name="separator"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-        [NotNull]
         public static string WrapAndJoin(
-            [NotNull] [InstantHandle] this IEnumerable<string> value,
+            [InstantHandle] this IEnumerable<string?> value,
             string separator,
             string prefix,
             string postfix,
@@ -459,7 +441,7 @@ namespace Refactorius
             return string.Join(
                 separator,
                 value.WhereNotEmpty()
-                    .Select(squeeze ? SqueezeToNull : (Func<string, string>) TrimToNull)
+                    .Select(squeeze ? SqueezeToNull : (Func<string?, string?>) TrimToNull)
                     .WhereNotEmpty()
                     .Select(x => prefix + x + postfix));
         }
@@ -472,7 +454,7 @@ namespace Refactorius
         public const string DefaultEllipsisPostfix = " ...";
 
         /// <summary>The regular expression to squeeze extra whitespaces out of argument.</summary>
-        [NotNull] public static readonly Regex SqueezeRegex = new Regex(@"\s+");
+        public static readonly Regex SqueezeRegex = new(@"\s+");
 
         #endregion
     }

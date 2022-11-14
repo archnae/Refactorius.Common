@@ -20,10 +20,9 @@ namespace Refactorius.Data
         /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> to compare keys with.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> where each element contains a collection of objects of type
         /// <typeparamref name="TElement"/> and a key.</returns>
-        [NotNull]
         public static IEnumerable<IGrouping<TKey, TElement>> GroupAdjacentBy<TElement, TKey>(
-            [NotNull] this IEnumerable<TElement> source,
-            [NotNull] Func<TElement, TKey> keySelector,
+            this IEnumerable<TElement> source,
+            Func<TElement, TKey> keySelector,
             IEqualityComparer<TKey> comparer = null)
         {
             source.MustNotBeNull(nameof(source));
@@ -62,9 +61,8 @@ namespace Refactorius.Data
         /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> to compare elements with.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> where each element contains a collection of objects of type
         /// <typeparamref name="TElement"/> and their value as a key.</returns>
-        [NotNull]
         public static IEnumerable<IGrouping<TElement, TElement>> GroupAdjacentBy<TElement>(
-            [NotNull] this IEnumerable<TElement> source,
+            this IEnumerable<TElement> source,
             IEqualityComparer<TElement> comparer = null)
         {
             return source.GroupAdjacentBy(x => x, comparer);
@@ -78,13 +76,12 @@ namespace Refactorius.Data
             /// <summary>Initializes a new instance of the <see cref="Grouping{TKey,TElement}"/> class.</summary>
             /// <param name="key">A key value.</param>
             /// <param name="elements">A list of elements.</param>
-            public Grouping([NotNull] TKey key, [NotNull] List<TElement> elements)
+            public Grouping([NotNull] TKey key, List<TElement> elements)
             {
                 Key = key;
                 Elements = elements;
             }
 
-            [NotNull]
             private List<TElement> Elements { get; }
 
             /// <summary>Gets the key.</summary>
