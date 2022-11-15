@@ -20,11 +20,11 @@ namespace Refactorius
         RemoveEmptyEntries = 1,
 
         /// <summary>The elements of the return value are trimmed at the start.</summary>
-        /// <seealso cref="string.TrimStart"/>
+        /// <seealso cref="string.TrimStart(char[])"/>
         TrimAtStart = 2,
 
         /// <summary>The elements of the return value are trimmed at the end.</summary>
-        /// <seealso cref="string.TrimEnd"/>
+        /// <seealso cref="string.TrimEnd(char[])"/>
         TrimAtEnd = 4,
 
         /// <summary>The elements of the return value are trimmed and

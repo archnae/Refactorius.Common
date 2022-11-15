@@ -13,8 +13,8 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
-    <PackageTags>Refactorius Utility</PackageTags>
-    <PackageReleaseNotes>The library targets netstandard 2.0 only.</PackageReleaseNotes>
+    <PackageTags>Refactorius;Utility</PackageTags>
+    <PackageReleaseNotes>The library targets net462, netstandard 2.0 and net6.</PackageReleaseNotes>
     <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageLicenseFile></PackageLicenseFile>
@@ -28,6 +28,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>6.0-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

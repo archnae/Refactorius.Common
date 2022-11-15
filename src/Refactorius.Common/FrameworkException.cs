@@ -43,12 +43,15 @@ namespace Refactorius
         {
         }
 
+        /// <inheritdoc/>
+        // TODO: add xmldoc
         protected FrameworkException(string message, Exception? innerException, params object[] args)
             : base(message.SafeFormat(CultureInfo.InvariantCulture, args), innerException)
         {
         }
 
         /// <inheritdoc/>
+        // TODO: add xmldoc
         protected FrameworkException(string message, params object[] args)
             : base(message.SafeFormat(CultureInfo.InvariantCulture, args))
         {
