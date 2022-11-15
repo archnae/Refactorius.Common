@@ -12,15 +12,16 @@ using JetBrains.Annotations;
 namespace Refactorius.Data
 {
     /// <summary>A collection of useful utils not yet deserving their own place.</summary>
+    [PublicAPI]
     public static class MiscUtils
     {
         /// <summary>Validates a BSN.</summary>
-        /// <param name="bsn">A BSN string.</param>
-        /// <returns><see langword="true"/> if <paramref name="bsn"/> is a valid BSN nummer (8 or 9 digits, 11-proof), otherwise
+        /// <param name="value">A BSN string.</param>
+        /// <returns><see langword="true"/> if <paramref name="value"/> is a valid BSN nummer (8 or 9 digits, 11-proof), otherwise
         /// <see langword="false"/>.</returns>
-        public static bool IsValidBsn(string bsn)
+        public static bool IsValidBsn(string? value)
         {
-            bsn = bsn.SqueezeToNull();
+            var bsn = value.SqueezeToNull();
             if (bsn == null)
                 return false;
 
@@ -45,7 +46,7 @@ namespace Refactorius.Data
         /// <param name="postcode">A postcode string.</param>
         /// <returns><see langword="true"/> if <paramref name="postcode"/> is a valid postcode nummer (4 digits + 2 letters),
         /// otherwise <see langword="false"/>.</returns>
-        public static bool IsValidPostcode(string postcode)
+        public static bool IsValidPostcode(string? postcode)
         {
             postcode = postcode.TrimToNull();
             if (postcode == null)
@@ -122,7 +123,7 @@ namespace Refactorius.Data
         public static Version GetBuildVersion(this Type type)
         {
             type.MustNotBeNull(nameof(type));
-            return type.Assembly.GetName().Version;
+            return type.Assembly.GetName().Version ?? new Version();
         }
 
         /// <summary>Retrieves the product version (containing the official revision/build numbers) of the assembly of a specified
@@ -139,19 +140,23 @@ namespace Refactorius.Data
             {
                 try
                 {
+#if NETSTANDARD
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                         new PermissionSet(PermissionState.Unrestricted).Assert();
+#endif
                     var location = type.Assembly.Location;
                     if (string.IsNullOrEmpty(location))
-                        return type.Assembly.GetName().Version;
+                        return type.Assembly.GetName().Version ?? new Version();
                     var pv = FileVersionInfo.GetVersionInfo(location).ProductVersion ?? "0.0.0.0";
                     pv = Regex.Replace(pv, @"[^0-9.]+", string.Empty);
                     return new Version(pv);
                 }
                 finally
                 {
+#if NETSTANDARD
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                         PermissionSet.RevertAssert();
+#endif
                 }
             }
             catch (FileNotFoundException)
@@ -165,7 +170,7 @@ namespace Refactorius.Data
         /// <returns>Valid HTML for <paramref name="value"/>.</returns>
         public static string Htmlize(this string value)
         {
-            if (value.IsEmpty())
+            if (string.IsNullOrWhiteSpace(value))
                 return string.Empty;
 
             return value

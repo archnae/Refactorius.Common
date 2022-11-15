@@ -9,10 +9,10 @@ using JetBrains.Annotations;
 namespace Refactorius.Data
 {
     /// <summary>The collection of useful enumeration-related utility methods.</summary>
+    [PublicAPI]
     public static class EnumUtils
     {
-        private static readonly Dictionary<string, object> _enumerationMap =
-            new Dictionary<string, object>(128);
+        private static readonly Dictionary<string, object?> _enumerationMap = new(128);
 
         /// <summary>Ensures that a <c>Type</c> is an enumeration.</summary>
         /// <param name="type">A <c>Type</c> to check.</param>
@@ -61,7 +61,7 @@ namespace Refactorius.Data
                 name,
                 BindingFlags.Static | BindingFlags.GetField | BindingFlags.Public);
 
-            return description ?? value.ToString();
+            return description.WithDefault(value.ToString());
         }
 
         /// <summary>Gets the value of <see cref="System.ComponentModel.DescriptionAttribute"/> for the specified enumeration
@@ -80,8 +80,7 @@ namespace Refactorius.Data
                 return TypeUtils.GetDescription(
                            type,
                            name,
-                           BindingFlags.GetField | BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase)
-                       ?? Enum.Parse(type, name).ToString();
+                           BindingFlags.GetField | BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
             }
             catch (InvalidOperationException)
             {
@@ -110,16 +109,16 @@ namespace Refactorius.Data
         /// <param name="description">The <see cref="System.ComponentModel.DescriptionAttribute"/> or member name to convert.</param>
         /// <param name="value">On success, the enumeration value, corresponding to the <paramref name="description"/>; on failure,
         /// <see langword="null"/>.</param>
-        /// <returns><see langword="true"/>, if <paramref name="description"/> was succesfully converted; otherwise,
+        /// <returns><see langword="true"/>, if <paramref name="description"/> was successfully converted; otherwise,
         /// <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
-        public static bool TryGetValue(Type type, string description, out Enum value)
+        public static bool TryGetValue(Type type, string description, out Enum? value)
         {
             EnsureEnumeration(type);
 
-            value = default(Enum);
-            if (description.IsEmpty())
+            value = default;
+            if (string.IsNullOrWhiteSpace(description))
                 return false;
 
             var key = type.FullName + "$" + description;
@@ -127,12 +126,12 @@ namespace Refactorius.Data
             {
                 if (_enumerationMap.ContainsKey(key))
                 {
-                    value = (Enum) _enumerationMap[key];
+                    value = (Enum?) _enumerationMap[key];
                     return value != null;
                 }
             }
 
-            object newValue = null;
+            object? newValue = null;
             foreach (var name in Enum.GetNames(type))
             {
                 if (name.Equals(description, StringComparison.OrdinalIgnoreCase))
@@ -153,7 +152,7 @@ namespace Refactorius.Data
             lock (_enumerationMap)
             {
                 if (!_enumerationMap.ContainsKey(key))
-                    _enumerationMap.Add(key, newValue);
+                    _enumerationMap.Add(key, newValue!);
             }
 
             if (newValue != null)
@@ -172,12 +171,11 @@ namespace Refactorius.Data
         /// <exception cref="ArgumentNullException">if <typeparamref name="T"/> is <see langword="null"/>.</exception>
         public static bool TryGetValue<T>(string description, out T value) where T : struct
         {
-            Enum intValue;
-            var result = TryGetValue(typeof(T), description, out intValue);
+            var result = TryGetValue(typeof(T), description, out var intValue);
             if (result)
-                value = (T) (object) intValue;
+                value = (T) (object) intValue!;
             else
-                value = default(T);
+                value = default;
             return result;
         }
 
@@ -195,8 +193,7 @@ namespace Refactorius.Data
             type.MustNotBeNull(nameof(type));
             description.MustNotBeEmpty(nameof(description));
 
-            Enum value;
-            if (!TryGetValue(type, description, out value))
+            if (!TryGetValue(type, description, out var value))
                 throw new FormatException(
                     string.Format(
                         CultureInfo.InvariantCulture,
@@ -204,7 +201,7 @@ namespace Refactorius.Data
                         type.FullName,
                         description));
 
-            return value;
+            return value!;
         }
 
         /// <summary>Converts the specified string representation of an enumeration member to its value.</summary>
@@ -239,7 +236,7 @@ namespace Refactorius.Data
 
             return attributes.Length > 0
                 // ReSharper disable once PossibleNullReferenceException
-                ? attributes[0].Name
+                ? attributes[0].Name!
                 : value.ToString();
         }
 
@@ -247,12 +244,12 @@ namespace Refactorius.Data
         /// <param name="type">The enumeration <c>Type</c>.</param>
         /// <param name="description">The <see cref="XmlEnumAttribute"/> or member name to convert.</param>
         /// <param name="value">On success, the enumeration value, corresponding to the <paramref name="description"/>; on failure,
-        /// the default enumeration value (integer 0).</param>
-        /// <returns><see langword="true"/>, if <paramref name="description"/> was succesfully converted; otherwise,
+        /// <see langword="null"/>.</param>
+        /// <returns><see langword="true"/>, if <paramref name="description"/> was successfully converted; otherwise,
         /// <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="type"/> is not an enumeration.</exception>
-        public static bool TryGetValueFromXmlString(Type type, string description, out Enum value)
+        public static bool TryGetValueFromXmlString(Type type, string description, out Enum? value)
         {
             EnsureEnumeration(type);
 
@@ -263,7 +260,7 @@ namespace Refactorius.Data
                     return true;
                 }
 
-            value = default(Enum);
+            value = default;
             return false;
         }
 
@@ -277,12 +274,11 @@ namespace Refactorius.Data
         /// <exception cref="ArgumentException"><typeparamref name="T"/> is not an enumeration.</exception>
         public static bool TryGetValueFromXmlString<T>(string description, out T value) where T : struct
         {
-            Enum enumValue;
-            var result = TryGetValueFromXmlString(typeof(T), description, out enumValue);
+            var result = TryGetValueFromXmlString(typeof(T), description, out var enumValue);
             if (result)
-                value = (T) (object) enumValue;
+                value = (T) (object) enumValue!;
             else
-                value = default(T);
+                value = default;
             return result;
         }
 
@@ -296,8 +292,7 @@ namespace Refactorius.Data
         {
             type.MustNotBeNull(nameof(type));
 
-            Enum value;
-            if (!TryGetValueFromXmlString(type, description, out value))
+            if (!TryGetValueFromXmlString(type, description, out var value))
                 throw new FormatException(
                     string.Format(
                         CultureInfo.InvariantCulture,
@@ -305,7 +300,7 @@ namespace Refactorius.Data
                         type.FullName,
                         description));
 
-            return value;
+            return value!;
         }
 
         /// <summary>Converts the specified XML string representation of an enumeration member to its value.</summary>
@@ -322,7 +317,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Reparses an enumeration value into a value of another enumeration with the same set of member names.</summary>
-        /// <param name="type">The target enumeraten <c>Type</c>.</param>
+        /// <param name="type">The target enumeration <c>Type</c>.</param>
         /// <param name="value">The original (source) enumeration value.</param>
         /// <returns>The value of type <paramref name="type"/> having the same (combination of) field name(s) as
         /// <paramref name="value"/>, even if integer values of source and target enumeration members differ.</returns>
@@ -341,8 +336,7 @@ namespace Refactorius.Data
             ////    return value;
 
             var s = value.ToString();
-            int n;
-            if (int.TryParse(s, out n))
+            if (int.TryParse(s, out _))
                 throw new FormatException(
                     string.Format(CultureInfo.InvariantCulture,
                         "Value '{0}' is numeric; only enumeration field names are allowed.", s));
@@ -358,7 +352,7 @@ namespace Refactorius.Data
         }
 
         /// <summary>Reparses an enumeration value into a value of another enumeration with the same set of member names.</summary>
-        /// <typeparam name="T">The target enumeraten <c>Type</c>.</typeparam>
+        /// <typeparam name="T">The target enumeration <c>Type</c>.</typeparam>
         /// <param name="value">The original (source) enumeration value.</param>
         /// <returns>The value of type <typeparamref name="T"/> having the same (combination of) field name(s) as
         /// <paramref name="value"/>, even if integer values of source and target enumeration members differ.</returns>

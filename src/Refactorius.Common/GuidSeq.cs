@@ -10,7 +10,7 @@ namespace Refactorius
     /// https://blogs.msdn.microsoft.com/dbrowne/2012/07/03/how-to-generate-sequential-guids-for-sql-server-in-net/ .</remarks>
     public static class GuidSeq
     {
-#if NETFULL
+#if NET6_0_OR_GREATER
         [DllImport("rpcrt4.dll", SetLastError = true)]
         private static extern int UuidCreateSequential(out Guid guid);
 

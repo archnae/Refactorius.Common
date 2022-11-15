@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace Refactorius
 {
@@ -41,6 +40,11 @@ namespace Refactorius
         /// <inheritdoc/>
         protected FrameworkException(string message, Exception? innerException)
             : base(message, innerException)
+        {
+        }
+
+        protected FrameworkException(string message, Exception? innerException, params object[] args)
+            : base(message.SafeFormat(CultureInfo.InvariantCulture, args), innerException)
         {
         }
 

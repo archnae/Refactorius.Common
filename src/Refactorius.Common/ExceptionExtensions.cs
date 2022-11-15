@@ -28,7 +28,7 @@ namespace Refactorius
             typeof(CannotUnloadAppDomainException)
         };
 
-        private static readonly HashSet<Type> _outerExceptionTypes = new HashSet<Type>
+        private static readonly HashSet<Type> _outerExceptionTypes = new()
         {
             typeof(TargetInvocationException)
         };
@@ -125,7 +125,7 @@ namespace Refactorius
         /// <see cref="Exception.InnerException"/> descendants, separated by a newline. If <paramref name="ex"/> is
         /// <see langword="null"/>, <see langword="null"/> is returned.</returns>
         [ContractAnnotation("ex:null => null")]
-        public static string ConcatMessages(this Exception? ex)
+        public static string? ConcatMessages(this Exception? ex)
         {
             if (ex == null)
                 return null;
@@ -180,11 +180,11 @@ namespace Refactorius
         /// <param name="ex">The <see cref="Exception"/> containing the data.</param>
         /// <param name="name">The item name.</param>
         /// <returns></returns>
-        public static T GetData<T>(this Exception ex, string name)
+        public static T? GetData<T>(this Exception ex, string name)
         {
             ex.MustNotBeNull(nameof(ex));
             if (ex.Data.Contains(name))
-                return (T)ex.Data[name];
+                return (T)ex.Data[name]! ?? default;
             return default;
         }
 

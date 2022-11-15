@@ -23,21 +23,22 @@ namespace Refactorius.Data
         public static IEnumerable<IGrouping<TKey, TElement>> GroupAdjacentBy<TElement, TKey>(
             this IEnumerable<TElement> source,
             Func<TElement, TKey> keySelector,
-            IEqualityComparer<TKey> comparer = null)
+            IEqualityComparer<TKey>? comparer = null)
+            where TKey: notnull
         {
             source.MustNotBeNull(nameof(source));
             keySelector.MustNotBeNull(nameof(keySelector));
 
             comparer = comparer ?? EqualityComparer<TKey>.Default;
-            List<TElement> elements = null;
+            List<TElement>? elements = null;
             var key = default(TKey);
             var lastKey = default(TKey);
             foreach (var x in source)
             {
                 key = keySelector(x);
-                if (elements != null && elements.Any() && !comparer.Equals(lastKey, key))
+                if (elements != null && elements.Any() && !comparer.Equals(lastKey!, key))
                 {
-                    yield return new Grouping<TKey, TElement>(lastKey, elements);
+                    yield return new Grouping<TKey, TElement>(lastKey!, elements);
                     elements = null;
                 }
 
@@ -51,7 +52,7 @@ namespace Refactorius.Data
             }
 
             if (elements != null && elements.Any())
-                yield return new Grouping<TKey, TElement>(key, elements);
+                yield return new Grouping<TKey, TElement>(key!, elements);
         }
 
         /// <summary>Groups the adjacent elements of a sequence according to their values and creates a result value from each
@@ -63,7 +64,8 @@ namespace Refactorius.Data
         /// <typeparamref name="TElement"/> and their value as a key.</returns>
         public static IEnumerable<IGrouping<TElement, TElement>> GroupAdjacentBy<TElement>(
             this IEnumerable<TElement> source,
-            IEqualityComparer<TElement> comparer = null)
+            IEqualityComparer<TElement>? comparer = null)
+            where TElement: notnull
         {
             return source.GroupAdjacentBy(x => x, comparer);
         }

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+// ReSharper disable InconsistentNaming
 
 namespace Refactorius
 {
@@ -89,8 +91,8 @@ namespace Refactorius
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T MustNotBeNull<T>(
-            [CanBeNull] [NoEnumeration] [ValidatedNotNull]
-            this T argument,
+            [NoEnumeration] [ValidatedNotNull]
+            this T? argument,
             [InvokerParameterName] string name) where T : class
         {
             if (argument == null)
@@ -115,8 +117,8 @@ namespace Refactorius
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T MustNotBeNull<T>(
-            [CanBeNull] [NoEnumeration] [ValidatedNotNull]
-            this T argument,
+            [NoEnumeration] [ValidatedNotNull]
+            this T? argument,
             [InvokerParameterName] string name,
             string message) where T : class
         {
@@ -150,14 +152,14 @@ namespace Refactorius
                 "Argument type validating assertion method should be able to accept parameter of any type.")
         ]
         [ContractAnnotation("argument:null => null; argument:notnull => notnull")]
-        public static T MustImplement<T>(
-            [CanBeNull] [NoEnumeration] this object argument,
+        public static T? MustImplement<T>(
+            [NoEnumeration] this object? argument,
             string name) where T : class
         {
-            if (argument != null && !(argument is T))
-                throw new ArgumentException(ArgumentNotAnInstanceOfTypeMessage(name, typeof(T).FullName), name);
+            if (argument != null && argument is not T)
+                throw new ArgumentException(ArgumentNotAnInstanceOfTypeMessage(name, typeof(T).DisplayName()), name);
 
-            return (T)argument;
+            return (T?)argument;
         }
 
         /// <summary>
@@ -180,15 +182,14 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is not <see langword="null" />
         ///     and of a wrong type.
         /// </exception>
-        [CanBeNull]
         [SuppressMessage("Microsoft.Design",
             "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "method",
             Target = "Refactorius.Commons.Collections",
             Justification =
                 "Argument type validating assertion method should be able to accept parameter of any type.")]
         [ContractAnnotation("argument:null => null; argument:notnull => notnull; requiredType:null => halt")]
-        public static object MustImplement(
-            [CanBeNull] [NoEnumeration] this object argument,
+        public static object? MustImplement(
+            [NoEnumeration] this object? argument,
             Type requiredType,
             string name)
         {
@@ -196,7 +197,7 @@ namespace Refactorius
                 throw new ArgumentNullException(nameof(requiredType));
 
             if (argument != null && !requiredType.IsInstanceOfType(argument))
-                throw new ArgumentException(ArgumentNotAnInstanceOfTypeMessage(name, requiredType.FullName), name);
+                throw new ArgumentException(ArgumentNotAnInstanceOfTypeMessage(name, requiredType.DisplayName()), name);
 
             return argument;
         }
@@ -218,15 +219,15 @@ namespace Refactorius
                 "Argument type validating assertion method should be able to accept parameter of any type.")
         ]
         [ContractAnnotation("argument:null => null; argument:notnull => notnull")]
-        public static T MustImplement<T>(
-            [CanBeNull] [NoEnumeration] this object argument,
+        public static T? MustImplement<T>(
+            [NoEnumeration] this object? argument,
             string argumentName,
             string message)
         {
-            if (argument != null && !(argument is T))
+            if (argument != null && argument is not T)
                 throw new ArgumentException(message, argumentName);
 
-            return (T)argument;
+            return (T?)argument;
         }
 
         /// <summary>
@@ -247,8 +248,8 @@ namespace Refactorius
         ///     and of a wrong type.
         /// </exception>
         [ContractAnnotation("argument:null => null; argument:notnull => notnull; requiredType:null => halt")]
-        public static object MustImplement(
-            [CanBeNull] [NoEnumeration] this object argument,
+        public static object? MustImplement(
+            [NoEnumeration] this object? argument,
             Type requiredType,
             string argumentName,
             string message)
@@ -285,16 +286,16 @@ namespace Refactorius
             Justification =
                 "Argument type validating assertion method should be able to accept parameter of any type.")]
         [ContractAnnotation("type:null => halt")]
-        public static Type MustInherit<T>(this Type type, string argumentName, string message = null)
+        public static Type MustInherit<T>(this Type type, string argumentName, string? message = null)
         {
             type.MustNotBeNull(nameof(type));
 
             if (type != null && !typeof(T).IsAssignableFrom(type))
                 throw new ArgumentException(
-                    message ?? ArgumentDoesNotInheritTypeMessage(type.FullName, typeof(T).FullName),
+                    message ?? ArgumentDoesNotInheritTypeMessage(type.FullName ?? string.Empty, typeof(T).DisplayName()),
                     argumentName);
 
-            return type;
+            return type!;
         }
 
         /// <summary>
@@ -314,13 +315,12 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is not <see langword="null" />
         ///     and of a wrong type.
         /// </exception>
-        [CanBeNull]
         [ContractAnnotation("argument:null => null; requiredType:null => halt")]
-        public static Type MustInherit(
-            [CanBeNull] this Type argument,
+        public static Type? MustInherit(
+            this Type? argument,
             Type requiredType,
             string argumentName,
-            string message = null)
+            string? message = null)
         {
             requiredType.MustNotBeNull(nameof(requiredType));
 
@@ -350,7 +350,7 @@ namespace Refactorius
         /// </exception>
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string MustNotBeEmpty(this string argument, [InvokerParameterName] string name)
+        public static string MustNotBeEmpty(this string? argument, [InvokerParameterName] string name)
         {
             if (argument == null)
                 throw new ArgumentNullException(name);
@@ -379,7 +379,7 @@ namespace Refactorius
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string MustNotBeEmpty(
-            this string argument,
+            this string? argument,
             [InvokerParameterName] string name,
             string message)
         {
@@ -412,7 +412,7 @@ namespace Refactorius
         /// </exception>
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string MustHaveText(this string argument, [InvokerParameterName] string name)
+        public static string MustHaveText(this string? argument, [InvokerParameterName] string name)
         {
             argument.MustNotBeEmpty(name);
 
@@ -420,7 +420,7 @@ namespace Refactorius
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture,
                     ArgumentContainsOnlyWhitespaces1, name));
 
-            return argument;
+            return argument!;
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace Refactorius
         [ContractAnnotation("argument:null => halt")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string MustHaveText(
-            this string argument,
+            this string? argument,
             [InvokerParameterName] string name,
             string message)
         {
@@ -451,7 +451,7 @@ namespace Refactorius
             if (string.IsNullOrWhiteSpace(argument))
                 throw new ArgumentException(message, name);
 
-            return argument;
+            return argument!;
         }
 
         #endregion
@@ -494,7 +494,7 @@ namespace Refactorius
         public static T MustNotBeDefault<T>(this T argument, string name) where T : struct
         {
             if (argument.Equals(default(T)))
-                throw new ArgumentException(ArgumentHasDefaultValueMessage(name, typeof(T).FullName), name);
+                throw new ArgumentException(ArgumentHasDefaultValueMessage(name, typeof(T).DisplayName()), name);
 
             return argument;
         }
@@ -593,9 +593,8 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is s outside the
         ///     <paramref name="range" />.
         /// </exception>
-        [NotNull]
         [ContractAnnotation("range:null => halt")]
-        public static T MustBeInRange<T>([NotNull] this T argument, Range<T> range, string name)
+        public static T MustBeInRange<T>(this T argument, Range<T> range, string name) where T:struct
         {
             range.MustNotBeNull(nameof(argument));
 
@@ -620,13 +619,12 @@ namespace Refactorius
         ///     If the supplied <paramref name="argument" /> is s outside the
         ///     <paramref name="range" />.
         /// </exception>
-        [NotNull]
         [ContractAnnotation("range:null => halt")]
         public static T MustBeInRange<T>(
-            [NotNull] this T argument,
+            this T argument,
             Range<T> range,
             string name,
-            string message)
+            string message) where T: struct
         {
             range.MustNotBeNull(nameof(argument));
 
@@ -645,10 +643,10 @@ namespace Refactorius
         /// <param name="name">A parameter name.</param>
         /// <exception cref="ArgumentNullException">if <paramref name="anon"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">if <paramref name="anon"/> is not an anonymous object.</exception>
-        public static void MustBeAnonymousObject(this object anon, string name)
+        public static void MustBeAnonymousObject(this object? anon, string name)
         {
             anon.MustNotBeNull(name);
-            var type = anon.GetType();
+            var type = anon!.GetType();
             if (!type.IsAnonymousType())
                 throw new ArgumentException("Argument must be of an anonymous type.", name);
         }

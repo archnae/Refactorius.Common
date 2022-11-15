@@ -51,7 +51,7 @@ namespace Refactorius
         /// <exception cref="FrameworkInitializationException">No such attribute has been applied.</exception>
         [NotNull]
         [ContractAnnotation("mi:null => halt")]
-        public static T GetCustomAttributeOrFail<T>(this MemberInfo mi, string message = null)
+        public static T GetCustomAttributeOrFail<T>(this MemberInfo mi, string? message = null)
         {
             mi.MustNotBeNull(nameof(mi));
             var attr = mi.GetCustomAttributes(typeof(T), true)
@@ -60,9 +60,8 @@ namespace Refactorius
             if (attr != null)
                 return attr;
 
-            var type = mi as Type;
-            var name = type != null ? type.FullName : mi.DeclaringType?.FullName + "." + mi.Name;
-            message = message ?? "Attribute '{0}' not found";
+            var name = mi is Type type ? type.DisplayName() : mi.DeclaringType?.DisplayName() + "." + mi.Name;
+            message ??= "Attribute '{0}' not found.";
             throw new FrameworkInitializationException(message.SafeFormat(CultureInfo.InvariantCulture, name));
         }
     }

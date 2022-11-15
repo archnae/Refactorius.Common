@@ -446,6 +446,19 @@ namespace Refactorius
                     .Select(x => prefix + x + postfix));
         }
 
+        /// <summary>
+        /// Provides a default value for a <see langword="null"/> or empty string.
+        /// </summary>
+        /// <param name="value">The string value.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The original <paramref name="value"/> if it's not empty, otherwise <paramref name="defaultValue"/>.</returns>
+        public static string WithDefault(this string? value, string defaultValue)
+        {
+            return string.IsNullOrWhiteSpace(value)
+                ? defaultValue ?? string.Empty
+                : value!;
+        }
+
         #region public static constants
 
         /// <summary>The string that signals that a string was truncated.

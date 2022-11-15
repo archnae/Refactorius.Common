@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Refactorius
 {
     /// <summary>Represents a range of enumerable items.</summary>
     /// <typeparam name="T">The type of range.</typeparam>
     /// <author>http://code.google.com/p/magnum/</author>
-    public class Range<T> : IEquatable<Range<T>>
+    [PublicAPI]
+    public class Range<T> : IEquatable<Range<T>> where T: struct
     {
         #region private fields
 
@@ -99,7 +101,7 @@ namespace Refactorius
         /// <param name="other">The other instance.</param>
         /// <returns><see langword="true"/> if all properties of the current <see cref="Range{T}"/> instance and
         /// <paramref name="other"/> are equal.</returns>
-        public bool Equals(Range<T> other)
+        public bool Equals(Range<T>? other)
         {
             if (ReferenceEquals(null, other))
                 return false;
@@ -117,7 +119,7 @@ namespace Refactorius
         /// <param name="obj">The other object.</param>
         /// <returns><see langword="true"/> if <paramref name="obj"/> is a <see cref="Range{T}"/> and all properties of the current
         /// <see cref="Range{T}"/> instance and <paramref name="obj"/> are equal.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
                 return false;

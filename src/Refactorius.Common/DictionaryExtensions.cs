@@ -91,7 +91,7 @@ namespace Refactorius
         [Pure]
         public static TResult GetAs<TResult>(this IDictionary<string, object> dict, string key)
         {
-            return GetAs(dict, key, default(TResult));
+            return GetAs(dict, key, default(TResult)!);
         }
 
         /// <summary>Returns a dictionary value of a specified type by key or a default value.</summary>

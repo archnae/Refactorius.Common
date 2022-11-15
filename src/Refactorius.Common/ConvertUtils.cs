@@ -207,7 +207,7 @@ namespace Refactorius
             /// <param name="formatType">An object that specifies the type of format object to return. </param>
             /// <returns>An <see cref="InvariantDateTimeFormatProvider"/> if the <paramref name="formatType"/> is
             /// <see cref="DateTimeFormatInfo"/>, otherwise the default <see cref="CultureInfo.InvariantCulture"/>.</returns>
-            public object GetFormat(Type formatType)
+            public object? GetFormat(Type? formatType)
             {
                 if (formatType != typeof(DateTimeFormatInfo))
                     return CultureInfo.InvariantCulture;

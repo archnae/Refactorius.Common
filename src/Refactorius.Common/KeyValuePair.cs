@@ -18,6 +18,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
+#if NET462
 namespace Refactorius
 {
     /// <summary>
@@ -54,3 +55,4 @@ namespace Refactorius
         }
     }
 }
+#endif
