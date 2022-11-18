@@ -18,11 +18,10 @@ namespace Refactorius
         /// <param name="value">A value.</param>
         /// <exception cref="ArgumentException">An element with the same key already exists in the dictionary.</exception>
         /// <returns>The <paramref name="dict"/> itself (for call chaining).</returns>
-        [NotNull]
         public static IDictionary<TKey, TElement> AddOne<TKey, TElement>(
-            [NotNull] this IDictionary<TKey, TElement> dict,
+            this IDictionary<TKey, TElement> dict,
             [NotNull] TKey key,
-            [CanBeNull] TElement value)
+            TElement value)
         {
             dict.MustNotBeNull(nameof(dict));
 
@@ -37,10 +36,9 @@ namespace Refactorius
         /// <param name="other">A sequence of name-value pairs.</param>
         /// <exception cref="ArgumentException">An element with the same key already exists in the dictionary.</exception>
         /// <returns>The <paramref name="dict"/> itself (for call chaining).</returns>
-        [NotNull]
         public static IDictionary<TKey, TElement> AddRange<TKey, TElement>(
-            [NotNull] this IDictionary<TKey, TElement> dict,
-            [NotNull] [InstantHandle] IEnumerable<KeyValuePair<TKey, TElement>> other)
+            this IDictionary<TKey, TElement> dict,
+            [InstantHandle] IEnumerable<KeyValuePair<TKey, TElement>> other)
         {
             dict.MustNotBeNull(nameof(dict));
             other.MustNotBeNull(nameof(other));
@@ -58,11 +56,10 @@ namespace Refactorius
         /// <param name="keyPrefix">A prefix to add to the keys.</param>
         /// <exception cref="ArgumentException">An element with the same key already exists in the dictionary.</exception>
         /// <returns>The <paramref name="dict"/> itself (for call chaining).</returns>
-        [NotNull]
         public static IDictionary<string, TElement> AddRange<TElement>(
-            [NotNull] this IDictionary<string, TElement> dict,
-            [NotNull] [InstantHandle] IEnumerable<KeyValuePair<string, TElement>> other,
-            [CanBeNull] string keyPrefix)
+            this IDictionary<string, TElement> dict,
+            [InstantHandle] IEnumerable<KeyValuePair<string, TElement>> other,
+            string? keyPrefix)
         {
             return string.IsNullOrEmpty(keyPrefix)
                 ? dict.AddRange(other)
@@ -77,10 +74,9 @@ namespace Refactorius
         /// <param name="key">A key.</param>
         /// <returns>The value for <paramref name="key"/> or the default value of type <typeparamref name="TElement"/> if not
         /// found.</returns>
-        [CanBeNull]
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TElement Get<TKey, TElement>([NotNull] this IDictionary<TKey, TElement> dict, [NotNull] TKey key)
+        public static TElement? Get<TKey, TElement>(this IDictionary<TKey, TElement> dict, [NotNull] TKey key)
         {
             dict.MustNotBeNull(nameof(dict));
 
@@ -93,9 +89,9 @@ namespace Refactorius
         /// <param name="key">A key.</param>
         /// <returns>The value for <paramref name="key"/> or the default value of type <typeparamref name="TResult"/> if not found.</returns>
         [Pure]
-        public static TResult GetAs<TResult>([NotNull] this IDictionary<string, object> dict, [NotNull] string key)
+        public static TResult GetAs<TResult>(this IDictionary<string, object> dict, string key)
         {
-            return GetAs(dict, key, default(TResult));
+            return GetAs(dict, key, default(TResult)!);
         }
 
         /// <summary>Returns a dictionary value of a specified type by key or a default value.</summary>
@@ -105,7 +101,7 @@ namespace Refactorius
         /// <param name="defaultValue">A default value.</param>
         /// <returns>The value for <paramref name="key"/> or the default value of type <typeparamref name="TResult"/> if not found.</returns>
         [Pure]
-        public static TResult GetAs<TResult>([NotNull] this IDictionary<string, object> dict, [NotNull] string key,
+        public static TResult GetAs<TResult>(this IDictionary<string, object> dict, string key,
             TResult defaultValue)
         {
             dict.MustNotBeNull(nameof(dict));
@@ -117,14 +113,14 @@ namespace Refactorius
             if (value == null)
                 return defaultValue;
 
-            if (value is TResult)
-                return (TResult) value;
+            if (value is TResult result)
+                return result;
 
             // use custom to string convertor (mostly to handle UTC date format)
             value = typeof(TResult) == typeof(string)
                 ? ConvertUtils.ToString(value)
                 : ConvertUtils.ChangeType(value, typeof(TResult));
-            return (TResult) value;
+            return (TResult)value!;
         }
 
 #if READONLY
@@ -197,11 +193,10 @@ namespace Refactorius
         /// <param name="keys">A sequence of keys.</param>
         /// <param name="force">A value indicating whether missing key is an error.</param>
         /// <returns>The sequence of values for <paramref name="keys"/>.</returns>
-        [ItemCanBeNull]
         [LinqTunnel]
-        public static IEnumerable<TElement> GetMany<TKey, TElement>(
-            [NotNull] this IDictionary<TKey, TElement> dict,
-            [ItemNotNull] [NotNull] IEnumerable<TKey> keys,
+        public static IEnumerable<TElement?> GetMany<TKey, TElement>(
+            this IDictionary<TKey, TElement> dict,
+            [ItemNotNull] IEnumerable<TKey> keys,
             bool force = false)
         {
             dict.MustNotBeNull(nameof(dict));
@@ -223,8 +218,8 @@ namespace Refactorius
         /// <returns>The sequence containing only entries for <paramref name="keys"/>.</returns>
         [LinqTunnel]
         public static IEnumerable<KeyValuePair<TKey, TElement>> Select<TKey, TElement>(
-            [NotNull] this IDictionary<TKey, TElement> dict,
-            [ItemNotNull] [NotNull] IEnumerable<TKey> keys,
+            this IDictionary<TKey, TElement> dict,
+            [ItemNotNull] IEnumerable<TKey> keys,
             bool force = false)
         {
             dict.MustNotBeNull(nameof(dict));
@@ -244,10 +239,9 @@ namespace Refactorius
         /// <param name="key">A key.</param>
         /// <param name="value">A value.</param>
         /// <returns>The <paramref name="dict"/> itself (for call chaining).</returns>
-        [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IDictionary<TKey, TElement> Set<TKey, TElement>(
-            [NotNull] this IDictionary<TKey, TElement> dict,
+            this IDictionary<TKey, TElement> dict,
             [NotNull] TKey key,
             TElement value)
         {
@@ -266,10 +260,9 @@ namespace Refactorius
         /// <param name="dict">A dictionary.</param>
         /// <param name="other">A sequence of name-value pairs.</param>
         /// <returns>The <paramref name="dict"/> itself (for call chaining).</returns>
-        [NotNull]
         public static IDictionary<TKey, TElement> SetRange<TKey, TElement>(
-            [NotNull] this IDictionary<TKey, TElement> dict,
-            [NotNull] [InstantHandle] IEnumerable<KeyValuePair<TKey, TElement>> other)
+            this IDictionary<TKey, TElement> dict,
+            [InstantHandle] IEnumerable<KeyValuePair<TKey, TElement>> other)
         {
             dict.MustNotBeNull(nameof(dict));
             other.MustNotBeNull(nameof(other));
@@ -289,12 +282,11 @@ namespace Refactorius
         /// <param name="keySelector">A key mapping function.</param>
         /// <param name="elementSelector">A value mapping function.</param>
         /// <returns>The <paramref name="dict"/> itself (for call chaining).</returns>
-        [NotNull]
         public static IDictionary<TKey, TElement> SetRange<TKey, TElement, TSource>(
-            [NotNull] this IDictionary<TKey, TElement> dict,
-            [NotNull] [InstantHandle] IEnumerable<TSource> other,
-            [NotNull] [InstantHandle] Func<TSource, TKey> keySelector,
-            [NotNull] [InstantHandle] Func<TSource, TElement> elementSelector)
+            this IDictionary<TKey, TElement> dict,
+            [InstantHandle] IEnumerable<TSource> other,
+            [InstantHandle] Func<TSource, TKey> keySelector,
+            [InstantHandle] Func<TSource, TElement> elementSelector)
         {
             dict.MustNotBeNull(nameof(dict));
             other.MustNotBeNull(nameof(other));
@@ -314,11 +306,10 @@ namespace Refactorius
         /// <param name="keyPrefix">A prefix to add to the keys.</param>
         /// <exception cref="ArgumentException">An element with the same key already exists in the dictionary.</exception>
         /// <returns>The <paramref name="dict"/> itself (for call chaining).</returns>
-        [NotNull]
         public static IDictionary<string, TElement> SetRange<TElement>(
-            [NotNull] this IDictionary<string, TElement> dict,
-            [NotNull] [InstantHandle] IEnumerable<KeyValuePair<string, TElement>> other,
-            [CanBeNull] string keyPrefix)
+            this IDictionary<string, TElement> dict,
+            [InstantHandle] IEnumerable<KeyValuePair<string, TElement>> other,
+            string? keyPrefix)
         {
             return string.IsNullOrEmpty(keyPrefix)
                 ? dict.SetRange(other)

@@ -13,13 +13,15 @@ namespace Refactorius
         /// <typeparam name="T">The <c>Type</c> of sequence elements.</typeparam>
         /// <param name="source">The sequence to clone.</param>
         /// <returns>The sequence of the cloned elements of <paramref name="source"/>.</returns>
-        [CanBeNull]
+        /// <exception cref="ArgumentNullException">if <paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
         [LinqTunnel]
         [ContractAnnotation("null => null; notnull => notnull")]
-        public static IEnumerable<T> CloneSequence<T>([CanBeNull] this IEnumerable<T> source)
+        public static IEnumerable<T> CloneSequence<T>(this IEnumerable<T> source)
             where T : class, ICloneable
         {
-            return source?.Select(x => (T) x?.Clone());
+            return source.MustNotBeNull(nameof(source))
+                .Select(x => (T) x.Clone());
         }
 
         /// <summary>Filters out default (usually <see langword="null"/>) values from a sequence.</summary>
@@ -27,26 +29,26 @@ namespace Refactorius
         /// <param name="source">An <see cref="IEnumerable{T}"/> sequence.</param>
         /// <returns>The sequence of items of the <paramref name="source"/> without empty (<see langword="null"/>) elements.</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        [ItemNotNull]
+        /// <remarks>Changed in v11: {T} should be a class.</remarks>
         [LinqTunnel]
-        public static IEnumerable<T> WhereNotEmpty<T>([NotNull] this IEnumerable<T> source)
+        public static IEnumerable<T> WhereNotEmpty<T>(this IEnumerable<T?> source)
+            where T: class
         {
             return source.MustNotBeNull(nameof(source))
-                .Where(element => !EqualityComparer<T>.Default.Equals(element, default(T)));
+                .Where(element => element != null)
+                .Cast<T>();
         }
 
         /// <summary>Filters out empty (<see langword="null"/> or whitespaces only) values from a string sequence.</summary>
         /// <param name="source">An <see cref="IEnumerable{T}"/> sequence.</param>
         /// <returns>The sequence of items of the <paramref name="source"/> without empty (<see langword="null"/>) elements.</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        [ItemNotNull]
         [LinqTunnel]
-        public static IEnumerable<string> WhereNotEmpty([NotNull] this IEnumerable<string> source)
+        public static IEnumerable<string> WhereNotEmpty(this IEnumerable<string?> source)
         {
             return source.MustNotBeNull(nameof(source))
-                .Where(element => !string.IsNullOrWhiteSpace(element));
+                .Where(element => !string.IsNullOrWhiteSpace(element))
+                .Cast<string>();
         }
 
         /// <summary>Executes a specified action on every item.</summary>
@@ -56,8 +58,8 @@ namespace Refactorius
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> or <paramref name="action"/> is
         /// <see langword="null"/>.</exception>
         public static void ForEach<T>(
-            [NotNull] [InstantHandle] this IEnumerable<T> source,
-            [NotNull] [InstantHandle] Action<T> action)
+            [InstantHandle] this IEnumerable<T> source,
+            [InstantHandle] Action<T> action)
         {
             source.MustNotBeNull(nameof(source));
             action.MustNotBeNull(nameof(action));
@@ -75,8 +77,8 @@ namespace Refactorius
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> or <paramref name="action"/> is
         /// <see langword="null"/>.</exception>
         public static void ForEach<T>(
-            [NotNull] [InstantHandle] this IEnumerable<T> source,
-            [NotNull] [InstantHandle] Action<T, int> action)
+            [InstantHandle] this IEnumerable<T> source,
+            [InstantHandle] Action<T, int> action)
         {
             source.MustNotBeNull(nameof(source));
             action.MustNotBeNull(nameof(action));
@@ -98,11 +100,10 @@ namespace Refactorius
         /// <paramref name="action"/> is executed on items that were <b>not</b> enumerated.</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> or <paramref name="action"/> is
         /// <see langword="null"/>.</exception>
-        [NotNull]
         [LinqTunnel]
         public static IEnumerable<T> PassThrough<T>(
-            [NotNull] this IEnumerable<T> source,
-            [NotNull] [InstantHandle] Action<T> action)
+            this IEnumerable<T> source,
+            [InstantHandle] Action<T> action)
         {
             source.MustNotBeNull(nameof(source));
             action.MustNotBeNull(nameof(action));
@@ -125,10 +126,9 @@ namespace Refactorius
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> or <paramref name="action"/> is
         /// <see langword="null"/>.</exception>
         [LinqTunnel]
-        [NotNull]
         public static IEnumerable<T> PassThrough<T>(
-            [NotNull] this IEnumerable<T> source,
-            [NotNull] [InstantHandle] Action<T, int> action)
+            this IEnumerable<T> source,
+            [InstantHandle] Action<T, int> action)
         {
             source.MustNotBeNull(nameof(source));
             action.MustNotBeNull(nameof(action));
@@ -223,12 +223,11 @@ namespace Refactorius
         /// converted by <paramref name="keySelector"/> and <paramref name="valueSelector"/>.</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/>, <paramref name="keySelector"/> or
         /// <paramref name="valueSelector"/> is <see langword="null"/>.</exception>
-        [NotNull]
         [LinqTunnel]
         public static IEnumerable<KeyValuePair<TKey, TValue>> Select<TSource, TKey, TValue>(
-            [NotNull] this IEnumerable<TSource> source,
-            [NotNull] Func<TSource, TKey> keySelector,
-            [NotNull] Func<TSource, TValue> valueSelector)
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
+            Func<TSource, TValue> valueSelector)
         {
             source.MustNotBeNull(nameof(source));
             keySelector.MustNotBeNull(nameof(keySelector));
@@ -244,9 +243,8 @@ namespace Refactorius
         /// <returns>An <see cref="IEnumerable{T}"/> where each element contains a subsequence of <paramref name="source"/>. </returns>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="chunkSize"/> is zero or negative.</exception>
-        [NotNull]
         [LinqTunnel]
-        public static IEnumerable<TElement[]> Chunk<TElement>([NotNull] this IEnumerable<TElement> source,
+        public static IEnumerable<TElement[]> Chunk<TElement>(this IEnumerable<TElement> source,
             int chunkSize)
         {
             source.MustNotBeNull(nameof(source));
@@ -279,9 +277,8 @@ namespace Refactorius
         /// <returns>The output array.</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="source"/> or <paramref name="selector"/> is
         /// <see langword="null"/>.</exception>
-        [NotNull]
-        public static TResult[] MapArray<TSource, TResult>([NotNull] this TSource[] source,
-            [NotNull] Func<TSource, TResult> selector)
+        public static TResult[] MapArray<TSource, TResult>(this TSource[] source,
+            Func<TSource, TResult> selector)
         {
             source.MustNotBeNull(nameof(source));
             selector.MustNotBeNull(nameof(selector));
@@ -301,8 +298,7 @@ namespace Refactorius
         /// <b>not</b> be disposed.</para>
         /// </returns>
         /// <exception cref="ArgumentNullException">if <paramref name="enumerator"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        public static IEnumerable<T> ToIEnumerable<T>([NotNull] this IEnumerator<T> enumerator)
+        public static IEnumerable<T> ToIEnumerable<T>(this IEnumerator<T> enumerator)
         {
             enumerator.MustNotBeNull(nameof(enumerator));
 
@@ -321,8 +317,7 @@ namespace Refactorius
         /// <b>not</b> be disposed.</para>
         /// </returns>
         /// <exception cref="ArgumentNullException">if <paramref name="enumerator"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        public static IEnumerable<T> FlattenToIEnumerable<T>([NotNull] this IEnumerator<T[]> enumerator)
+        public static IEnumerable<T> FlattenToIEnumerable<T>(this IEnumerator<T[]> enumerator)
         {
             return enumerator.ToIEnumerable().SelectMany(x => x);
         }

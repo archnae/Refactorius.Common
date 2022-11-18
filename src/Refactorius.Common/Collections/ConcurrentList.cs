@@ -12,8 +12,8 @@ namespace Refactorius.Collections
     {
         #region private fields
 
-        [NotNull] private readonly List<T> _list;
-        [NotNull] private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private readonly List<T> _list;
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         #endregion
 
@@ -32,7 +32,7 @@ namespace Refactorius.Collections
         }
 
         /// <summary>Initializes a new instance of the <see cref="ConcurrentList{T}"/> class with a specifiried content.</summary>
-        public ConcurrentList([NotNull] IEnumerable<T> items)
+        public ConcurrentList(IEnumerable<T> items)
         {
             _list = new List<T>(items);
         }

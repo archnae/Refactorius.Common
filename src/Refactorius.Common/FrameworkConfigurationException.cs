@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace Refactorius
 {
@@ -22,19 +21,19 @@ namespace Refactorius
         }
 
         /// <inheritdoc/>
-        public FrameworkConfigurationException([NotNull] string message)
+        public FrameworkConfigurationException(string message)
             : base(message)
         {
         }
 
         /// <inheritdoc/>
-        public FrameworkConfigurationException([NotNull] string message, [CanBeNull] Exception innerException)
+        public FrameworkConfigurationException(string message, Exception? innerException)
             : base(message, innerException)
         {
         }
 
         /// <inheritdoc/>
-        protected FrameworkConfigurationException([NotNull] SerializationInfo info, StreamingContext context)
+        protected FrameworkConfigurationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

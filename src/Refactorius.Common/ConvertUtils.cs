@@ -49,10 +49,9 @@ namespace Refactorius
         /// <typeparamref name="TValue"/> and whose value is equivalent to <paramref name="value"/>.</returns>
         /// <remarks>Unlike <see cref="System.Convert.ChangeType(object, Type)"/> this method always uses
         /// <see cref="CultureInfo.InvariantCulture"/>.</remarks>
-        [CanBeNull]
-        public static TValue ConvertTo<TValue>([CanBeNull] object value)
+        public static TValue? ConvertTo<TValue>(object? value)
         {
-            return (TValue)(ChangeType(value, typeof(TValue)) ?? default(TValue));
+            return (TValue?)(ChangeType(value, typeof(TValue)) ?? default(TValue));
         }
 
         /// <summary>Converts a value to the specified type.</summary>
@@ -61,9 +60,9 @@ namespace Refactorius
         /// <param name="name">An optional name of the value for diagnostics.</param>
         /// <returns>The value of variable <paramref name="name"/> converted to <typeparamref name="T"/>.</returns>
         /// <exception cref="FrameworkConfigurationException">if <paramref name="value"/> cannot be converted.</exception>
-        public static T ConvertToType<T>(object value, string name = null)
+        public static T? ConvertToType<T>(object? value, string? name = null)
         {
-            return (T)(ConvertToType(typeof(T), value, name) ?? default(T));
+            return (T?)(ConvertToType(typeof(T), value, name) ?? default(T));
         }
 
         /// <summary>Converts a value to the specified type.</summary>
@@ -72,7 +71,7 @@ namespace Refactorius
         /// <param name="name">An optional name of the value for diagnostics.</param>
         /// <returns>The value of variable <paramref name="name"/> converted to <paramref name="targetType"/>.</returns>
         /// <exception cref="FrameworkConfigurationException">if <paramref name="value"/> cannot be converted.</exception>
-        public static object ConvertToType([NotNull] Type targetType, [CanBeNull] object value, string name = null)
+        public static object? ConvertToType(Type targetType, object? value, string? name = null)
         {
             try
             {
@@ -80,15 +79,15 @@ namespace Refactorius
             }
             catch (InvalidCastException ex)
             {
-                if (name.IsEmpty())
+                if (string.IsNullOrWhiteSpace(name))
                     throw;
-                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(CultureInfo.InvariantCulture, name, ex.Message));
+                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(CultureInfo.InvariantCulture, name ?? string.Empty, ex.Message));
             }
             catch (FormatException ex)
             {
-                if (name.IsEmpty())
+                if (string.IsNullOrWhiteSpace(name))
                     throw;
-                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(CultureInfo.InvariantCulture, name, ex.Message));
+                throw new InvalidCastException("Cannot convert {0}: {1}".SafeFormat(CultureInfo.InvariantCulture, name ?? string.Empty, ex.Message));
             }
         }
 
@@ -101,8 +100,7 @@ namespace Refactorius
         /// <c>Type</c> is <paramref name="requiredType"/> and whose value is equivalent to <paramref name="value"/>.</returns>
         /// <remarks>Unlike <see cref="System.Convert.ChangeType(object, Type)"/> this method always uses
         /// <see cref="CultureInfo.InvariantCulture"/>.</remarks>
-        [CanBeNull]
-        public static object ChangeType([CanBeNull] object value, [NotNull] Type requiredType)
+        public static object? ChangeType(object? value, Type requiredType)
         {
             requiredType.MustNotBeNull(nameof(requiredType));
 
@@ -173,7 +171,7 @@ namespace Refactorius
         public static string EscapeXml(string value)
         {
             // TODO: find a better way to escape XML than SecurityElement.Escape; add EscapeJson.
-            return SecurityElement.Escape(value);
+            return SecurityElement.Escape(value) ?? string.Empty;
         }
 
         /// <summary>
@@ -183,15 +181,15 @@ namespace Refactorius
         /// <param name="ticks">The precision in ticks.</param>
         /// <returns>The rounded value of  the <paramref name="date"/>.</returns>
         public static DateTime Trim(this DateTime date, long ticks) =>
-            new DateTime(date.Ticks - (date.Ticks % ticks), date.Kind);
+            new(date.Ticks - (date.Ticks % ticks), date.Kind);
 
         /// <summary>
         /// Rounds a <c>DateTime</c> value to seconds.
         /// </summary>
         /// <param name="date">The value to round,</param>
-        /// <returns>Thevalue of  the <paramref name="date"/> rounded to seconds.</returns>
+        /// <returns>The value of  the <paramref name="date"/> rounded to seconds.</returns>
         public static DateTime TrimToSeconds(this DateTime date) =>
-            new DateTime(date.Ticks - (date.Ticks % TimeSpan.TicksPerSecond), date.Kind);
+            new(date.Ticks - (date.Ticks % TimeSpan.TicksPerSecond), date.Kind);
 
         #region nested classes
 
@@ -201,18 +199,15 @@ namespace Refactorius
             Justification = "Should be reusable in friendly assemblies, but Utils namespace is already too cluttered.")]
         public class InvariantDateTimeFormatProvider: IFormatProvider
         {
-            private static InvariantDateTimeFormatProvider _instance;
-
             /// <summary>Gets the singleton instance of <see cref="InvariantDateTimeFormatProvider"/>.</summary>
             /// <value>The singleton instance of <see cref="InvariantDateTimeFormatProvider"/>.</value>
-            public static InvariantDateTimeFormatProvider Instance =>
-                _instance ?? (_instance = new InvariantDateTimeFormatProvider());
+            public static InvariantDateTimeFormatProvider Instance { get; } = new();
 
             /// <summary>Returns an object that provides formatting services for the specified type.</summary>
             /// <param name="formatType">An object that specifies the type of format object to return. </param>
             /// <returns>An <see cref="InvariantDateTimeFormatProvider"/> if the <paramref name="formatType"/> is
             /// <see cref="DateTimeFormatInfo"/>, otherwise the default <see cref="CultureInfo.InvariantCulture"/>.</returns>
-            public object GetFormat(Type formatType)
+            public object? GetFormat(Type? formatType)
             {
                 if (formatType != typeof(DateTimeFormatInfo))
                     return CultureInfo.InvariantCulture;
@@ -232,7 +227,7 @@ namespace Refactorius
         /// <returns>A canonical string representation of <paramref name="value"/> if it has a value or <see langword="null"/> if
         /// it doesn't.</returns>
         /// <seealso cref="Nullable&lt;T&gt;"/>
-        public static string ToString(bool? value)
+        public static string? ToString(bool? value)
         {
             return value.HasValue ? (value.Value ? "true" : "false") : null;
         }
@@ -241,7 +236,7 @@ namespace Refactorius
         /// <param name="value">A value to convert.</param>
         /// <returns>A canonical string representation of <paramref name="value"/> if it has a value <see langword="null"/> if it
         /// doesn't.</returns>
-        public static string ToString(int? value)
+        public static string? ToString(int? value)
         {
             return value?.ToString(CultureInfo.InvariantCulture);
         }
@@ -251,7 +246,7 @@ namespace Refactorius
         /// <returns>A canonical string representation of <paramref name="value"/> if it has a value or <see langword="null"/> if
         /// it doesn't.</returns>
         [CLSCompliant(false)]
-        public static string ToString(uint? value)
+        public static string? ToString(uint? value)
         {
             return value?.ToString(CultureInfo.InvariantCulture);
         }
@@ -260,7 +255,7 @@ namespace Refactorius
         /// <param name="value">A value to convert.</param>
         /// <returns>A canonical string representation of <paramref name="value"/> if it has a value or <see langword="null"/> if
         /// it doesn't.</returns>
-        public static string ToString(DateTime? value)
+        public static string? ToString(DateTime? value)
         {
             if (!value.HasValue)
                 return null;
@@ -282,7 +277,7 @@ namespace Refactorius
         /// <param name="value">A value to convert.</param>
         /// <returns>A canonical string representation of <paramref name="value"/> if it has a value or <see langword="null"/> if
         /// it doesn't.</returns>
-        public static string ToString(double? value)
+        public static string? ToString(double? value)
         {
             return value?.ToString(NumberFormatInfo.InvariantInfo);
         }
@@ -291,7 +286,7 @@ namespace Refactorius
         /// <param name="value">A value to convert.</param>
         /// <returns>A canonical string representation of <paramref name="value"/> if it has a value or <see langword="null"/> if
         /// it doesn't.</returns>
-        public static string ToString(decimal? value)
+        public static string? ToString(decimal? value)
         {
             return value?.ToString(NumberFormatInfo.InvariantInfo);
         }
@@ -300,7 +295,7 @@ namespace Refactorius
         /// <param name="value">A value to convert.</param>
         /// <returns>A canonical string representation of <paramref name="value"/> if it has a value or <see langword="null"/> if
         /// it doesn't.</returns>
-        public static string ToString(Guid? value)
+        public static string? ToString(Guid? value)
         {
             return value?.ToString();
         }
@@ -309,7 +304,7 @@ namespace Refactorius
         /// <param name="value">A value to convert.</param>
         /// <returns>A canonical string representation (base64) of <paramref name="value"/> if it has a value or
         /// <see langword="null"/> if it doesn't.</returns>
-        public static string ToString(byte[] value)
+        public static string? ToString(byte[]? value)
         {
             if (value == null)
                 return null;
@@ -320,17 +315,17 @@ namespace Refactorius
 
         /// <summary>Converts an object to string.</summary>
         /// <param name="value">An <see langword="object"/> to convert.</param>
-        /// <param name="strict"><see langword="true"/> indicates that lossless conversion is required, <see langword="false"/>
+        /// <param name="strict"><see langword="true"/> indicates that loss-less conversion is required, <see langword="false"/>
         /// (the default) allows to use whatever string representation is available.</param>
         /// <returns>A canonical representation of <paramref name="value"/>, depending on its factual <c>Type</c>.</returns>
         /// <remarks>This method handles well-known value and <see cref="Nullable{T}"/> types via corresponding <b>ToString()</b>
-        /// methods of <see cref="ConvertUtils"/>. Byte aray (<b>byte[]</b>) is converted to base64 string and all other types are
+        /// methods of <see cref="ConvertUtils"/>. Byte array (<b>byte[]</b>) is converted to base64 string and all other types are
         /// converted via <see cref="TypeConverter"/> when possible.</remarks>
-        public static string ToString(object value, bool strict = false)
+        public static string? ToString(object? value, bool strict = false)
         {
             if (value == null)
                 return null;
-            if (value is string s && s != null)
+            if (value is string s)
                 return s;
 
             var type = value.GetType();
@@ -384,12 +379,12 @@ namespace Refactorius
         /// <para>The valid representation of <see langword="false"/> are case-insensitive "<b>false</b>", "<b>no</b>", " <b>0</b>"
         /// and the representation of <see langword="false"/>, defined by the current thread culture.</para>
         /// </remarks>
-        public static bool? ToBoolean(string value)
+        public static bool? ToBoolean(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
-            value = value.Trim().ToUpperInvariant();
+            value = value!.Trim().ToUpperInvariant();
 
             if (string.IsNullOrEmpty(value) || value == "FALSE" || value == "NO" || value == "0")
                 return false;
@@ -406,7 +401,7 @@ namespace Refactorius
         /// <returns>If <paramref name="value"/> is <see langword="null"/>, returned value represents <see langword="null"/>. The
         /// <b>Nullable{int}</b>, represented by <paramref name="value"/>.</returns>
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid string representation of an integer.</exception>
-        public static int? ToInt32(string value)
+        public static int? ToInt32(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
@@ -421,7 +416,7 @@ namespace Refactorius
         /// <exception cref="FormatException"><paramref name="value"/>doesn't contain a valid string representation of an unsigned
         /// integer.</exception>
         [CLSCompliant(false)]
-        public static uint? ToUInt32(string value)
+        public static uint? ToUInt32(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
@@ -432,9 +427,9 @@ namespace Refactorius
 
         /// <summary>Converts a string to a value of the most appropriate type.</summary>
         /// <param name="value">A string to convert.</param>
-        /// <returns>An int, bool, Guid or DataTime if <paramref name="value"/> is convertable to any of them, otherwise the
+        /// <returns>An int, bool, Guid or DataTime if <paramref name="value"/> is convertible to any of them, otherwise the
         /// original string <paramref name="value"/>.</returns>
-        public static object FromString([CanBeNull] string value)
+        public static object? FromString(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return value;
@@ -448,7 +443,7 @@ namespace Refactorius
             {
             }
 
-            if (value.Length >= 10)
+            if (value!.Length >= 10)
                 try
                 {
                     return ToDateTime(value);
@@ -481,7 +476,7 @@ namespace Refactorius
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid string representation of a date and
         /// time.</exception>
         /// <remarks>The conversion uses <see cref="DefaultDateTimeStyleLocal"/>.</remarks>
-        public static DateTime? ToDateTime(string value)
+        public static DateTime? ToDateTime(string? value)
         {
             value = value.TrimToNull();
             if (value == null)
@@ -507,7 +502,7 @@ namespace Refactorius
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid string representation of a date and
         /// time.</exception>
         /// <remarks>The conversion uses <see cref="DefaultDateTimeStyleLocal"/>. Afterwards the value is converted to Utc.</remarks>
-        public static DateTime? ToUtcDateTime(string value)
+        public static DateTime? ToUtcDateTime(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
@@ -525,7 +520,7 @@ namespace Refactorius
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid string representation of a date and
         /// time.</exception>
         /// <remarks>The conversion uses <see cref="DefaultDateTimeStyleLocal"/>. Afterwards the value is converted to local time.</remarks>
-        public static DateTime? ToLocalDateTime(string value)
+        public static DateTime? ToLocalDateTime(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
@@ -537,10 +532,10 @@ namespace Refactorius
 
         /// <summary>Converts a string to <b>Nullable&lt;double&gt;</b>.</summary>
         /// <param name="value">A string containing double to convert, may be <see langword="null"/>.</param>
-        /// <returns>The <b>Nullabl&lt;ouble&gt;</b>, represented by <paramref name="value"/>. If <paramref name="value"/> is
+        /// <returns>The <b>Nullable&lt;double&gt;</b>, represented by <paramref name="value"/>. If <paramref name="value"/> is
         /// <see langword="null"/>, returned value represents <see langword="null"/>.</returns>
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid string representation of a double.</exception>
-        public static double? ToDouble(string value)
+        public static double? ToDouble(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
@@ -553,7 +548,7 @@ namespace Refactorius
         /// <returns>The <b>Nullable&lt;decimal&gt;</b>, represented by <paramref name="value"/>. If <paramref name="value"/> is
         /// <see langword="null"/>, returned value represents <see langword="null"/>.</returns>
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid string representation of a decimal.</exception>
-        public static decimal? ToDecimal(string value)
+        public static decimal? ToDecimal(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
@@ -567,12 +562,12 @@ namespace Refactorius
         /// <see langword="null"/>, returned value represents <see langword="null"/>.</returns>
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid string representation of a
         /// <see cref="Guid"/>.</exception>
-        public static Guid? ToGuid(string value)
+        public static Guid? ToGuid(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
-            return new Guid(value.Trim());
+            return new Guid(value!.Trim());
         }
 
         /// <summary>Converts a string to byte array.</summary>
@@ -580,7 +575,7 @@ namespace Refactorius
         /// <returns>The byte array, represented by <paramref name="value"/>. If <paramref name="value"/> is <see langword="null"/>
         /// , returned value has zero length.</returns>
         /// <exception cref="FormatException"><paramref name="value"/> doesn't contain a valid Base64 string.</exception>
-        public static byte[] ToBytes(string value)
+        public static byte[]? ToBytes(string? value)
         {
             if (value == null)
                 return null;
@@ -602,7 +597,7 @@ namespace Refactorius
         /// <remarks>If the <paramref name="requiredType"/> is a (possibly nullable) value type or a byte array, this method uses
         /// the corresponding method of <see cref="ConvertUtils"/>; otherwise it tries to find and use the appropriate
         /// <see cref="TypeConverter"/>.</remarks>
-        public static object FromString(Type requiredType, string value)
+        public static object? FromString(Type requiredType, string value)
         {
             requiredType.MustNotBeNull(nameof(requiredType));
             if (requiredType == typeof(string) || requiredType == typeof(object))

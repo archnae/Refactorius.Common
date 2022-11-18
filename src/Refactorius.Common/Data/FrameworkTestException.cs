@@ -34,7 +34,7 @@ namespace Refactorius.Data
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">The exception that is the cause of the current exception, or a <see langword="null"/>
         /// reference if no inner exception is specified.</param>
-        public FrameworkTestException(string message, Exception innerException)
+        public FrameworkTestException(string message, Exception? innerException)
             : base(message, innerException, false)
         {
         }
@@ -57,13 +57,13 @@ namespace Refactorius.Data
         /// reference if no inner exception is specified.</param>
         /// <param name="ignoreDefaultMessage">A value specifying whether the default error message should NOT be appended to the
         /// <paramref name="message"/>.</param>
-        public FrameworkTestException(string message, Exception innerException, bool ignoreDefaultMessage)
+        public FrameworkTestException(string message, Exception? innerException, bool ignoreDefaultMessage)
             : base(message ?? (ignoreDefaultMessage ? string.Empty : "\n" + DEFAULT_MESSAGE), innerException)
         {
         }
 
         /// <inheritdoc/>
-        protected FrameworkTestException([NotNull] SerializationInfo info, StreamingContext context)
+        protected FrameworkTestException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

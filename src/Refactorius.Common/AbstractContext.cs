@@ -12,7 +12,7 @@ namespace Refactorius
     public abstract class AbstractContext<TInstance> : IDisposable
         where TInstance : AbstractContext<TInstance>
     {
-        private static readonly AsyncLocal<Stack<TInstance>> _stack = new AsyncLocal<Stack<TInstance>>();
+        private static readonly AsyncLocal<Stack<TInstance>> _stack = new();
 
         /// <summary>Initializes a new instance of the <see cref="AbstractContext{TInstance}"/> class and registers it as the
         /// current context.</summary>
@@ -23,20 +23,13 @@ namespace Refactorius
 
         /// <summary>Gets the current context stack.</summary>
         /// <value>The current context stack.</value>
-        [NotNull]
         public static Stack<TInstance> CurrentStack
         {
-            get
-            {
-                if (_stack.Value == null)
-                    _stack.Value = new Stack<TInstance>();
-                return _stack.Value;
-            }
+            get { return _stack.Value ??= new Stack<TInstance>(); }
         }
 
         /// <summary>Gets the latest registered scope.</summary>
         /// <value>The current (latest registered) scope.</value>
-        [NotNull]
         public static TInstance Current
         {
             get
@@ -64,16 +57,16 @@ namespace Refactorius
 
         /// <summary>Registers the scope.</summary>
         /// <param name="scope">The scope.</param>
-        public static void Register([NotNull] TInstance scope)
+        public static void Register(TInstance scope)
         {
             scope.MustNotBeNull(nameof(scope));
 
             CurrentStack.Push(scope);
         }
 
-        /// <summary>Unregisters the scope.</summary>
+        /// <summary>Un-registers the scope.</summary>
         /// <param name="scope">The scope.</param>
-        internal static void Unregister([NotNull] TInstance scope)
+        internal static void Unregister(TInstance scope)
         {
             scope.MustNotBeNull(nameof(scope));
             Guard.Assert(

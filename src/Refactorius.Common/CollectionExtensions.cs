@@ -14,9 +14,8 @@ namespace Refactorius
         /// <param name="item">An item to add.</param>
         /// <returns>The <paramref name="collection"/> itself (for call chaining).</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="collection"/> is <see langword="null"/>.</exception>
-        [NotNull]
         public static ICollection<TElement> AddOne<TElement>(
-            [NotNull] this ICollection<TElement> collection,
+            this ICollection<TElement> collection,
             TElement item)
         {
             collection.MustNotBeNull(nameof(collection));
@@ -32,10 +31,9 @@ namespace Refactorius
         /// <returns>The <paramref name="collection"/> itself (for call chaining).</returns>
         /// <exception cref="ArgumentNullException">if <paramref name="collection"/> oe <paramref name="items"/> is
         /// <see langword="null"/>.</exception>
-        [NotNull]
         public static ICollection<TElement> AddRange<TElement>(
-            [NotNull] this ICollection<TElement> collection,
-            [NotNull] [InstantHandle] IEnumerable<TElement> items)
+            this ICollection<TElement> collection,
+            [InstantHandle] IEnumerable<TElement> items)
         {
             collection.MustNotBeNull(nameof(collection));
             items.MustNotBeNull(nameof(items));

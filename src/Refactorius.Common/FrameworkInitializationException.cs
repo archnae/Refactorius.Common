@@ -22,19 +22,19 @@ namespace Refactorius
         }
 
         /// <inheritdoc/>
-        public FrameworkInitializationException([NotNull] string message)
+        public FrameworkInitializationException(string message)
             : base(message)
         {
         }
 
         /// <inheritdoc/>
-        public FrameworkInitializationException([NotNull] string message, [CanBeNull] Exception innerException)
+        public FrameworkInitializationException(string message, Exception? innerException)
             : base(message, innerException)
         {
         }
 
         /// <inheritdoc/>
-        protected FrameworkInitializationException([NotNull] SerializationInfo info, StreamingContext context)
+        protected FrameworkInitializationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

@@ -14,6 +14,7 @@ namespace Refactorius.Collections
     /// <remarks>Boldly stolen from http://msdnrss.thecoderblogs.com/2008/05/06/xml-serializable-dictionary/ </remarks>
     [Serializable]
     public class XmlSerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable
+        where TKey: notnull
     {
         #region XML tag names.
 
@@ -55,7 +56,7 @@ namespace Refactorius.Collections
             dictionary.MustNotBeNull(nameof(dictionary));
 
             ////XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSerializer = null;
+            XmlSerializer? valueSerializer = null;
             var useConvert = typeof(TValue) == typeof(object) || typeof(IConvertible).IsAssignableFrom(typeof(TValue));
             var wasEmpty = reader.IsEmptyElement;
 
@@ -88,8 +89,7 @@ namespace Refactorius.Collections
                 }
                 else
                 {
-                    if (valueSerializer == null)
-                        valueSerializer = new XmlSerializer(typeof(TValue));
+                    valueSerializer ??= new XmlSerializer(typeof(TValue));
 
                     if (reader.IsEmptyElement)
                     {
@@ -98,15 +98,16 @@ namespace Refactorius.Collections
                     else
                     {
                         reader.ReadStartElement(VALUE);
-                        value = (TValue) valueSerializer.Deserialize(reader);
+                        value = (TValue) valueSerializer.Deserialize(reader)!;
                         reader.ReadEndElement();
                     }
                 }
 
+                // TODO: elements (non)-nullability suspect
                 if (dictionary.ContainsKey(key))
-                    dictionary[key] = value;
+                    dictionary[key] = value!;
                 else
-                    dictionary.Add(key, value);
+                    dictionary.Add(key, value!);
 
                 reader.ReadEndElement();
                 reader.MoveToContent();
@@ -124,7 +125,7 @@ namespace Refactorius.Collections
             dictionary.MustNotBeNull(nameof(dictionary));
 
             ////XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSerializer = null;
+            XmlSerializer? valueSerializer = null;
             var useConvert = typeof(TValue) == typeof(object) || typeof(IConvertible).IsAssignableFrom(typeof(TValue));
 
             writer.WriteStartElement(DICTIONARY);
@@ -150,8 +151,7 @@ namespace Refactorius.Collections
                 }
                 else
                 {
-                    if (valueSerializer == null)
-                        valueSerializer = new XmlSerializer(typeof(TValue));
+                    valueSerializer ??= new XmlSerializer(typeof(TValue));
 
                     writer.WriteStartElement(VALUE);
                     valueSerializer.Serialize(writer, item.Value);
@@ -173,7 +173,7 @@ namespace Refactorius.Collections
         /// <returns>An <see cref="System.Xml.Schema.XmlSchema"/> that describes the XML representation of the object that is
         /// produced by the <see cref="System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)"/> method and
         /// consumed by the <see cref="System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)"/> method.</returns>
-        public XmlSchema GetSchema()
+        public XmlSchema? GetSchema()
         {
             return null;
         }

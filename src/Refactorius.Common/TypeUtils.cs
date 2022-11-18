@@ -8,13 +8,14 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>The collection of useful type-related utility methods.</summary>
+    [PublicAPI]
     public static class TypeUtils
     {
         #region TypeComparerInstance
 
         /// <summary>Gets an instance of <see cref="TypeComparer"/>.</summary>
         /// <value>A static instance of <see cref="TypeComparer"/>.</value>
-        public static TypeComparer TypeComparer { get; } = new TypeComparer();
+        public static TypeComparer TypeComparer { get; } = new();
 
         #endregion
 
@@ -28,8 +29,7 @@ namespace Refactorius
         /// <exception cref="ArgumentException"><paramref name="name"/> is an empty string.</exception>
         /// <exception cref="InvalidOperationException"><paramref name="type"/> has either no members named <paramref name="name"/>
         /// or more than one.</exception>
-        [CanBeNull]
-        public static string GetDescription([NotNull] Type type, [NotNull] string name, BindingFlags bindingAttr)
+        public static string GetDescription(Type type, string name, BindingFlags bindingAttr)
         {
             type.MustNotBeNull(nameof(type));
             name.MustHaveText(nameof(name));
@@ -44,14 +44,14 @@ namespace Refactorius
             var attributes =
                 (DescriptionAttribute[]) memberInfos[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-            return attributes.Length > 0 ? attributes[0].Description : null;
+            return attributes.Length > 0 ? attributes[0].Description : string.Empty;
         }
 
         /// <summary>Tests if the specified type is a <see cref="Nullable&lt;T&gt;"/>.</summary>
         /// <param name="type">The <c>Type</c> to test.</param>
         /// <returns><see langword="true"/> if <paramref name="type"/> is a <see cref="Nullable&lt;T&gt;"/>, otherwise
         /// <see langword="false"/>.</returns>
-        public static bool IsNullableType([NotNull] this Type type)
+        public static bool IsNullableType(this Type type)
         {
             type.MustNotBeNull(nameof(type));
 
@@ -62,7 +62,7 @@ namespace Refactorius
         /// <param name="type">The <c>Type</c> to test.</param>
         /// <returns><see langword="true"/> if <paramref name="type"/> is a <see cref="Nullable&lt;T&gt;"/> or a reference type,
         /// otherwise <see langword="false"/>.</returns>
-        public static bool IsNullAssignableType([NotNull] this Type type)
+        public static bool IsNullAssignableType(this Type type)
         {
             type.MustNotBeNull(nameof(type));
 
@@ -74,8 +74,7 @@ namespace Refactorius
         /// <returns>The underlying <c>Type</c> <b>T</b> if <paramref name="type"/> is a <see cref="Nullable&lt;T&gt;"/>,
         /// the <paramref name="type"/> itself if it's a non-nullable value type or <see langword="null"/> if
         /// <paramref name="type"/> is a reference type.</returns>
-        [CanBeNull]
-        public static Type UnwrapNullableType([NotNull] Type type)
+        public static Type? UnwrapNullableType(Type type)
         {
             type.MustNotBeNull(nameof(type));
 
@@ -90,7 +89,7 @@ namespace Refactorius
         /// <param name="typeName">The full type name to test.</param>
         /// <returns><see langword="true"/> if <paramref name="typeName"/> is a <b>Nullable&lt;T&gt;</b> or a <b>T?</b>, otherwise
         /// <see langword="false"/>.</returns>
-        public static bool IsNullableTypeName([NotNull] string typeName)
+        public static bool IsNullableTypeName(string typeName)
         {
             typeName.MustHaveText(nameof(typeName));
 
@@ -108,8 +107,7 @@ namespace Refactorius
         /// <remarks>Unlike <see cref="UnwrapNullableType"/>, this method returns <see langword="null"/> for all not explicitly
         /// nullable types.</remarks>
         /// <seealso cref="UnwrapNullableType"/>
-        [CanBeNull]
-        public static string UnwrapNullableTypeName([NotNull] string typeName)
+        public static string? UnwrapNullableTypeName(string typeName)
         {
             typeName.MustHaveText(nameof(typeName));
 
@@ -132,7 +130,7 @@ namespace Refactorius
         /// <param name="type">The <c>Type</c> to test.</param>
         /// <returns><see langword="true"/> if <paramref name="type"/> is an anonymous type, otherwise <see langword="false"/>.</returns>
         /// <remarks>See http://stackoverflow.com/questions/1650681/determining-whether-a-type-is-an-anonymous-type .</remarks>
-        public static bool IsAnonymousType([NotNull] this Type type)
+        public static bool IsAnonymousType(this Type type)
         {
             type.MustNotBeNull(nameof(type));
 
@@ -146,8 +144,7 @@ namespace Refactorius
         /// <summary>Returns nice readable type name with generic type parameters resolved.</summary>
         /// <param name="type">The current <c>Type</c> instance.</param>
         /// <returns>The readable name for the <paramref name="type"/> (type name only, namespace not included).</returns>
-        [NotNull]
-        public static string DisplayName([NotNull] this Type type)
+        public static string DisplayName(this Type type)
         {
             type.MustNotBeNull(nameof(type));
 
@@ -179,7 +176,7 @@ namespace Refactorius
         /// <summary>Calculates total hash code of a collection of objects.</summary>
         /// <param name="args">A collection of objects (some may be null).</param>
         /// <returns>The total hash code.</returns>
-        public static int CalculateHash(params object[] args)
+        public static int CalculateHash(params object?[] args)
         {
             unchecked
             {
@@ -188,7 +185,7 @@ namespace Refactorius
                 {
                     hash = (hash * 37 + 1) << (i + i);
                     if (args[i] != null)
-                        hash += args[i].GetHashCode();
+                        hash += args[i]!.GetHashCode();
                 }
 
                 return hash;
@@ -222,7 +219,7 @@ namespace Refactorius
         /// <param name="y">Right side <c>Type</c> object.</param>
         /// <returns>The comparison result, defined by comparing <paramref name="x"/> and <paramref name="y"/>'s
         /// <see cref="System.Type.FullName"/> properties.</returns>
-        public override int Compare(Type x, Type y)
+        public override int Compare(Type? x, Type? y)
         {
             if (x == y)
                 return 0;

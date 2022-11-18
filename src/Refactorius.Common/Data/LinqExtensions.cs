@@ -20,25 +20,25 @@ namespace Refactorius.Data
         /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> to compare keys with.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> where each element contains a collection of objects of type
         /// <typeparamref name="TElement"/> and a key.</returns>
-        [NotNull]
         public static IEnumerable<IGrouping<TKey, TElement>> GroupAdjacentBy<TElement, TKey>(
-            [NotNull] this IEnumerable<TElement> source,
-            [NotNull] Func<TElement, TKey> keySelector,
-            IEqualityComparer<TKey> comparer = null)
+            this IEnumerable<TElement> source,
+            Func<TElement, TKey> keySelector,
+            IEqualityComparer<TKey>? comparer = null)
+            where TKey: notnull
         {
             source.MustNotBeNull(nameof(source));
             keySelector.MustNotBeNull(nameof(keySelector));
 
             comparer = comparer ?? EqualityComparer<TKey>.Default;
-            List<TElement> elements = null;
+            List<TElement>? elements = null;
             var key = default(TKey);
             var lastKey = default(TKey);
             foreach (var x in source)
             {
                 key = keySelector(x);
-                if (elements != null && elements.Any() && !comparer.Equals(lastKey, key))
+                if (elements != null && elements.Any() && !comparer.Equals(lastKey!, key))
                 {
-                    yield return new Grouping<TKey, TElement>(lastKey, elements);
+                    yield return new Grouping<TKey, TElement>(lastKey!, elements);
                     elements = null;
                 }
 
@@ -52,7 +52,7 @@ namespace Refactorius.Data
             }
 
             if (elements != null && elements.Any())
-                yield return new Grouping<TKey, TElement>(key, elements);
+                yield return new Grouping<TKey, TElement>(key!, elements);
         }
 
         /// <summary>Groups the adjacent elements of a sequence according to their values and creates a result value from each
@@ -62,10 +62,10 @@ namespace Refactorius.Data
         /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> to compare elements with.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> where each element contains a collection of objects of type
         /// <typeparamref name="TElement"/> and their value as a key.</returns>
-        [NotNull]
         public static IEnumerable<IGrouping<TElement, TElement>> GroupAdjacentBy<TElement>(
-            [NotNull] this IEnumerable<TElement> source,
-            IEqualityComparer<TElement> comparer = null)
+            this IEnumerable<TElement> source,
+            IEqualityComparer<TElement>? comparer = null)
+            where TElement: notnull
         {
             return source.GroupAdjacentBy(x => x, comparer);
         }
@@ -78,13 +78,12 @@ namespace Refactorius.Data
             /// <summary>Initializes a new instance of the <see cref="Grouping{TKey,TElement}"/> class.</summary>
             /// <param name="key">A key value.</param>
             /// <param name="elements">A list of elements.</param>
-            public Grouping([NotNull] TKey key, [NotNull] List<TElement> elements)
+            public Grouping([NotNull] TKey key, List<TElement> elements)
             {
                 Key = key;
                 Elements = elements;
             }
 
-            [NotNull]
             private List<TElement> Elements { get; }
 
             /// <summary>Gets the key.</summary>

@@ -7,12 +7,13 @@ using JetBrains.Annotations;
 namespace Refactorius
 {
     /// <summary>Utility method related to type names.</summary>
+    [PublicAPI]
     public static class TypeNameUtils
     {
         //public static readonly string[] NoWellKnownNamespaces = new string[0];
 
         /// <summary>Gets the collection of well-known namespaces.</summary>
-        public static readonly ConcurrentBag<string> WellKnownNamespaces = new ConcurrentBag<string>
+        public static readonly ConcurrentBag<string> WellKnownNamespaces = new()
         {
             "System",
             "System.Collections",
@@ -27,7 +28,7 @@ namespace Refactorius
 
         /// <summary>Registers new well known namespace.</summary>
         /// <param name="wellKnownNamespace">A well known namespace.</param>
-        public static void RegisterWellKnownNamespace([NotNull] string wellKnownNamespace)
+        public static void RegisterWellKnownNamespace(string wellKnownNamespace)
         {
             wellKnownNamespace.MustHaveText(nameof(wellKnownNamespace));
             WellKnownNamespaces.Add(wellKnownNamespace);
@@ -37,17 +38,16 @@ namespace Refactorius
         /// <param name="type">A type (possible generic).</param>
         /// <param name="wellKnownNamespaces">The list of well-known namespaces omitted from readable type names.</param>
         /// <returns>An informal string representation of <paramref name="type"/> name.</returns>
-        [NotNull]
         [Pure]
-        public static string GetReadableTypeName([NotNull] Type type,
-            [InstantHandle] IReadOnlyCollection<string> wellKnownNamespaces = null)
+        public static string GetReadableTypeName(Type type,
+            [InstantHandle] IReadOnlyCollection<string>? wellKnownNamespaces = null)
         {
             type.MustNotBeNull(nameof(type));
             var typeName = type.FullName;
             if (typeName == null)
                 return "?UnnamedType?";
             // ReSharper disable once SuspiciousTypeConversion.Global
-            wellKnownNamespaces = wellKnownNamespaces ?? WellKnownNamespaces as IReadOnlyCollection<string>;
+            wellKnownNamespaces ??= WellKnownNamespaces;
             typeName = RemoveWellKnownNameSpaces(typeName, wellKnownNamespaces);
             if (!type.IsGenericType)
                 return typeName;
@@ -71,22 +71,21 @@ namespace Refactorius
             return typeName;
         }
 
-        /// <summary>Removes well-nown namespaces from a type name.</summary>
-        /// <param name="typeName">A stringyfied type name.</param>
+        /// <summary>Removes well-known namespaces from a type name.</summary>
+        /// <param name="typeName">A readable type name string.</param>
         /// <param name="wellKnownNamespaces">A sequence of well-known namespace names.</param>
         /// <returns>The <paramref name="typeName"/> with all <paramref name="wellKnownNamespaces"/> removed.</returns>
-        [NotNull]
         [Pure]
-        public static string RemoveWellKnownNameSpaces([NotNull] string typeName,
-            [ItemNotNull] [CanBeNull] IReadOnlyCollection<string> wellKnownNamespaces)
+        public static string RemoveWellKnownNameSpaces(string? typeName,
+            IReadOnlyCollection<string>? wellKnownNamespaces)
         {
-            if (typeName.IsEmpty() || wellKnownNamespaces == null)
-                return typeName;
+            if (string.IsNullOrEmpty(typeName) || wellKnownNamespaces == null)
+                return typeName ?? string.Empty;
 
             foreach (var s in wellKnownNamespaces)
             {
                 var prefix = s.EndsWith(".", StringComparison.Ordinal) ? s : s + ".";
-                if (typeName.StartsWith(prefix, StringComparison.Ordinal))
+                if (typeName!.StartsWith(prefix, StringComparison.Ordinal))
                     typeName = typeName.Replace(prefix, string.Empty);
 
                 typeName = typeName.Replace("," + prefix, ",");
@@ -94,7 +93,7 @@ namespace Refactorius
                 typeName = typeName.Replace("<" + prefix, "<");
             }
 
-            return typeName;
+            return typeName!;
         }
     }
 }
