@@ -1,15 +1,14 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Security;
 using Refactorius.Data;
 
-namespace Refactorius
+namespace Refactorius;
+
+/// <summary>The replacement for GuidComb that is more like what MS SQL Server does.</summary>
+/// <remarks>Cheers to
+/// https://blogs.msdn.microsoft.com/dbrowne/2012/07/03/how-to-generate-sequential-guids-for-sql-server-in-net/ .</remarks>
+public static class GuidSeq
 {
-    /// <summary>The replacement for GuidComb that is more like what MS SQL Server does.</summary>
-    /// <remarks>Cheers to
-    /// https://blogs.msdn.microsoft.com/dbrowne/2012/07/03/how-to-generate-sequential-guids-for-sql-server-in-net/ .</remarks>
-    public static class GuidSeq
-    {
 #if NET6_0_OR_GREATER
         [DllImport("rpcrt4.dll", SetLastError = true)]
         private static extern int UuidCreateSequential(out Guid guid);
@@ -66,14 +65,13 @@ namespace Refactorius
             return new Guid(t);
         }
 #else
-        /// <summary>Creates a new sequential <see cref="Guid"/>.</summary>
-        /// <returns>A new sequential <see cref="Guid"/>.</returns>
-        public static Guid NewGuid()
-        {
+    /// <summary>Creates a new sequential <see cref="Guid"/>.</summary>
+    /// <returns>A new sequential <see cref="Guid"/>.</returns>
+    public static Guid NewGuid()
+    {
 #pragma warning disable 618
         return GuidComb.NewGuid();
 #pragma warning restore 618
-        }
-#endif
     }
+#endif
 }

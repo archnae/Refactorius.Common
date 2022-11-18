@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netstandard2.0;net6</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
     <PackageId>Refactorius.Common</PackageId>
     <RootNamespace>Refactorius</RootNamespace>
     <AssemblyName>Refactorius.Common</AssemblyName>
@@ -70,7 +70,7 @@
 		<PackageReference Include="System.Security.Permissions" Version="7.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net6' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
 		<PackageReference Include="System.Security.Permissions" Version="7.0.0" />
 	</ItemGroup>
 </Project>
