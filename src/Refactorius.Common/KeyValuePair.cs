@@ -15,10 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
-using System.Collections.Generic;
-using JetBrains.Annotations;
-
-#if NET462
+#if !NET6_0_OR_GREATER
 namespace Refactorius
 {
     /// <summary>

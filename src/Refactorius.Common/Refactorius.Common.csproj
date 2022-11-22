@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netstandard2.0;net6</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
     <PackageId>Refactorius.Common</PackageId>
     <RootNamespace>Refactorius</RootNamespace>
     <AssemblyName>Refactorius.Common</AssemblyName>
@@ -13,8 +13,8 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://dev.azure.com/Refactorius/Refactorius.Common</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
-    <PackageTags>Refactorius Utility</PackageTags>
-    <PackageReleaseNotes>The library targets netstandard 2.0 only.</PackageReleaseNotes>
+    <PackageTags>Refactorius;Utility</PackageTags>
+    <PackageReleaseNotes>The library targets net462, netstandard 2.0 and net6.</PackageReleaseNotes>
     <RepositoryUrl>https://dev.azure.com/Refactorius/_git/Refactorius.Common</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageLicenseFile></PackageLicenseFile>
@@ -28,6 +28,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>6.0-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -67,7 +70,7 @@
 		<PackageReference Include="System.Security.Permissions" Version="7.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net6' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
 		<PackageReference Include="System.Security.Permissions" Version="7.0.0" />
 	</ItemGroup>
 </Project>
