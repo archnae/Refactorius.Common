@@ -121,7 +121,7 @@ public static class StringUtils
     /// StringUtils.HasText(" 12345 ") = true
     /// </code>
     /// </example>
-    [Obsolete("Use !string.IsNullOrWhiteText()."), ContractAnnotation("target:null => false"), Pure,
+    [Obsolete("Use !string.IsNullOrWhiteSpace()."), ContractAnnotation("target:null => false"), Pure,
      MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasText(this string target)
     {
