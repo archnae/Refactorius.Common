@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
+#if !NET6_0_OR_GREATER
 namespace Refactorius;
 
 /// <summary>
@@ -25,7 +26,7 @@ namespace Refactorius;
 [PublicAPI]
 public static class KeyValuePair
 {
-#if !NET6_0_OR_GREATER
+
     /// <summary>
     /// Creates the specified pair with the given key and value. 
     /// The generic types do not need to be specified, and are 
@@ -38,17 +39,18 @@ public static class KeyValuePair
     {
         return new KeyValuePair<TKey, TValue>(key, value);
     }
-#endif
 
-    /// <summary>
-    /// Swaps the <see cref="KeyValuePair{TKey,TValue}.Key"/> and <see cref="KeyValuePair{TKey,TValue}.Value"/>.
-    /// </summary>
-    /// <typeparam name="TKey">The key type.</typeparam>
-    /// <typeparam name="TValue">The value type.</typeparam>
-    /// <param name="kvp">The key-value pair.</param>
-    /// <returns>The <paramref name="kvp"/> with key and value swapped.</returns>
-    public static KeyValuePair<TValue, TKey> Reverse<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp)
+
+/// <summary>
+/// Swaps the <see cref="KeyValuePair{TKey,TValue}.Key"/> and <see cref="KeyValuePair{TKey,TValue}.Value"/>.
+/// </summary>
+/// <typeparam name="TKey">The key type.</typeparam>
+/// <typeparam name="TValue">The value type.</typeparam>
+/// <param name="kvp">The key-value pair.</param>
+/// <returns>The <paramref name="kvp"/> with key and value swapped.</returns>
+public static KeyValuePair<TValue, TKey> Reverse<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp)
     {
         return new KeyValuePair<TValue, TKey>(kvp.Value, kvp.Key);
     }
 }
+#endif
