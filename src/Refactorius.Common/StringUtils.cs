@@ -1,4 +1,5 @@
 //using System.Diagnostics.CodeAnalysis;
+
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -27,8 +28,10 @@ public static class StringUtils
     /// <seealso cref="Path.GetInvalidPathChars"/>
     /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
     [Pure]
-    public static string SanitizePath(string value) =>
-        value.Sanitize(Path.GetInvalidPathChars(), '_').Trim();
+    public static string SanitizePath(string value)
+    {
+        return value.Sanitize(Path.GetInvalidPathChars(), '_').Trim();
+    }
 
     /// <summary>Sanitizes a <see cref="string"/> into a valid <see cref="File"/> name by replacing all invalid
     /// characters in it with spaces.</summary>
@@ -48,8 +51,10 @@ public static class StringUtils
     /// <param name="value">A <see cref="string"/> reference.</param>
     /// <returns><see langword="true"/> if the value parameter is <see langword="null"/>  or an empty string (""); otherwise,
     /// <see langword="false"/>.</returns>
-    [Obsolete("Use string.IsNullOrEmpty()."), ContractAnnotation("value:null => true"), Pure,
-     MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [ContractAnnotation("value:null => true")]
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Obsolete("Use string.IsNullOrEmpty().")]
     public static bool IsNullOrEmpty(this string? value)
     {
         return string.IsNullOrEmpty(value);
@@ -74,8 +79,10 @@ public static class StringUtils
     /// StringUtils.IsEmpty(" 12345 ") = false
     /// </code>
     /// </example>
-    [Obsolete("Use string.IsNullOrWhiteSpace()."), ContractAnnotation("target:null => true"), Pure,
-     MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [ContractAnnotation("target:null => true")]
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //[Obsolete("Use string.IsNullOrWhiteSpace().")]
     public static bool IsEmpty(this string? target)
     {
         return string.IsNullOrWhiteSpace(target);
@@ -97,8 +104,10 @@ public static class StringUtils
     /// StringUtils.HasLength("Hello") == true
     /// </code>
     /// </example>
-    [Obsolete("Use !string.IsNullOrEmpty()."), ContractAnnotation("target:null => false"), Pure,
-     MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Obsolete("Use !string.IsNullOrEmpty().")]
+    [ContractAnnotation("target:null => false")]
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasLength(this string? target)
     {
         return !string.IsNullOrEmpty(target);
@@ -121,8 +130,10 @@ public static class StringUtils
     /// StringUtils.HasText(" 12345 ") = true
     /// </code>
     /// </example>
-    [Obsolete("Use !string.IsNullOrWhiteSpace()."), ContractAnnotation("target:null => false"), Pure,
-     MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [ContractAnnotation("target:null => true")]
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //[Obsolete("Use !string.IsNullOrWhiteSpace().")]
     public static bool HasText(this string target)
     {
         return !string.IsNullOrWhiteSpace(target);
@@ -145,10 +156,11 @@ public static class StringUtils
     /// </code>
     /// </example>
     /// <remarks>Changed in v11 to non null-propagating.</remarks>
-    [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    [Pure]
     public static string Ellipsis(this string? value, int maxLength)
     {
-        value = value?.Trim() ?? string.Empty; 
+        value = value?.Trim() ?? string.Empty;
         if (maxLength <= DefaultEllipsisPostfix.Length)
             throw new ArgumentOutOfRangeException(
                 nameof(maxLength),
@@ -168,7 +180,8 @@ public static class StringUtils
     /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
     /// <see cref="DefaultEllipsisPostfix"/>.</exception>
     /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
-    [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    [Pure]
     public static string ReverseEllipsis(this string? value, int maxLength)
     {
         value = value?.Trim() ?? string.Empty;
@@ -190,29 +203,31 @@ public static class StringUtils
     /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
     /// <see cref="DefaultEllipsisPostfix"/>.</exception>
     /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
-    [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    [Pure]
     public static string BiEllipsis(this string? value, int maxLength)
     {
         value = value?.Trim() ?? string.Empty;
-        if (maxLength <= StringUtils.DefaultEllipsisPostfix.Length + 4)
+        if (maxLength <= DefaultEllipsisPostfix.Length + 4)
             throw new ArgumentOutOfRangeException(
                 nameof(maxLength),
                 "The desired maximal length of the string with an ellipsis must be greater then the length of the ellipsis postfix");
 
         if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
             return value;
-        var halfLength = (maxLength - StringUtils.DefaultEllipsisPostfix.Length - 4) / 2;
+        var halfLength = (maxLength - DefaultEllipsisPostfix.Length - 4) / 2;
         var head = value.Substring(0, halfLength);
         var tail = value.Substring(value.Length - halfLength);
-        return $"{head} {StringUtils.DefaultEllipsisPostfix} {tail}";
+        return $"{head} {DefaultEllipsisPostfix} {tail}";
     }
-        
+
     /// <summary>Converts the <see cref="string"/> to camelCase, null-propagating.</summary>
     /// <param name="value">A <see cref="string"/> to convert.</param>
     /// <returns>A <paramref name="value"/>, converted to camelCase (first character in lower case, the rest unchanged). The
     /// value is trimmed before conversion. <see langword="null"/> value is returned unchanged.</returns>
     /// <remarks>The conversion to lower case uses the current culture.</remarks>
-    [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    [Pure]
     public static string? ToCamelCase(this string? value)
     {
         if (string.IsNullOrEmpty(value))
@@ -229,7 +244,8 @@ public static class StringUtils
     /// <returns>A <paramref name="value"/>, converted to Capital (first character in upper case, the rest unchanged). The
     /// value is trimmed before conversion. <see langword="null"/> value is returned unchanged.</returns>
     /// <remarks>The conversion to upper case uses the current culture.</remarks>
-    [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    [Pure]
     public static string? ToCapitalCase(this string? value)
     {
         if (string.IsNullOrEmpty(value))
@@ -245,7 +261,8 @@ public static class StringUtils
     /// <param name="value">The original <see cref="string"/>.</param>
     /// <returns>The <paramref name="value"/> with newlines replaced. If <paramref name="value"/> is <see langword="null"/> or
     /// <see cref="string.Empty"/>, the result is <see cref="string.Empty"/>.</returns>
-    [ContractAnnotation("value:null => null; value:notnull => notnull"), Pure]
+    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    [Pure]
     public static string? CompactNewLines(this string? value)
     {
         return string.IsNullOrEmpty(value)
@@ -297,7 +314,8 @@ public static class StringUtils
     /// <remarks>If <paramref name="value"/> is <see langword="null"/>, returns an empty <see cref="string"/> array. If
     /// <paramref name="separators"/> is <see langword="null"/> or empty, returns a <see cref="string"/> array with one
     /// element: <paramref name="value"/> itself. Tokens are trimmed; empty tokens are removed from the result.</remarks>
-    [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string[] SplitAndTrim(this string? value, string separators)
     {
         // TODO: SplitAndTrim re-squeeze is not efficient, handle default case better
@@ -322,9 +340,9 @@ public static class StringUtils
         value ??= string.Empty;
         if (string.IsNullOrEmpty(value))
             return Array.Empty<string>();
-            
+
         if (string.IsNullOrEmpty(separators))
-            return new[] {value};
+            return new[] { value };
 
         if ((options & StringSplitAndTrimOptions.TrimBoth) == 0)
         {
@@ -335,9 +353,10 @@ public static class StringUtils
 
         var result = value.Split(separators.ToCharArray());
         for (var i = 0; i < result.Length; i++)
-        {
             if ((options & StringSplitAndTrimOptions.Squeeze) != 0)
+            {
                 result[i] = result[i].Squeeze() ?? string.Empty;
+            }
             else
             {
                 if ((options & StringSplitAndTrimOptions.TrimAtStart) != 0)
@@ -345,7 +364,6 @@ public static class StringUtils
                 if ((options & StringSplitAndTrimOptions.TrimAtEnd) != 0)
                     result[i] = result[i].TrimEnd();
             }
-        }
 
         // get rid of empty items created by extra separators
         // TODO: SplitAndTrim re-squeeze is not efficient, handle empty entries better
@@ -358,7 +376,8 @@ public static class StringUtils
     /// <summary>Trims the argument and replaces all sequences of one or more whitespaces with a single space.</summary>
     /// <param name="value">A string to squeeze or <see langword="null"/>.</param>
     /// <returns>A squeezed <paramref name="value"/>.</returns>
-    [ContractAnnotation("value:null => null"), Pure]
+    [ContractAnnotation("value:null => null")]
+    [Pure]
     public static string? Squeeze(this string? value)
     {
         return string.IsNullOrEmpty(value) ? value : SqueezeRegex.Replace(value!.Trim(), " ");
@@ -379,7 +398,8 @@ public static class StringUtils
     /// with <see langword="null"/> if it's empty.</summary>
     /// <param name="value">A string to squeeze or <see langword="null"/>.</param>
     /// <returns>A squeezed <paramref name="value"/> if it is not empty, <see langword="null"/> if it is.</returns>
-    [ContractAnnotation("value:null => null"), Pure]
+    [ContractAnnotation("value:null => null")]
+    [Pure]
     public static string? SqueezeToNull(this string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -409,7 +429,7 @@ public static class StringUtils
         return string.Join(
             separator,
             value.WhereNotEmpty()
-                .Select(squeeze ? SqueezeToNull : (Func<string?, string?>) TrimToNull)
+                .Select(squeeze ? SqueezeToNull : (Func<string?, string?>)TrimToNull)
                 .WhereNotEmpty());
     }
 
@@ -426,7 +446,8 @@ public static class StringUtils
     /// interspersed with the <paramref name="separator"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     public static string WrapAndJoin(
-        [InstantHandle] this IEnumerable<string?> value,
+        [InstantHandle]
+        this IEnumerable<string?> value,
         string separator,
         string prefix,
         string postfix,
@@ -437,7 +458,7 @@ public static class StringUtils
         return string.Join(
             separator,
             value.WhereNotEmpty()
-                .Select(squeeze ? SqueezeToNull : (Func<string?, string?>) TrimToNull)
+                .Select(squeeze ? SqueezeToNull : (Func<string?, string?>)TrimToNull)
                 .WhereNotEmpty()
                 .Select(x => prefix + x + postfix));
     }
