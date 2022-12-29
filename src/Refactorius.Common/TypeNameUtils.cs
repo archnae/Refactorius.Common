@@ -16,14 +16,14 @@ public static class TypeNameUtils
         "System.Collections",
         "System.Collections.Generic",
         "System.Collections.Concurrent",
-        "Microsoft.Practices.ServiceLocation",
+        "Microsoft.Extensions.Logging",
         "Refactorius",
-        "Refactorius.Extensions",
-        "Refactorius.Configuration"
+        "Refactorius.Data"
     };
 
     /// <summary>Registers new well known namespace.</summary>
     /// <param name="wellKnownNamespace">A well known namespace.</param>
+    [Obsolete("Use TypeUtils.RegisterWellKnownNamespace")]
     public static void RegisterWellKnownNamespace(string wellKnownNamespace)
     {
         wellKnownNamespace.MustHaveText(nameof(wellKnownNamespace));
@@ -35,6 +35,7 @@ public static class TypeNameUtils
     /// <param name="wellKnownNamespaces">The list of well-known namespaces omitted from readable type names.</param>
     /// <returns>An informal string representation of <paramref name="type"/> name.</returns>
     [Pure]
+    [Obsolete("Use TypeUtils.GetReadableTypeName")]
     public static string GetReadableTypeName(Type type,
         [InstantHandle] IReadOnlyCollection<string>? wellKnownNamespaces = null)
     {
@@ -72,6 +73,7 @@ public static class TypeNameUtils
     /// <param name="wellKnownNamespaces">A sequence of well-known namespace names.</param>
     /// <returns>The <paramref name="typeName"/> with all <paramref name="wellKnownNamespaces"/> removed.</returns>
     [Pure]
+    [Obsolete("Use TypeUtils.RemoveWellKnownNameSpaces")]
     public static string RemoveWellKnownNameSpaces(string? typeName,
         IReadOnlyCollection<string>? wellKnownNamespaces)
     {

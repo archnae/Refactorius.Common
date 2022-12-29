@@ -88,7 +88,7 @@ public class MixinBase<TKey, TValue>
     }
 
     /// <summary>
-    /// Gets the <see cref="IOrganizationService"/> this mixin is extending.
+    /// Gets the <typeparamref name="TKey"/> instance this mixin is extending.
     /// </summary>
     public TKey Key => CheckDisposed().Key;
 

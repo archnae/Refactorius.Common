@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -7,6 +8,18 @@ namespace Refactorius;
 [PublicAPI]
 public static class TypeUtils
 {
+    /// <summary>Gets the collection of well-known namespaces.</summary>
+    public static readonly ConcurrentBag<string> WellKnownNamespaces = new()
+    {
+        "System",
+        "System.Collections",
+        "System.Collections.Generic",
+        "System.Collections.Concurrent",
+        "Microsoft.Extensions.Logging",
+        "Refactorius",
+        "Refactorius.Data"
+    };
+
     #region TypeComparerInstance
 
     /// <summary>Gets an instance of <see cref="TypeComparer"/>.</summary>
@@ -148,7 +161,12 @@ public static class TypeUtils
         if (underlyingType != null)
             return underlyingType.Name + "?";
 
-        return type.FullName
+        var typeName = type.FullName;
+        if (typeName == null)
+          return "?UnnamedType?";
+        typeName = RemoveWellKnownNameSpaces(typeName, WellKnownNamespaces);
+
+        return typeName
             .SplitAndTrim("+")
             .Select(
                 nested =>
@@ -188,20 +206,42 @@ public static class TypeUtils
         }
     }
 
+    /// <summary>Registers new well known namespace.</summary>
+    /// <param name="wellKnownNamespace">A well known namespace.</param>
+    public static void RegisterWellKnownNamespace(string wellKnownNamespace)
+    {
+        wellKnownNamespace.MustHaveText(nameof(wellKnownNamespace));
+        WellKnownNamespaces.Add(wellKnownNamespace);
+    }
+
+    /// <summary>Removes well-known namespaces from a type name.</summary>
+    /// <param name="typeName">A readable type name string.</param>
+    /// <param name="wellKnownNamespaces">A sequence of well-known namespace names.</param>
+    /// <returns>The <paramref name="typeName"/> with all <paramref name="wellKnownNamespaces"/> removed.</returns>
+    [Pure]
+    public static string RemoveWellKnownNameSpaces(string? typeName,
+        IReadOnlyCollection<string>? wellKnownNamespaces)
+    {
+        if (string.IsNullOrEmpty(typeName) || wellKnownNamespaces == null)
+            return typeName ?? string.Empty;
+
+        foreach (var s in wellKnownNamespaces)
+        {
+            var prefix = s.EndsWith(".", StringComparison.Ordinal) ? s : s + ".";
+            if (typeName!.StartsWith(prefix, StringComparison.Ordinal))
+                typeName = typeName.Replace(prefix, string.Empty);
+
+            typeName = typeName.Replace("," + prefix, ",");
+            typeName = typeName.Replace("(" + prefix, "(");
+            typeName = typeName.Replace("<" + prefix, "<");
+        }
+
+        return typeName!;
+    }
+
     #region private static fields
 
     private const string NULLABLE_TYPENAME_PREFIX = "System.Nullable`1[";
-
-    #endregion
-
-    #region private consructor
-
-    /////// <summary>
-    /////// Prevents a default instance of the <see cref="TypeUtils"/> class from being created.
-    /////// </summary>
-    ////private TypeUtils()
-    ////{
-    ////}
 
     #endregion
 }
