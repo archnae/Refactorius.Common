@@ -15,42 +15,42 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#if !NET6_0_OR_GREATER
+namespace Refactorius;
 
-namespace Refactorius
+/// <summary>
+/// Provides streamlined creation of value pairs by avoiding 
+/// need to specify the type of the key and value.
+/// </summary>
+/// <nuget id="netfx-System.Collections.Generic.KeyValuePair" />
+[PublicAPI]
+public static class KeyValuePair
 {
-    /// <summary>
-    /// Provides streamlined creation of value pairs by avoiding 
-    /// need to specify the type of the key and value.
-    /// </summary>
-    /// <nuget id="netfx-System.Collections.Generic.KeyValuePair" />
-    [PublicAPI]
-    public static class KeyValuePair
-    {
-        /// <summary>
-        /// Creates the specified pair with the given key and value. 
-        /// The generic types do not need to be specified, and are 
-        /// inferred by the compiler based on the types passed 
-        /// as arguments.
-        /// </summary>
-        /// <typeparam name="TKey">The key type.</typeparam>
-        /// <typeparam name="TValue">The value type.</typeparam>
-        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value)
-        {
-            return new KeyValuePair<TKey, TValue>(key, value);
-        }
 
-        /// <summary>
-        /// Swaps the <see cref="KeyValuePair{TKey,TValue}.Key"/> and <see cref="KeyValuePair{TKey,TValue}.Value"/>.
-        /// </summary>
-        /// <typeparam name="TKey">The key type.</typeparam>
-        /// <typeparam name="TValue">The value type.</typeparam>
-        /// <param name="kvp">The key-value pair.</param>
-        /// <returns>The <paramref name="kvp"/> with key and value swapped.</returns>
-        public static KeyValuePair<TValue, TKey> Reverse<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp)
-        {
-            return new KeyValuePair<TValue, TKey>(kvp.Value, kvp.Key);
-        }
+    /// <summary>
+    /// Creates the specified pair with the given key and value. 
+    /// The generic types do not need to be specified, and are 
+    /// inferred by the compiler based on the types passed 
+    /// as arguments.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    public static KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value)
+    {
+        return new KeyValuePair<TKey, TValue>(key, value);
+    }
+
+
+/// <summary>
+/// Swaps the <see cref="KeyValuePair{TKey,TValue}.Key"/> and <see cref="KeyValuePair{TKey,TValue}.Value"/>.
+/// </summary>
+/// <typeparam name="TKey">The key type.</typeparam>
+/// <typeparam name="TValue">The value type.</typeparam>
+/// <param name="kvp">The key-value pair.</param>
+/// <returns>The <paramref name="kvp"/> with key and value swapped.</returns>
+public static KeyValuePair<TValue, TKey> Reverse<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp)
+    {
+        return new KeyValuePair<TValue, TKey>(kvp.Value, kvp.Key);
     }
 }
+#endif
