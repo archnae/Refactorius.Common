@@ -33,7 +33,7 @@
     <AnalysisLevel>6.0-recommended</AnalysisLevel>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>C:\r\Refactorius\Common\Common\key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
