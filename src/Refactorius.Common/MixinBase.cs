@@ -9,6 +9,7 @@ namespace Refactorius;
 /// <typeparam name="TKey">The class to extend.</typeparam>
 /// <typeparam name="TValue">The class to extend with.</typeparam>
 /// <remarks>This is a simple wrapper around <b>ConditionalWeakTable</b> to hide the technical details from the client code.</remarks>
+[PublicAPI]
 public class MixinBase<TKey, TValue>
     where TKey: class
     where TValue : class

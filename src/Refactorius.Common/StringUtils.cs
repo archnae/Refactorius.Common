@@ -156,7 +156,7 @@ public static class StringUtils
     /// </code>
     /// </example>
     /// <remarks>Changed in v11 to non null-propagating.</remarks>
-    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    //[ContractAnnotation("value:null => null; value:notnull => notnull")]
     [Pure]
     public static string Ellipsis(this string? value, int maxLength)
     {
@@ -180,7 +180,7 @@ public static class StringUtils
     /// <exception cref="ArgumentException"><paramref name="maxLength"/> is less then the length of
     /// <see cref="DefaultEllipsisPostfix"/>.</exception>
     /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
-    [ContractAnnotation("value:null => null; value:notnull => notnull")]
+    //[ContractAnnotation("value:null => null; value:notnull => notnull")]
     [Pure]
     public static string ReverseEllipsis(this string? value, int maxLength)
     {

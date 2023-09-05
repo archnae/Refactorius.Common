@@ -76,7 +76,7 @@ public static class DictionaryExtensions
     {
         dict.MustNotBeNull(nameof(dict));
 
-        return dict.ContainsKey(key) ? dict[key] : default;
+        return dict.TryGetValue(key, out var value) ? value : default;
     }
 
     /// <summary>Returns a dictionary value of a specified type by key or a default value of this type.</summary>

@@ -1,4 +1,7 @@
-﻿namespace Refactorius;
+﻿using System.Collections;
+using System.Linq;
+
+namespace Refactorius;
 
 /// <summary>Handy extension methods for <see cref="IEnumerable{T}"/>.</summary>
 [PublicAPI]
@@ -11,7 +14,7 @@ public static class EnumerableExtensions
     /// <exception cref="ArgumentNullException">if <paramref name="source"/> is <see langword="null"/>.</exception>
     /// <remarks>Changed in v11 to non null-propagating. Use ?. operator instead.</remarks>
     [LinqTunnel]
-    [ContractAnnotation("null => null; notnull => notnull")]
+    //[ContractAnnotation("null => null; notnull => notnull")]
     public static IEnumerable<T> CloneSequence<T>(this IEnumerable<T> source)
         where T : class, ICloneable
     {
@@ -317,5 +320,48 @@ public static class EnumerableExtensions
         return enumerator.ToIEnumerable().SelectMany(x => x);
     }
 
+    #endregion
+
+    #region run-time enumerable casts
+
+    /// <summary>
+    /// Materializes <c>IEnumerable</c> to a <c>List</c> of the specified item <c>Type</c>.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="type">The items <b>Type</b>.</param>
+    /// <returns>The non-generic <c>List</c> of items of <paramref name="type"/> with underlying <c>List&lt;T&gt;</c>.</returns>
+    /// <remarks>It is a poor man's replacement for <c>Cast&lt;T&gt;</c> when T is determined at run time.</remarks>
+    public static IList ToList([InstantHandle] this IEnumerable source, Type type)
+    {
+        var listType = typeof(List<>).MakeGenericType(type);
+
+        var result = (IList)Activator.CreateInstance(listType)!;
+        foreach (var item in source)
+            result.Add(item.MustImplement(type, nameof(source)));
+
+        return result;
+    }
+
+    /// <summary>
+    /// Materializes <c>IQueryable</c> to a <c>List</c> of the specified item <c>Type</c>.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="type">The items <b>Type</b>.</param>
+    /// <returns>The non-generic <c>List</c> of items of <paramref name="type"/> with underlying <c>List&lt;T&gt;</c>.</returns>
+    /// <remarks>It is a poor man's replacement for <c>ToList&lt;T&gt;</c> when T is determined at run time.</remarks>
+    public static IList ToList([InstantHandle] this IQueryable source, Type type) => 
+        source.Cast<object>().ToList().ToList(type);
+
+    /// <summary>
+    /// Materializes <c>IQueryable</c> to a <c>List</c> of the specified item <c>Type</c> and exposes it as <c>IQueryable</c>.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="type">The items <b>Type</b>.</param>
+    /// <returns>The non-generic <c>IQueryable</c> of items of <paramref name="type"/> with underlying <c>List&lt;T&gt;</c>.</returns>
+    /// <remarks>It is a poor man's replacement for <c>AsQueryable&lt;T&gt;</c> when T is determined at run time.</remarks>
+    public static IQueryable Cast([InstantHandle] this IQueryable source, Type type)
+    {
+        return source.ToList(type).AsQueryable();
+    }
     #endregion
 }
